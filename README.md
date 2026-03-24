@@ -1,5 +1,3 @@
-### shadcn ui
-
 # 🍽️ DineFlow (Restaurant Management System)
 
 A full-stack MERN-based restaurant management system built with best practices, clean architecture, and scalable design.
@@ -33,6 +31,7 @@ A full-stack MERN-based restaurant management system built with best practices, 
 * [shadcn/ui](https://ui.shadcn.com/docs/installation/vite)
 * [lucide icon]()
 * [react-router-dom]()  
+* [Zod](https://zod.dev/)
 
 
 ### Backend

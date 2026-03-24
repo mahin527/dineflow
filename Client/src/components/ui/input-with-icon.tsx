@@ -7,7 +7,7 @@ export interface InputWithIconProps
     extends React.InputHTMLAttributes<HTMLInputElement> {
     leftIcon?: LucideIcon;
     rightIcon?: LucideIcon;
-    onRightIconClick?: () => void; // Password toggle er moto kajer jonno
+    onRightIconClick?: () => void;
 }
 
 const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
@@ -26,8 +26,8 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
                     ref={ref}
                     className={cn(
                         "py-5 text-sm md:text-base 2xl:text-md",
-                        LeftIcon && "pl-10", // Left icon thakle padding-left hobe
-                        RightIcon && "pr-10", // Right icon thakle padding-right hobe
+                        LeftIcon && "pl-10", 
+                        RightIcon && "pr-10", 
                         className
                     )}
                 />

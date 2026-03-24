@@ -1,0 +1,33 @@
+import * as z from "zod";
+
+export const userSignupSchema = z.object({
+    firstname: z.string().min(2, "Firstname is required!"),
+    lastname: z.string().min(2, "Lastname is required!"),
+    contact: z.string().min(9, "Phone number is required!"),
+    dateOfBirth: z.string().min(1, "Date of birth is required!"),
+    email: z.string().email("Invalid email address!"),
+    password: z.string().min(6, "Password must be at least 6 characters!"),
+});
+
+export type SignupInputState = z.infer<typeof userSignupSchema>;
+
+export const userSigninSchema = z.object({
+    email: z.string().email("Invalid email address!"),
+    password: z.string().min(6, "Password must be at least 6 characters!"),
+});
+
+export type SigninInputState = z.infer<typeof userSigninSchema>;
+
+export const forgetPasswordSchema = z.object({
+    email: z.string().email("Invalid email address!"),
+});
+
+export type ForgetPasswordState = z.infer<typeof forgetPasswordSchema>;
+
+
+export const resetPasswordSchema = z.object({
+    oldPassword: z.string().min(6, "Password must be at least 6 characters!"),
+    newPassword: z.string().min(6, "Password must be at least 6 characters!"),
+});
+
+export type ResetPasswordState = z.infer<typeof resetPasswordSchema>;
