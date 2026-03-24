@@ -1,7 +1,10 @@
+import Navbar from "./Navbar"
 
 function MainLayout() {
   return (
-    <div>MainLayout</div>
+    <div>
+      <Navbar />
+    </div>
   )
 }
 
