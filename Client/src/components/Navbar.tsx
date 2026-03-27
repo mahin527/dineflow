@@ -79,14 +79,14 @@ function Navbar() {
                                                             Restaurant
                                                         </MenubarItem>
                                                     </Link>
+                                                    <Link to="/admin/orders">
+                                                        <MenubarItem>
+                                                            Restaurant Orders
+                                                        </MenubarItem>
+                                                    </Link>
                                                     <Link to="/admin/menu">
                                                         <MenubarItem>
                                                             Menu
-                                                        </MenubarItem>
-                                                    </Link>
-                                                    <Link to="/admin/orders">
-                                                        <MenubarItem>
-                                                            Orders
                                                         </MenubarItem></Link>
                                                 </MenubarContent>
                                             </MenubarMenu>

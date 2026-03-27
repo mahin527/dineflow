@@ -49,7 +49,7 @@ function Profile() {
     }
 
     return (
-        <div className="container mx-auto px-6 py-3">
+        <div className="@container mx-auto px-6 py-3">
             <form onSubmit={updateProfileHandler} className='py-6 md:py-10'>
                 <div className="space-y-5">
 
