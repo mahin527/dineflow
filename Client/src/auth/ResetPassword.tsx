@@ -35,7 +35,7 @@ function ResetPassword() {
 
     return (
 
-        <div className="container mx-auto px-6">
+        <div className="@container mx-auto px-6">
             <div className="py-10 md:py-6">
                 <Logo />
             </div>

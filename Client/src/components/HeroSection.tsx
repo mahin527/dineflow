@@ -3,13 +3,14 @@ import { InputWithIcon } from "./ui/input-with-icon";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import HeroImg from "@/assets/hero-img.png"
+import { useNavigate } from "react-router-dom";
 
 function HeroSection() {
     const [searchText, setSearchText] = useState<string>("")
     const loading: boolean = false;
-
+    const navigate = useNavigate()
     return (
-        <div className="container mx-auto px-6 py-20 md:py-0">
+        <div className="@container mx-auto px-6">
             <div className="flex flex-col md:flex-row items-center justify-center min-h-screen gap-5 md:gap-10">
                 <div className="space-y-5 basis-full md:basis-3/5">
                     <div className="space-y-3 md:space-y-5">
@@ -25,7 +26,7 @@ function HeroSection() {
                             name="search"
                             leftIcon={Search}
                             type="search"
-                            placeholder="Search"
+                            placeholder="Search restaurant by name, city or country... "
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
                             required
@@ -36,7 +37,7 @@ function HeroSection() {
                                     <Loader2 className="animate-spin mr-2" /> Please wait...
                                 </Button>
                             ) : (
-                                <Button type="submit" className="w-full px-5 py-5 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
+                                <Button type="submit" onClick={()=> navigate(`/search/${searchText}`)} className="w-full px-5 py-5 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
                                     Search
                                 </Button>
                             )}

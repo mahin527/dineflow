@@ -9,9 +9,17 @@ import { ModeToggle } from './ModeToggle'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 
 function Navbar() {
-    const navClasses = 'py-3 md:py-4 w-full text-neutral-700 dark:text-white fixed top-0 left-0 right-0 z-10'
-    const navContetWrapperClasses = '@container mx-auto px-5 flex justify-between items-center'
-    const menuLinkClasses = `flex flex-col lg:flex-row items-center fixed lg:static top-0 bottom-0 px-10 bg-neutral-500 dark:bg-neutral-700 dark:lg:bg-transparent lg:bg-transparent pt-24 lg:pt-0 transition-all duration-500 gap-8 text-sm lg:text-base xl:text-lg font-bold w-58 sm:w-78 md:w-88 lg:w-auto z-[-1] lg:z-auto`;
+    const navClasses = 'py-3 md:py-4 w-full text-neutral-700 dark:text-white sticky top-0 left-0 right-0 z-10'
+    const navContetWrapperClasses = '@container mx-auto px-6 flex justify-between items-center'
+    const menuLinkClasses = `
+    flex flex-col lg:flex-row items-center
+    fixed lg:static top-0 bottom-0 h-screen lg:h-auto 
+    px-10 bg-neutral-100 dark:bg-neutral-800 lg:bg-transparent dark:lg:bg-transparent 
+    pt-24 lg:pt-0 transition-all duration-500 gap-8 
+    text-sm lg:text-base xl:text-lg font-bold 
+    w-64 sm:w-72 md:w-80 lg:w-auto 
+    z-[-1] lg:z-auto shadow-xl lg:shadow-none
+`;
     const darkNav = 'bg-neutral-400 dark:bg-neutral-700 border-b-2 border-neutral-700 dark:border-neutral-200 transition-colors ease-in-out duration-300'
     const [sticky, setSticky] = useState(false)
 
@@ -22,10 +30,15 @@ function Navbar() {
     }
 
     useEffect(() => {
-        window.addEventListener('scroll', () => {
-            window.scrollY > 100 ? setSticky(true) : setSticky(false)
-        })
-    }, [])
+        const handleScroll = () => {
+            window.scrollY > 100 ? setSticky(true) : setSticky(false);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        // Cleanup function: Component unmount hole listener bad jabe
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const admin: boolean = true
     const loading: boolean = false;
