@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+// import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Loader2, MenuIcon, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Logo from "@/components/Logo"
@@ -20,8 +21,8 @@ function Navbar() {
     w-64 sm:w-72 md:w-80 lg:w-auto 
     z-[-1] lg:z-auto shadow-xl lg:shadow-none
 `;
-    const darkNav = 'bg-neutral-400 dark:bg-neutral-700 border-b-2 border-neutral-700 dark:border-neutral-200 transition-colors ease-in-out duration-300'
-    const [sticky, setSticky] = useState(false)
+    // const darkNav = 'bg-neutral-400 dark:bg-neutral-700 border-b-2 border-neutral-700 dark:border-neutral-200 transition-colors ease-in-out duration-300'
+    // const [sticky, setSticky] = useState(false)
 
     const [mobileMenu, setMobileMenu] = useState(false)
     const toggleMenu = () => {
@@ -29,22 +30,24 @@ function Navbar() {
         setMobileMenu(prev => !prev)
     }
 
-    useEffect(() => {
-        const handleScroll = () => {
-            window.scrollY > 100 ? setSticky(true) : setSticky(false);
-        };
+    // useEffect(() => {
+    //     const handleScroll = () => {
+    //         window.scrollY > 100 ? setSticky(true) : setSticky(false);
+    //     };
 
-        window.addEventListener('scroll', handleScroll);
+    //     window.addEventListener('scroll', handleScroll);
 
-        // Cleanup function: Component unmount hole listener bad jabe
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    //     // Cleanup function: Component unmount hole listener bad jabe
+    //     return () => window.removeEventListener('scroll', handleScroll);
+    // }, []);
 
     const admin: boolean = true
     const loading: boolean = false;
 
     return (
-        <nav className={`${navClasses} ${sticky ? darkNav : ''}`}>
+        // <nav className={`${navClasses} ${sticky ? darkNav : ''}`}>
+        <nav className={`${navClasses}`}>
+
             <div className={`${navContetWrapperClasses}`}>
                 <Logo />
                 <ul className={`${menuLinkClasses} ${mobileMenu ? 'right-0' : '-right-full'}`}>
@@ -59,7 +62,7 @@ function Navbar() {
                         </Link>
                     </li>
                     <li>
-                        <Link to="/orders">
+                        <Link to="/orders/status">
                             Orders
                         </Link>
                     </li>
@@ -76,18 +79,19 @@ function Navbar() {
                                                 <MenubarContent>
                                                     <Link to="/admin/restaurant">
                                                         <MenubarItem>
-                                                            Restaurant
-                                                        </MenubarItem>
-                                                    </Link>
-                                                    <Link to="/admin/orders">
-                                                        <MenubarItem>
-                                                            Restaurant Orders
+                                                            Add Restaurant
                                                         </MenubarItem>
                                                     </Link>
                                                     <Link to="/admin/menu">
                                                         <MenubarItem>
-                                                            Menu
-                                                        </MenubarItem></Link>
+                                                            Add Menu
+                                                        </MenubarItem>
+                                                    </Link>
+                                                    <Link to="/admin/orders">
+                                                        <MenubarItem>
+                                                            Orders
+                                                        </MenubarItem>
+                                                    </Link>
                                                 </MenubarContent>
                                             </MenubarMenu>
                                         </Menubar>

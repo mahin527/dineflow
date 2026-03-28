@@ -7,7 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { QuantitySelector } from "./QuantitySelector"
 import { Trash2 } from "lucide-react"
 import { Button } from "./ui/button"

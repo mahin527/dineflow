@@ -59,13 +59,13 @@ function SearchPage() {
                             {
                                 [1, 2, 3, 4].map((item: number, index: number) => (
                                     <Card key={index} className="relative mx-auto w-full max-w-sm pt-0 shadow-md rounded-xl overflow-hidden hover:shadow-lg shadow-neutral-600 dark:shadow-neutral-800 transition-shadow duration-300">
-                                        <div className="absolute inset-0 z-30 aspect-video bg-black/5 dark:bg-white/5" />
+                                        <div className="absolute inset-0 aspect-video bg-black/5 dark:bg-white/5" />
                                         <img
                                             src={HeroImg}
                                             alt="Event cover"
-                                            className="relative z-20 aspect-video w-full object-cover"
+                                            className="relative aspect-video w-full object-cover"
                                         />
-                                        <CardAction className="absolute z-22 py-2 px-2">
+                                        <CardAction className="absolute py-2 px-2">
                                             <Badge>Featured</Badge>
                                         </CardAction>
                                         <CardHeader>

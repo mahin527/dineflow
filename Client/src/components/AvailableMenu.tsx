@@ -20,13 +20,13 @@ function AvailableMenu() {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 <Card className="relative mx-auto w-full max-w-xs pt-0 shadow-md rounded-xl overflow-hidden hover:shadow-lg shadow-neutral-600 dark:shadow-neutral-800 transition-shadow duration-300">
-                    <div className="absolute inset-0 z-30 aspect-video bg-black/5 dark:bg-white/5" />
+                    <div className="absolute inset-0 aspect-video bg-black/5 dark:bg-white/5" />
                     <img
                         src={Image}
                         alt="Event cover"
                         className="relative aspect-video w-full object-cover"
                     />
-                    <CardAction className="absolute z-10 py-2 px-2">
+                    <CardAction className="absolute py-2 px-2">
                         <Badge>Featured</Badge>
                     </CardAction>
                     <CardHeader>

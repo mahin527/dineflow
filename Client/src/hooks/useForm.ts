@@ -11,8 +11,6 @@ export function useForm<T extends Record<string, any>>(initialState: T) {
             [name]: value,
         }));
 
-        // console.log(name, value);
-
     };
 
     return { input, handleInputChange, setInput };
