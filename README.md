@@ -38,11 +38,32 @@ A full-stack MERN-based restaurant management system built with best practices, 
 
 * [Node.js](https://nodejs.org/docs/latest/api/)
 * [Express.js](https://expressjs.com/en/starter/installing.html)
+* [Mongoose]()
+* [bcrypt]()
+* [JSON Web Token]()
+* [Mailtrap]()
+* [Stripe]()
+* [Multer]()
+* [Dotenv]()
+* [Cors]()
+* [Cookie parser]()
+* [Cloudinary]()
+
+#### Dev dependencies
+
+* [tsx]()
+* [typescript]()
+* [nodemon]()
 * []()
+* []()
+* []()
+* []()
+* []()
+
 
 ### Database
 
-* MongoDB (Mongoose)
+* MongoDB
 
 ### Authentication
 

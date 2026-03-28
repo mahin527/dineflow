@@ -1,0 +1,39 @@
+{
+  "name": "dineflow",
+  "version": "0.0.1",
+  "description": "A full-stack MERN-based restaurant management system built with best practices, clean architecture, and scalable design.",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon --exec tsx src/index.ts",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "dineflow"
+  ],
+  "author": "Mahin Hasan",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^2.9.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mailtrap": "^4.5.1",
+    "mongoose": "^9.3.3",
+    "multer": "^2.1.1",
+    "stripe": "^21.0.1"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/multer": "^2.1.0",
+    "@types/node": "^25.5.0",
+    "nodemon": "^3.1.14",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  }
+}
