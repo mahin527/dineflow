@@ -17,3 +17,15 @@ A full-stack MERN-based restaurant management system built with best practices, 
 
 * JWT (JSON Web Token)
 * bcrypt
+
+
+### Flow Summary
+
+Controller will write only business logic → throw new ApiError(...) if error.
+
+asyncHandler will send error to middleware without try/catch.
+
+errorHandler middleware will convert all errors to consistent JSON format.
+
+ApiResponse will send success response in consistent format.
+
