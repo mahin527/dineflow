@@ -22,6 +22,8 @@ const menuSchema = new mongoose.Schema<IMenuDocument>(
         },
         menuTitle: {
             type: String,
+            index: true,
+            lowercase: true,
             required: true
         },
         description: {

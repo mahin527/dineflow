@@ -26,7 +26,11 @@ const restaurantSchema = new mongoose.Schema<IRestaurantDocument>(
         },
         restaurantName: {
             type: String,
-            required: true
+            required: true,
+            unique: true,
+            lowercase: true,
+            trim: true,
+            index: true
         },
         city: {
             type: String,

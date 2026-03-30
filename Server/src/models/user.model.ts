@@ -1,6 +1,8 @@
 import mongoose from "mongoose"
+import bcrypt from "bcrypt"
 
 export interface IUser {
+    username: string,
     fullname: string,
     email: string,
     password: string,
@@ -20,18 +22,31 @@ export interface IUser {
 
 export interface IUserDocument extends IUser, Document {
     createdAt: Date,
-    updatedAt: Date
+    updatedAt: Date,
+    isPasswordCorrect(password: string): Promise<boolean>;
 }
 
 const userSchema = new mongoose.Schema<IUserDocument>(
     {
+        username: {
+            type: String,
+            required: true,
+            unique: true,
+            lowercase: true,
+            trim: true,
+            index: true
+        },
         fullname: {
             type: String,
             required: true
         },
         email: {
             type: String,
-            required: true
+            required: true,
+            unique: true,
+            lowercase: true,
+            trim: true,
+            index: true
         },
         password: {
             type: String,
@@ -39,6 +54,7 @@ const userSchema = new mongoose.Schema<IUserDocument>(
         },
         contact: {
             type: Number,
+            trim: true,
             required: true
         },
         address: {
@@ -89,5 +105,15 @@ const userSchema = new mongoose.Schema<IUserDocument>(
         timestamps: true
     }
 )
+
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return
+
+    this.password = await bcrypt.hash(this.password, 10)
+})
+
+userSchema.methods.isPasswordCorrect = async function (password: string): Promise<boolean> {
+    return await bcrypt.compare(password, this.password)
+}
 
 export const User = mongoose.model('User', userSchema)

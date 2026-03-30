@@ -14,8 +14,8 @@ function Signup() {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const { input, handleInputChange } = useForm({
-        firstname: "",
-        lastname: "",
+        username: "",
+        fullname: "",
         contact: "",
         dateOfBirth: "",
         email: "",
@@ -55,33 +55,33 @@ function Signup() {
                     <div className="flex flex-col sm:flex-row gap-4">
                         <div className="flex flex-col w-full">
                             <InputWithIcon
-                                name="firstname"
+                                name="username"
                                 leftIcon={UserPen}
                                 type="text"
-                                placeholder="Firstname"
-                                value={input.firstname}
+                                placeholder="username"
+                                value={input.username}
                                 onChange={handleInputChange}
                                 required
                             />
-                            {errors.firstname?._errors?.[0] && (
+                            {errors.username?._errors?.[0] && (
                                 <p className="text-red-500 text-xs mt-1">
-                                    {errors.firstname._errors[0]}
+                                    {errors.username._errors[0]}
                                 </p>
                             )}
                         </div>
                         <div className="flex flex-col w-full">
                             <InputWithIcon
-                                name="lastname"
+                                name="fullname"
                                 leftIcon={UserPen}
                                 type="text"
-                                placeholder="Lastname"
-                                value={input.lastname}
+                                placeholder="fullname"
+                                value={input.fullname}
                                 onChange={handleInputChange}
                                 required
                             />
-                            {errors.lastname?._errors?.[0] && (
+                            {errors.fullname?._errors?.[0] && (
                                 <p className="text-red-500 text-xs mt-1">
-                                    {errors.lastname._errors[0]}
+                                    {errors.fullname._errors[0]}
                                 </p>
                             )}
                         </div>
