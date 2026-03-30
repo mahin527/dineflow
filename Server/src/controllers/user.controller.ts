@@ -1,10 +1,11 @@
+import { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler"
 import { ApiError } from "../utils/ApiError"
 import { ApiResponse } from "../utils/ApiResponse"
 import { User } from "../models/user.model"
 import crypto from "crypto"
 
-const signup = asyncHandler(async (req, res) => {
+const signup = asyncHandler(async (req: Request, res: Response) => {
 
     // get user details from frontend
     const { username, fullname, email, password, contact } = req.body
@@ -56,7 +57,7 @@ const signup = asyncHandler(async (req, res) => {
     )
 })
 
-const signin = asyncHandler(async (req, res,) => {
+const signin = asyncHandler(async (req: Request, res: Response) => {
     // get username or email
     // const {username ||  email, password} = req.body
 
@@ -93,7 +94,7 @@ const signin = asyncHandler(async (req, res,) => {
 
 })
 
-const verifyEmail = asyncHandler(async (req, res) => {
+const verifyEmail = asyncHandler(async (req: Request, res: Response) => {
     const { verificationCode } = req.body;
     const user = await User.findOne(
         {
@@ -123,13 +124,13 @@ const verifyEmail = asyncHandler(async (req, res) => {
     )
 })
 
-const logout = asyncHandler(async (_, res) => {
+const logout = asyncHandler(async (_: Request, res: Response) => {
     return res.clearCookie("token").status(200).json(
         new ApiResponse(200, "User logged out successfully!")
     )
 })
 
-const forgetPassword = asyncHandler(async (req, res) => {
+const forgetPassword = asyncHandler(async (req: Request, res: Response) => {
     const { email } = req.body;
 
     const user = await User.findOne({ email })
@@ -156,7 +157,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
 
 })
 
-const resetPassword = asyncHandler(async (req, res) => {
+const resetPassword = asyncHandler(async (req: Request, res: Response) => {
     const { token } = req.params;
     const newPassword = req.body;
 
@@ -191,7 +192,16 @@ const resetPassword = asyncHandler(async (req, res) => {
 
 })
 
-export { signup, signin, verifyEmail, logout, forgetPassword, resetPassword }
+const checkAuth = asyncHandler(async (req: Request, res: Response) => {
+    const user = req.user
+
+    return res.status(200).json(
+        new ApiResponse(200, user, "User authenticated successfully")
+    )
+
+})
+
+export { signup, signin, verifyEmail, logout, forgetPassword, resetPassword, checkAuth }
 
 
 
