@@ -2,8 +2,8 @@ import { asyncHandler } from "../utils/asyncHandler"
 import { ApiError } from "../utils/ApiError"
 import { ApiResponse } from "../utils/ApiResponse"
 import { User } from "../models/user.model"
+import crypto from "crypto"
 
-// Signup
 const signup = asyncHandler(async (req, res) => {
 
     // get user details from frontend
@@ -93,16 +93,107 @@ const signin = asyncHandler(async (req, res,) => {
 
 })
 
-export { signup, signin }
+const verifyEmail = asyncHandler(async (req, res) => {
+    const { verificationCode } = req.body;
+    const user = await User.findOne(
+        {
+            verificationToken: verificationCode,
+            verificationTokenExpiresAt: {
+                $gt: Date.now()
+            }
+        }
+    ).select("-password")
+
+    if (!user) {
+        throw new ApiError(400, "Invalid or expired verification token!")
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpiresAt = undefined;
+    await user.save()
+
+
+    // TODO: Send welcome email
+
+
+    // return response 
+    return res.status(200).json(
+        new ApiResponse(200, user, "Email verification successful!")
+    )
+})
+
+const logout = asyncHandler(async (_, res) => {
+    return res.clearCookie("token").status(200).json(
+        new ApiResponse(200, "User logged out successfully!")
+    )
+})
+
+const forgetPassword = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email })
+
+    if (!user) {
+        throw new ApiError(400, "User does not exist!")
+    }
+
+    const resetToken = crypto.randomBytes(40).toString("hex")
+    const resetTokenExpiresAt = new Date(Date.now() + 1 * 60 * 60 * 1000) // 1 hour
+
+    user.resetPasswordToken = resetToken
+    user.resetPasswordTokenExpiresAt = resetTokenExpiresAt
+
+    await user.save()
+
+    // Send the reset password link via email
+    // await sendResetPasswordLink(user.email, `${process.env.FRONTEND_URL}/resetpassword/${token}`)
+
+    // return response
+    return res.status(200).json(
+        new ApiResponse(200, "Password reset link sent to your email!")
+    )
+
+})
+
+const resetPassword = asyncHandler(async (req, res) => {
+    const { token } = req.params;
+    const newPassword = req.body;
+
+    const user = await User.findOne(
+        {
+            resetPasswordToken: token,
+            resetPasswordTokenExpiresAt: {
+                $gt: Date.now()
+            }
+        }
+    )
+
+    if (!user) {
+        throw new ApiError(400, "Invalid or expired reset token!")
+    }
+
+    // update password 
+    user.password = newPassword
+    user.resetPasswordToken = undefined
+    user.resetPasswordTokenExpiresAt = undefined
+
+    await user.save()
+
+    // Send a success message via email.
+    // await sendSuccessMsgViaEmail(user.email, )
+
+    // return response
+    return res.status(200).json(
+        new ApiResponse(200, "Password reset successful!")
+    )
+
+
+})
+
+export { signup, signin, verifyEmail, logout, forgetPassword, resetPassword }
 
 
 
 
 
-
-
-
-
-
-
-// Signin

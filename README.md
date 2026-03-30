@@ -48,17 +48,11 @@ A full-stack MERN-based restaurant management system built with best practices, 
 * [Cors]()
 * [Cookie parser]()
 * [Cloudinary]()
-
-#### Dev dependencies
-
 * [tsx]()
 * [typescript]()
 * [nodemon]()
-* []()
-* []()
-* []()
-* []()
-* []()
+* [crypto-js]()
+
 
 
 ### Database
