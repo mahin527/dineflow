@@ -4,6 +4,9 @@ import { ApiError } from "../utils/ApiError"
 import { ApiResponse } from "../utils/ApiResponse"
 import { User } from "../models/user.model"
 import crypto from "crypto"
+import { uploadOnCloudinary } from "../utils/cloudinary/cloudinary"
+import { isAuthenticated } from "../middlewares/isAuthenticated";
+import { Multer } from "multer";
 
 const signup = asyncHandler(async (req: Request, res: Response) => {
 
@@ -47,9 +50,6 @@ const signup = asyncHandler(async (req: Request, res: Response) => {
     if (!createdUser) {
         throw new ApiError(500, "Something went wrong while registering the user!")
     }
-
-    // TODO: generete token, cookie etc. 
-
 
     // Return response
     return res.status(201).json(
@@ -201,7 +201,57 @@ const checkAuth = asyncHandler(async (req: Request, res: Response) => {
 
 })
 
-export { signup, signin, verifyEmail, logout, forgetPassword, resetPassword, checkAuth }
+const updateProfile = asyncHandler(async (req: Request & { file?: Express.Multer.File }, res: Response) => {
+    const user = req.user; // isAuthenticated middleware 
+
+    if (!user) {
+        throw new ApiError(401, "Unauthorized request!");
+    }
+
+    const {
+        fullname,
+        email,
+        contact,
+        address,
+        city,
+        country,
+    } = req.body;
+
+    // if new profile picture 
+    let profilePictureUrl = user.profilePicture;
+    if (req.file?.path) {
+        const uploadResult = await uploadOnCloudinary(req.file.path);
+        if (!uploadResult) {
+            throw new ApiError(500, "Profile picture upload failed!");
+        }
+        profilePictureUrl = uploadResult.url;
+    }
+
+    // update user
+    const updatedUser = await User.findByIdAndUpdate(
+        user._id,
+        {
+            fullname,
+            email,
+            contact,
+            address,
+            city,
+            country,
+            profilePicture: profilePictureUrl,
+        },
+        { new: true } 
+    ).select("-password -refreshToken");
+
+    if (!updatedUser) {
+        throw new ApiError(500, "Something went wrong while updating profile!");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, updatedUser, "Profile updated successfully"));
+});
+
+export { signup, signin, verifyEmail, logout, forgetPassword, resetPassword, checkAuth, updateProfile }
 
 
 

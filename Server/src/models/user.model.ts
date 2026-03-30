@@ -1,5 +1,7 @@
 import mongoose from "mongoose"
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
+import { env } from "../config/env";
 
 export interface IUser {
     username: string,
@@ -115,5 +117,22 @@ userSchema.pre("save", async function () {
 userSchema.methods.isPasswordCorrect = async function (password: string): Promise<boolean> {
     return await bcrypt.compare(password, this.password)
 }
+
+userSchema.methods.generateToken = function (): string {
+    return jwt.sign(
+        {
+            _id: this._id,
+            email: this.email,
+            username: this.username,
+            fullname: this.fullname,
+        },
+        env.SECRET_TOKEN,
+        {
+            expiresIn: env.SECRET_TOKEN_EXPIRY,
+        }
+    );
+};
+
+
 
 export const User = mongoose.model('User', userSchema)

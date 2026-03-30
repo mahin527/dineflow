@@ -41,7 +41,7 @@ A full-stack MERN-based restaurant management system built with best practices, 
 * [Mongoose]()
 * [bcrypt]()
 * [JSON Web Token]()
-* [Mailtrap]()
+* [Mailtrap](https://mailtrap.io/)
 * [Stripe]()
 * [Multer]()
 * [Dotenv]()
