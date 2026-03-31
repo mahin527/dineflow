@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose, { Document } from "mongoose";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { env } from "../config/env";
@@ -13,6 +13,7 @@ export interface IUser {
     city: string,
     country: string,
     profilePicture: string,
+    profilePicturePublicId: string,
     isAdmin: boolean,
     lastLogin?: Date,
     isVerified?: boolean
@@ -23,9 +24,9 @@ export interface IUser {
 }
 
 export interface IUserDocument extends IUser, Document {
-    createdAt: Date,
-    updatedAt: Date,
+    // No need to give createdAt or updatedAt separately here. These come automatically from Document.
     isPasswordCorrect(password: string): Promise<boolean>;
+    generateToken(): string;
 }
 
 const userSchema = new mongoose.Schema<IUserDocument>(
@@ -75,6 +76,10 @@ const userSchema = new mongoose.Schema<IUserDocument>(
             required: true
         },
         profilePicture: {
+            type: String,
+            default: ""
+        },
+        profilePicturePublicId: {
             type: String,
             default: ""
         },

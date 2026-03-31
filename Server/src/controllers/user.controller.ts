@@ -1,245 +1,321 @@
 import { Request, Response } from "express";
+import { IUserDocument } from "../models/user.model";
 import { asyncHandler } from "../utils/asyncHandler"
 import { ApiError } from "../utils/ApiError"
 import { ApiResponse } from "../utils/ApiResponse"
 import { User } from "../models/user.model"
 import crypto from "crypto"
-import { uploadOnCloudinary } from "../utils/cloudinary/cloudinary"
-import { isAuthenticated } from "../middlewares/isAuthenticated";
-import { Multer } from "multer";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary/cloudinary"
+
+import {
+    sendWelcomeEmail,
+    sendVerificationEmail,
+    sendPasswordResetEmail,
+    sendResetPasswordSuccessEmail
+} from "../utils/mailtrap/emails"
+
+interface AuthenticatedRequest extends Request {
+    user?: IUserDocument;
+    file?: Express.Multer.File;
+}
 
 const signup = asyncHandler(async (req: Request, res: Response) => {
-
     // get user details from frontend
-    const { username, fullname, email, password, contact } = req.body
-
+    const { username, fullname, email, password, contact } = req.body;
 
     // validation - not empty
-    if ([username, fullname, email, password, contact].some((field) => field?.trim() === "")) {
-        throw new ApiError(400, "All fields are required!")
+    if ([username, fullname, email, password, contact].some((field) => !field || field.trim() === "")) {
+        throw new ApiError(400, "All fields are required!");
     }
 
     // check if user already exists: username, email
-
     const existedUser = await User.findOne(
         {
-            $or: [{ username }, { email }]
+            $or: [{ email }, { username }]
         }
     )
 
     if (existedUser) {
-        throw new ApiError(409, "User with email already exists!")
+        throw new ApiError(409, "User with email or username already exists!")
         // The 409 Conflict status code indicates that the request could not be completed due to a conflict with the current state of the target resource.  This is a client error (409) meaning the request is syntactically correct and understood by the server, but the server cannot process it because it would create a contradiction with the resource's existing condition, such as concurrent updates, duplicate unique identifiers, or version mismatches.
     }
 
-    //  create user object
+    // Generate verification token (6 digit or crypto token)
+    const verificationToken = crypto.randomBytes(3).toString("hex") // Example: 'a1b2c3'
+    const verificationTokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hour
 
+    //  create user object
     const user = await User.create(
         {
             username,
             fullname,
             email,
             password,
-            contact
+            contact,
+            verificationToken,
+            verificationTokenExpiresAt
         }
     )
 
-    // check if user created successfully 
-    const createdUser = await User.findById(user._id).select("-password")
+    // remove password
+    const createdUser = await User.findById(user._id).select("-password");
 
+    // Fetch created user without password
     if (!createdUser) {
-        throw new ApiError(500, "Something went wrong while registering the user!")
+        throw new ApiError(500, "Something went wrong while registering!")
     }
+    // Send verification email
+    await sendVerificationEmail(email, verificationToken)
 
     // Return response
     return res.status(201).json(
-        new ApiResponse(201, createdUser, "User registered successfully!")
+        new ApiResponse(201, createdUser, "User registered successfully! Please verify your email.")
     )
 })
 
 const signin = asyncHandler(async (req: Request, res: Response) => {
-    // get username or email
-    // const {username ||  email, password} = req.body
+    const { email, password } = req.body;
 
-    const { email, password } = req.body
-
-    if (!email) {
-        throw new ApiError(400, "Email is required")
+    // Validation
+    if (!email || !password) {
+        throw new ApiError(400, "Email and password are required");
     }
 
-    // find the user 
+    // Find user
     const user = await User.findOne({ email });
-
     if (!user) {
-        throw new ApiError(404, "User does not exist!")
+        throw new ApiError(404, "User does not exist!");
     }
 
-    // if user exists then password check
-
-    const isPasswordValid = await user.isPasswordCorrect(password)
+    // Password check
+    const isPasswordValid = await user.isPasswordCorrect(password);
     if (!isPasswordValid) {
-        throw new ApiError(401, "Invalid user credentials!")
+        throw new ApiError(401, "Invalid user credentials!");
     }
 
-    user.lastLogin = new Date()
+    // Generate JWT token
+    const token = user.generateToken();
 
-    await user.save()
+    // Update last login
+    user.lastLogin = new Date();
+    await user.save({ validateBeforeSave: false });
 
-    // TODO: generete token, cookie etc. 
+    // Cookie options
+    const options = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict" as const, // extra security
+    };
 
-    // return response
-    return res.status(200).json(
-        new ApiResponse(200, user, "User signin successfully!")
-    )
+    // Exclude sensitive fields before sending response
+    const safeUser = await User.findById(user._id).select("-password -refreshToken");
 
-})
+    return res
+        .status(200)
+        .cookie("token", token, options)
+        .json(new ApiResponse(200, { user: safeUser, token }, "User signed in successfully!"));
+});
 
 const verifyEmail = asyncHandler(async (req: Request, res: Response) => {
     const { verificationCode } = req.body;
-    const user = await User.findOne(
-        {
-            verificationToken: verificationCode,
-            verificationTokenExpiresAt: {
-                $gt: Date.now()
-            }
-        }
-    ).select("-password")
 
-    if (!user) {
-        throw new ApiError(400, "Invalid or expired verification token!")
+    if (!verificationCode) {
+        throw new ApiError(400, "Verification code is required!");
     }
 
+    // Finding a user whose tokens match and have not expired
+    const user = await User.findOne({
+        verificationToken: verificationCode,
+        verificationTokenExpiresAt: { $gt: new Date() } // Better to use `new Date()` as opposed to `Date.now()`
+    });
+
+    if (!user) {
+        throw new ApiError(400, "Invalid or expired verification token!");
+    }
+
+    // Update
     user.isVerified = true;
     user.verificationToken = undefined;
     user.verificationTokenExpiresAt = undefined;
-    await user.save()
 
+    // It is better to skip validation when saving if there is a problem with password fields
+    await user.save({ validateBeforeSave: false });
 
-    // TODO: Send welcome email
+    // Sending Welcome Email (await should be used to handle email failure or error)
+    try {
+        await sendWelcomeEmail(user.email, user.fullname);
+    } catch (error) {
+        console.error("Welcome email failed:", error);
+        // Better not to throw an error here because the user is already verified
+    }
 
-
-    // return response 
     return res.status(200).json(
-        new ApiResponse(200, user, "Email verification successful!")
-    )
-})
+        new ApiResponse(200, { userId: user._id, isVerified: true }, "Email verification successful!")
+    );
+});
 
 const logout = asyncHandler(async (_: Request, res: Response) => {
-    return res.clearCookie("token").status(200).json(
-        new ApiResponse(200, "User logged out successfully!")
-    )
-})
+    // Cookie option that was used during signin (preferably the same)
+    const options = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        // secure: true,
+        sameSite: "strict" as const // For CSRF protection
+    };
+
+    return res
+        .status(200)
+        .clearCookie("token", options) // Clear cookies with correct options
+        .json(
+            new ApiResponse(200, {}, "User logged out successfully!")
+        );
+});
 
 const forgetPassword = asyncHandler(async (req: Request, res: Response) => {
     const { email } = req.body;
 
-    const user = await User.findOne({ email })
-
-    if (!user) {
-        throw new ApiError(400, "User does not exist!")
+    if (!email) {
+        throw new ApiError(400, "Email is required!");
     }
 
-    const resetToken = crypto.randomBytes(40).toString("hex")
-    const resetTokenExpiresAt = new Date(Date.now() + 1 * 60 * 60 * 1000) // 1 hour
+    const user = await User.findOne({ email });
 
-    user.resetPasswordToken = resetToken
-    user.resetPasswordTokenExpiresAt = resetTokenExpiresAt
+    if (!user) {
+        throw new ApiError(404, "User with this email does not exist!");
+    }
 
-    await user.save()
+    // create token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpiresAt = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
 
-    // Send the reset password link via email
-    // await sendResetPasswordLink(user.email, `${process.env.FRONTEND_URL}/resetpassword/${token}`)
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordTokenExpiresAt = resetTokenExpiresAt;
 
-    // return response
+    // Saving without validation because we are just updating the token
+    await user.save({ validateBeforeSave: false });
+
+    // Generate frontend URL (preferably taken from env)
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+    try {
+        // use mailtrap helper 
+        await sendPasswordResetEmail(user.email, resetUrl);
+    } catch (error) {
+        // It is better to clear the token if it fails to send the email
+        user.resetPasswordToken = undefined;
+        user.resetPasswordTokenExpiresAt = undefined;
+        await user.save({ validateBeforeSave: false });
+
+        throw new ApiError(500, "Failed to send reset email. Try again later.");
+    }
+
     return res.status(200).json(
-        new ApiResponse(200, "Password reset link sent to your email!")
-    )
-
-})
+        new ApiResponse(200, {}, "Password reset link sent to your email!")
+    );
+});
 
 const resetPassword = asyncHandler(async (req: Request, res: Response) => {
     const { token } = req.params;
-    const newPassword = req.body;
+    const { newPassword } = req.body;
 
-    const user = await User.findOne(
-        {
-            resetPasswordToken: token,
-            resetPasswordTokenExpiresAt: {
-                $gt: Date.now()
-            }
-        }
-    )
-
-    if (!user) {
-        throw new ApiError(400, "Invalid or expired reset token!")
+    if (!newPassword) {
+        throw new ApiError(400, "New password is required!");
     }
 
-    // update password 
-    user.password = newPassword
-    user.resetPasswordToken = undefined
-    user.resetPasswordTokenExpiresAt = undefined
+    const user = await User.findOne({
+        resetPasswordToken: token,
+        resetPasswordTokenExpiresAt: { $gt: new Date() }
+    });
 
-    await user.save()
+    if (!user) {
+        throw new ApiError(400, "Invalid or expired reset token!");
+    }
 
-    // Send a success message via email.
-    // await sendSuccessMsgViaEmail(user.email, )
+    // Password update (this will auto-hash as user.model has a pre-save hook)
+    user.password = newPassword;
 
-    // return response
+    // Clear the tokens so that the same token cannot be used repeatedly
+    user.resetPasswordToken = undefined;
+    user.resetPasswordTokenExpiresAt = undefined;
+
+    await user.save();
+
+    // Sending confirmation email of successful password reset
+    try {
+        await sendResetPasswordSuccessEmail(user.email);
+        // Sending a confirmation email to the user after password reset is good for security. If the user has not done this himself, he can take action quickly.
+    } catch (error) {
+        console.error("Success email sending failed:", error);
+        // No need to throw an error here, because the password is already changed
+    }
+
     return res.status(200).json(
-        new ApiResponse(200, "Password reset successful!")
-    )
+        new ApiResponse(200, {}, "Password reset successful!")
+    );
+});
 
+const checkAuth = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const user = req.user;
 
-})
-
-const checkAuth = asyncHandler(async (req: Request, res: Response) => {
-    const user = req.user
+    if (!user) {
+        throw new ApiError(401, "User not authenticated!");
+    }
 
     return res.status(200).json(
         new ApiResponse(200, user, "User authenticated successfully")
-    )
+    );
+});
 
-})
-
-const updateProfile = asyncHandler(async (req: Request & { file?: Express.Multer.File }, res: Response) => {
-    const user = req.user; // isAuthenticated middleware 
+const updateProfile = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const user = req.user;
 
     if (!user) {
         throw new ApiError(401, "Unauthorized request!");
     }
 
-    const {
-        fullname,
-        email,
-        contact,
-        address,
-        city,
-        country,
-    } = req.body;
+    const { fullname, email, contact, address, city, country } = req.body;
 
-    // if new profile picture 
     let profilePictureUrl = user.profilePicture;
+    let profilePicturePublicId = user.profilePicturePublicId;
+
+    // Handle profile picture upload
     if (req.file?.path) {
         const uploadResult = await uploadOnCloudinary(req.file.path);
+
         if (!uploadResult) {
             throw new ApiError(500, "Profile picture upload failed!");
         }
-        profilePictureUrl = uploadResult.url;
+
+        // Delete the old picture if any
+        if (profilePicturePublicId) {
+            try {
+                await deleteFromCloudinary(profilePicturePublicId);
+            } catch (err) {
+                console.error("Failed to delete old profile picture:", err);
+            }
+        }
+
+        // Set new image
+        profilePictureUrl = uploadResult.secure_url;
+        profilePicturePublicId = uploadResult.public_id;
     }
 
-    // update user
+    // Update user in DB
     const updatedUser = await User.findByIdAndUpdate(
         user._id,
         {
-            fullname,
-            email,
-            contact,
-            address,
-            city,
-            country,
-            profilePicture: profilePictureUrl,
+            $set: {
+                fullname,
+                email,
+                contact,
+                address,
+                city,
+                country,
+                profilePicture: profilePictureUrl,
+                profilePicturePublicId, // save new image id 
+            },
         },
-        { new: true } 
+        { new: true, runValidators: true }
     ).select("-password -refreshToken");
 
     if (!updatedUser) {
