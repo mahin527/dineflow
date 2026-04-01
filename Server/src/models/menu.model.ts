@@ -1,32 +1,27 @@
-// import mongoose, { Document } from "mongoose";
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 export interface IMenu {
-    _id: mongoose.Schema.Types.ObjectId,
-    menuTitle: string,
-    description: string,
-    price: number,
-    menuImage: string,
-    menuImageId: string,
+    menuTitle: string;
+    description: string;
+    price: number;
+    menuImage: string;
+    menuImageId: string;
 }
 
 export interface IMenuDocument extends IMenu, Document {
-    createdAt: Date,
-    updatedAt: Date
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const menuSchema = new mongoose.Schema<IMenuDocument>(
     {
-        _id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            required: true
-        },
+
         menuTitle: {
             type: String,
             index: true,
             lowercase: true,
-            required: true
+            required: true,
+            trim: true
         },
         description: {
             type: String,
@@ -39,16 +34,15 @@ const menuSchema = new mongoose.Schema<IMenuDocument>(
         menuImage: {
             type: String,
             required: true
+
         },
         menuImageId: {
             type: String,
             required: true
+
         },
-
     },
-    {
-        timestamps: true
-    }
-)
+    { timestamps: true }
+);
 
-export const Menu = mongoose.model("Menu", menuSchema)
+export const Menu = mongoose.model("Menu", menuSchema);
