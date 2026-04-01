@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose, { Document } from "mongoose";
 
 type deliveryDetails = {
     email: string,
@@ -16,12 +16,23 @@ type cartItems = {
 }
 
 export interface IOrder {
-    user: mongoose.Schema.Types.ObjectId,
-    restaurant: mongoose.Schema.Types.ObjectId,
-    deliveryDetails: deliveryDetails,
-    cartItems: cartItems,
-    total: number,
-    status: "pending" | "preparing" | "confirmed" | "cancelled" | "delivered"
+    user: mongoose.Types.ObjectId;
+    restaurant: mongoose.Types.ObjectId;
+    deliveryDetails: {
+        email: string;
+        fullname: string; 
+        address: string;
+        city: string;
+    };
+    cartItems: {
+        menuId: string;
+        name: string;
+        image: string;
+        price: number;
+        quantity: number;
+    }[]; // You must enter [] here because the order is for multiple items.
+    total: number;
+    status: "pending" | "preparing" | "confirmed" | "cancelled" | "delivered";
 }
 
 export interface IOrderDocument extends IOrder, Document {

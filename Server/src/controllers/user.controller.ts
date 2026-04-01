@@ -14,6 +14,8 @@ import {
     sendResetPasswordSuccessEmail
 } from "../utils/mailtrap/emails"
 
+ import { Multer } from "multer";
+ 
 interface AuthenticatedRequest extends Request {
     user?: IUserDocument;
     file?: Express.Multer.File;

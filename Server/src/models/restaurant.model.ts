@@ -1,20 +1,20 @@
-import mongoose from "mongoose"
+import mongoose, { Document } from "mongoose"
 
 export interface IRestaurant {
-    user: mongoose.Schema.Types.ObjectId,
-    restaurantName: string,
-    city: string,
-    country: string,
-    deliveryTime: number,
-    cuisines: string[],
-    image: string,
-    menus: mongoose.Schema.Types.ObjectId,
-
+    user: mongoose.Schema.Types.ObjectId;
+    restaurantName: string;
+    city: string;
+    country: string;
+    deliveryTime: number;
+    cuisines: string[];
+    restaurantPicture: string;
+    restaurantPicturePublicId: string;
+    menus: mongoose.Schema.Types.ObjectId[]; // এখানে [] যোগ করো
 }
 
-export interface IRestaurantDocument extends IRestaurant, Document {
-    createdAt: Date,
-    updatedAt: Date
+export interface IRestaurantDocument extends Document, IRestaurant {
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const restaurantSchema = new mongoose.Schema<IRestaurantDocument>(
@@ -50,7 +50,11 @@ const restaurantSchema = new mongoose.Schema<IRestaurantDocument>(
             type: String,
             required: true
         }],
-        image: {
+        restaurantPicture: {
+            type: String,
+            required: true
+        },
+        restaurantPicturePublicId: {
             type: String,
             required: true
         },
