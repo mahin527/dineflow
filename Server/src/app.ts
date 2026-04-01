@@ -29,14 +29,20 @@ app.use(express.static('public'))
 
 app.use(cookieParser())
 
-//user routes declaration
+// User routes declaration
 import userRouter from './routes/user.routes'
 
 app.use('/api/v1/users', userRouter)
 // Example: http://localhost:8000/api/v1/users/signup
 
+// Restaurant routes declaration
 import restaurantRouter from './routes/restaurant.routes'
 app.use("/api/v1/restaurant", restaurantRouter);
+
+// Menu routes declaration
+import menuRouter from './routes/menu.routes'
+app.use("/api/v1/menu", menuRouter);
+
 
 // global error handler (must be last)
 app.use(errorHandler);

@@ -37,7 +37,12 @@ router.route("/orders").get(isAuthenticated, getRestaurantOrder);
 router.route("/order/:orderId/status").patch(isAuthenticated, updateOrderStatus);
 
 // 6. Search Restaurants (Searches are usually GET requests.)
-router.route("/search/:searchText?").get(searchRestaurants);
+// 1. Only the /search route (when one filters cuisine only with no text)
+router.route("/search").get(searchRestaurants);
+
+// 2. /search/:searchText route (when user type something in search box and enter)
+router.route("/search/:searchText").get(searchRestaurants);
+
 // You can make searchText optional here, meaning that if someone wants to search using just the filter (without the search text), the route will still work.
 
 // 7. Get Single Restaurant Details (Public view)

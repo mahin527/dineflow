@@ -1,11 +1,13 @@
-import mongoose from "mongoose"
+// import mongoose, { Document } from "mongoose";
+import mongoose from "mongoose";
 
 export interface IMenu {
     _id: mongoose.Schema.Types.ObjectId,
     menuTitle: string,
     description: string,
     price: number,
-    image: string,
+    menuImage: string,
+    menuImageId: string,
 }
 
 export interface IMenuDocument extends IMenu, Document {
@@ -34,7 +36,11 @@ const menuSchema = new mongoose.Schema<IMenuDocument>(
             type: Number,
             required: true
         },
-        image: {
+        menuImage: {
+            type: String,
+            required: true
+        },
+        menuImageId: {
             type: String,
             required: true
         },

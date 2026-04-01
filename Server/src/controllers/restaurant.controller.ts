@@ -29,7 +29,7 @@ const createRestaurant = asyncHandler(async (req: AuthenticatedRequest, res: Res
     }
 
     if (!file) {
-        throw new ApiError(400, "Image is required!");
+        throw new ApiError(400, "Restaurant image is required!");
     }
 
     const uploadResult = await uploadOnCloudinary(file.path);
@@ -49,7 +49,9 @@ const createRestaurant = asyncHandler(async (req: AuthenticatedRequest, res: Res
         menus: []
     });
 
-    return res.status(201).json(new ApiResponse(201, restaurant, "Restaurant created successfully!"));
+    return res.status(201).json(
+        new ApiResponse(201, restaurant, "Restaurant created successfully!")
+    );
 });
 
 const getRestaurant = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
@@ -103,7 +105,7 @@ const updateRestaurant = asyncHandler(async (req: AuthenticatedRequest, res: Res
             try {
                 await deleteFromCloudinary(restaurantPicturePublicId);
             } catch (error) {
-                console.error("Old image deletion failed:", error);
+                console.error("Old restaurant image deletion failed:", error);
             }
         }
 
