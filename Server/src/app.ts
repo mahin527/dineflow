@@ -43,6 +43,10 @@ app.use("/api/v1/restaurant", restaurantRouter);
 import menuRouter from './routes/menu.routes'
 app.use("/api/v1/menu", menuRouter);
 
+// Order routes declaration
+import orderRouter from './routes/order.routes'
+app.use("/api/v1/order", orderRouter);
+
 
 // global error handler (must be last)
 app.use(errorHandler);
