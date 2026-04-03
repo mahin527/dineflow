@@ -14,7 +14,7 @@ interface UserState {
     signup: (input: any) => Promise<void>;
     signin: (input: any) => Promise<void>;
     verifyEmail: (verificationToken: string) => Promise<void>;
-    checkAuthenticaton: () => Promise<void>;
+    checkAuthentication: () => Promise<void>;
     signout: () => Promise<void>;
     forgetPassword: () => Promise<void>;
     resetPassword: (token: string, newPassword: string) => Promise<void>;
@@ -45,9 +45,9 @@ export const useUserStore = create<UserState>()(
                 }
             } catch (error: any) {
                 // error handling
+                set({ loading: false });
                 const errorMessage = error.response?.data?.message || "Signup failed!";
                 toast.error(errorMessage);
-                set({ loading: false });
                 console.error("Signup Error:", error);
                 throw error;
             }
@@ -70,9 +70,9 @@ export const useUserStore = create<UserState>()(
                 }
             } catch (error: any) {
                 // error handling
+                set({ loading: false });
                 const errorMessage = error.response?.data?.message || "Signin failed!";
                 toast.error(errorMessage);
-                set({ loading: false });
                 console.error("Signin Error:", error);
                 throw error;
             }
@@ -95,35 +95,36 @@ export const useUserStore = create<UserState>()(
                 }
             } catch (error: any) {
                 // error handling
+                set({ loading: false });
                 const errorMessage = error.response?.data?.message || "Email verification failed!";
                 toast.error(errorMessage);
-                set({ loading: false });
                 console.error("Email verification error:", error);
                 throw error;
             }
         },
 
-        checkAuthenticaton: async () => {
+        checkAuthentication: async () => {
             try {
-                set({ loading: true });
+                set({ isCheckingAuth: true }); // চেক শুরু হলে ট্রু
                 const response = await axios.get(`${API_END_POINT}/check-auth`);
 
                 if (response.data.success) {
-                    toast.success(response.data.message || "Authenticaton successful!");
                     set({
                         user: response.data.user,
                         isAuthenticated: true,
-                        isCheckingAuth: false
+                        isCheckingAuth: false // সফল হলে ফলস
                     });
                 }
-            } catch (error: any) {
-                // error handling
+            } catch (error) {
+                // ৪০১ এরর মানে ইউজার লগইন নেই, এটা কোনো ক্রাশ না। 
+                // তাই এখানেও isCheckingAuth এবং loading কে false করতে হবে।
                 set({
+                    user: null,
                     isAuthenticated: false,
-                    isCheckingAuth: false
+                    isCheckingAuth: false, // এটিই তোমাকে লোডিং থেকে মুক্তি দিবে
+                    loading: false // বাটন এনাবল করার জন্য
                 });
-                console.error("Authenticaton failed:", error);
-                throw error;
+                console.log("User not authenticated (Expected on first visit)");
             }
         },
 
@@ -151,7 +152,7 @@ export const useUserStore = create<UserState>()(
                 throw error;
             }
         },
-        
+
         forgetPassword: async () => {
             try {
                 set({ loading: true });
