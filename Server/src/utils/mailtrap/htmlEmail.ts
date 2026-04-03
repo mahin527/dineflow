@@ -64,12 +64,13 @@ export const generateEmailVerification = `
             </div>
             <div class="content">
                 <h2>Hello,</h2>
-                <p>Thank you for registering with us. To complete your registration, please verify your email address by entering the following verification code:</p>
+                <p>Thank you for registering with us.</p> 
+                <p>To complete your registration, please verify your email address by entering the following verification code:</p>
                 <div class="code">{verificationToken}</div>
                 <p>If you did not request this verification, please ignore this email.</p>
             </div>
             <div class="footer">
-                <p>&copy; 2026 Your Company. All rights reserved.</p>
+                <p>&copy; 2026 Dineflow. All rights reserved.</p>
             </div>
         </div>
     </body>

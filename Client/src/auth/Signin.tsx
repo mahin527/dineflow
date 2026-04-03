@@ -6,30 +6,47 @@ import { Link } from "react-router-dom"
 import Logo from "@/components/Logo"
 import { useForm } from "@/hooks/useForm"
 import { userSigninSchema } from "@/schema/userSchema";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useUserStore } from "@/store/useUserStore"
+
 
 function Signin() {
     const [showPassword, setShowPassword] = useState(false)
-    const loading: boolean = false;
+    const { signin, loading } = useUserStore()
 
     const { input, handleInputChange } = useForm({
         email: "",
         password: ""
     });
 
-    const [errors, setErrors] = useState<any>({})
+    const navigate = useNavigate();
 
-    const loginSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    const loginSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
         const result = userSigninSchema.safeParse(input);
 
         if (!result.success) {
-            setErrors(result.error.format());
+            const fieldErrors = result.error.flatten().fieldErrors;
+
+            const firstErrorKey = Object.keys(fieldErrors)[0] as keyof typeof fieldErrors;
+            const errorMessage = fieldErrors[firstErrorKey]?.[0];
+
+            if (errorMessage) {
+                toast.error(errorMessage);
+            }
             return;
         }
 
-        setErrors({});
-        console.log("Valid Data:", result.data);
+        try {
+            await signin(input);
+            navigate("/");
+
+        } catch (error) {
+            console.error(error);
+            console.error("Signin failed, stay on page.");
+        }
 
     }
 
@@ -55,11 +72,6 @@ function Signin() {
                         onChange={handleInputChange}
                         required
                     />
-                    {errors.email?._errors?.[0] && (
-                        <p className="text-red-500 text-xs md:text-sm">
-                            {errors.email._errors[0]}
-                        </p>
-                    )}
 
                     <InputWithIcon
                         name="password"
@@ -72,11 +84,6 @@ function Signin() {
                         onChange={handleInputChange}
                         required
                     />
-                    {errors.password?._errors?.[0] && (
-                        <p className="text-red-500 text-xs md:text-sm">
-                            {errors.password._errors[0]}
-                        </p>
-                    )}
 
                     <div className="text-right text-xs lg:text-sm">
                         <Link to="/forgot-password" className="text-muted-foreground hover:text-foreground hover:underline transition-colors">

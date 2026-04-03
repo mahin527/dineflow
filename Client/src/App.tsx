@@ -14,6 +14,7 @@ import AddRestaurant from "./admin/AddRestaurant"
 import AddMenu from "./admin/AddMenu"
 import AddOrders from "./admin/AddOrders"
 import Success from "./components/Success"
+import { Toaster } from "@/components/ui/sonner"
 
 const appRouter = createBrowserRouter([
   {
@@ -86,8 +87,8 @@ function App() {
   return (
     <div>
       <RouterProvider router={appRouter}>
-        
       </RouterProvider>
+      <Toaster position="top-center" richColors />
     </div>
   )
 }

@@ -7,7 +7,6 @@ import Logo from "@/components/Logo"
 import { useForm } from "@/hooks/useForm"
 import { userSignupSchema } from "@/schema/userSchema";
 import { useUserStore } from "@/store/useUserStore"
-import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
@@ -52,6 +51,7 @@ function Signup() {
 
         } catch (error) {
             console.error(error);
+            console.error("Signup failed, stay on page.");
         }
     };
 
@@ -62,7 +62,6 @@ function Signup() {
             <div className="py-10 md:py-6">
                 <Logo />
             </div>
-            <Toaster position="top-center" richColors />
             <form onSubmit={signupSubmitHandler} className="flex items-center justify-center pb-10">
                 <div className="border border-neutral-200 dark:border-neutral-600 px-10 py-10 space-y-4 min-w-70 md:min-w-100 xl:min-w-120 rounded-xl">
                     <div className="text-center space-y-5 tracking-wide xl:tracking-wider">

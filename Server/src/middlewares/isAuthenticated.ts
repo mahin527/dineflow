@@ -3,9 +3,14 @@ import jwt, { JwtPayload } from "jsonwebtoken"
 import { User } from "../models/user.model"
 import { asyncHandler } from "../utils/asyncHandler"
 import { ApiError } from "../utils/ApiError"
+import { IUserDocument } from "../models/user.model";
 
+interface AuthenticatedRequest extends Request {
+    user?: IUserDocument;
+    file?: Express.Multer.File;
+}
 
-const isAuthenticated = asyncHandler(async (req: Request, _: Response, next: NextFunction) => {
+const isAuthenticated = asyncHandler(async (req: AuthenticatedRequest, _: Response, next: NextFunction) => {
     // Deriving tokens directly from cookies
     const token = req.cookies?.token || req.header("Authorization")?.replace("Bearer ", "");
 

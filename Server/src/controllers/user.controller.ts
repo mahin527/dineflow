@@ -156,7 +156,7 @@ const verifyEmail = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
-const logout = asyncHandler(async (_: Request, res: Response) => {
+const signout = asyncHandler(async (_: Request, res: Response) => {
     // Cookie option that was used during signin (preferably the same)
     const options = {
         httpOnly: true,
@@ -329,7 +329,7 @@ const updateProfile = asyncHandler(async (req: AuthenticatedRequest, res: Respon
         .json(new ApiResponse(200, updatedUser, "Profile updated successfully"));
 });
 
-export { signup, signin, verifyEmail, logout, forgetPassword, resetPassword, checkAuth, updateProfile }
+export { signup, signin, verifyEmail, signout, forgetPassword, resetPassword, checkAuth, updateProfile }
 
 
 

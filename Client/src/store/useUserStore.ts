@@ -9,9 +9,16 @@ axios.defaults.withCredentials = true;
 interface UserState {
     user: any;
     isAuthenticated: boolean;
+    isCheckingAuth: boolean;
     loading: boolean;
     signup: (input: any) => Promise<void>;
-
+    signin: (input: any) => Promise<void>;
+    verifyEmail: (verificationToken: string) => Promise<void>;
+    checkAuthenticaton: () => Promise<void>;
+    signout: () => Promise<void>;
+    forgetPassword: () => Promise<void>;
+    resetPassword: (token: string, newPassword: string) => Promise<void>;
+    updateProfile: (input: any) => Promise<void>;
 }
 
 export const useUserStore = create<UserState>()(
@@ -42,10 +49,187 @@ export const useUserStore = create<UserState>()(
                 toast.error(errorMessage);
                 set({ loading: false });
                 console.error("Signup Error:", error);
+                throw error;
             }
-        }
+        },
+
+        signin: async (input: any) => {
+            try {
+                set({ loading: true });
+                const response = await axios.post(`${API_END_POINT}/signin`, input, {
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                if (response.data.success) {
+                    toast.success(response.data.message || "Signin successful!");
+                    set({
+                        loading: false,
+                        user: response.data.user,
+                        isAuthenticated: true
+                    });
+                }
+            } catch (error: any) {
+                // error handling
+                const errorMessage = error.response?.data?.message || "Signin failed!";
+                toast.error(errorMessage);
+                set({ loading: false });
+                console.error("Signin Error:", error);
+                throw error;
+            }
+        },
+
+        verifyEmail: async (verificationToken) => {
+            try {
+                set({ loading: true });
+                const response = await axios.post(`${API_END_POINT}/verify-email`, { verificationToken }, {
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                if (response.data.success) {
+                    toast.success(response.data.message || "Email verification successful!");
+                    set({
+                        loading: false,
+                        user: response.data.user,
+                        isAuthenticated: true
+                    });
+                }
+            } catch (error: any) {
+                // error handling
+                const errorMessage = error.response?.data?.message || "Email verification failed!";
+                toast.error(errorMessage);
+                set({ loading: false });
+                console.error("Email verification error:", error);
+                throw error;
+            }
+        },
+
+        checkAuthenticaton: async () => {
+            try {
+                set({ loading: true });
+                const response = await axios.get(`${API_END_POINT}/check-auth`);
+
+                if (response.data.success) {
+                    toast.success(response.data.message || "Authenticaton successful!");
+                    set({
+                        user: response.data.user,
+                        isAuthenticated: true,
+                        isCheckingAuth: false
+                    });
+                }
+            } catch (error: any) {
+                // error handling
+                set({
+                    isAuthenticated: false,
+                    isCheckingAuth: false
+                });
+                console.error("Authenticaton failed:", error);
+                throw error;
+            }
+        },
+
+        signout: async () => {
+            try {
+                set({ loading: true });
+                const response = await axios.post(`${API_END_POINT}/signout`, {
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                if (response.data.success) {
+                    toast.success(response.data.message || "Signout successful!");
+                    set({
+                        loading: false,
+                        user: null,
+                        isAuthenticated: false
+                    });
+                }
+            } catch (error: any) {
+                // error handling
+                const errorMessage = error.response?.data?.message || "Signout failed!";
+                toast.error(errorMessage);
+                set({ loading: false });
+                console.error("Signout Error:", error);
+                throw error;
+            }
+        },
+        
+        forgetPassword: async () => {
+            try {
+                set({ loading: true });
+                const response = await axios.post(`${API_END_POINT}/forget-password`, {
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                if (response.data.success) {
+                    toast.success(response.data.message);
+                    set({
+                        loading: false,
+                        user: response.data.user,
+                        isAuthenticated: true
+                    });
+                }
+            } catch (error: any) {
+                // error handling
+                const errorMessage = error.response?.data?.message;
+                toast.error(errorMessage);
+                set({ loading: false });
+                console.error("Forget password error:", error);
+                throw error;
+            }
+        },
+
+        resetPassword: async (token, newPassword) => {
+            try {
+                set({ loading: true });
+                const response = await axios.post(`${API_END_POINT}/reset-password/${token}`,
+                    { password: newPassword }, {
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                if (response.data.success) {
+                    toast.success(response.data.message);
+                    set({
+                        loading: false,
+                        user: response.data.user,
+                        isAuthenticated: true
+                    });
+                }
+            } catch (error: any) {
+                // error handling
+                const errorMessage = error.response?.data?.message;
+                toast.error(errorMessage);
+                set({ loading: false });
+                console.error("Reset password error:", error);
+                throw error;
+            }
+        },
+
+        updateProfile: async (input) => {
+            try {
+                set({ loading: true });
+                const response = await axios.patch(`${API_END_POINT}/profile/update-profile`, input, {
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                if (response.data.success) {
+                    toast.success(response.data.message || "Profile update successful!");
+                    set({
+                        loading: false,
+                        user: response.data.user,
+                        isAuthenticated: true
+                    });
+                }
+            } catch (error: any) {
+                // error handling
+                const errorMessage = error.response?.data?.message || "Profile update failed!";
+                toast.error(errorMessage);
+                set({ loading: false });
+                console.error("Profile update Error:", error);
+                throw error;
+            }
+        },
     }), {
         name: 'user-storage',
         storage: createJSONStorage(() => localStorage),
     })
 );
+

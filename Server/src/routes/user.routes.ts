@@ -5,7 +5,7 @@ import {
     signup,
     signin,
     verifyEmail,
-    logout,
+    signout,
     forgetPassword,
     resetPassword,
     checkAuth,
@@ -20,8 +20,8 @@ router.route("/signup").post(signup)
 // signin
 router.route("/signin").post(signin)
 
-// logout
-router.route("/logout").post(isAuthenticated, logout)
+// signout
+router.route("/signout").post(isAuthenticated, signout)
 
 // verifyEmail
 router.route("/verify-email").post(verifyEmail)
@@ -37,7 +37,7 @@ router.route("/check-auth").get(isAuthenticated, checkAuth)
 
 
 // updateProfile
-router.route("/update-profile").patch(
+router.route("profile/update-profile").patch(
     isAuthenticated,
     upload.single("profilePicture"), // "profilePicture" is the key sent from the frontend
     updateProfile
