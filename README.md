@@ -32,6 +32,8 @@ A full-stack MERN-based restaurant management system built with best practices, 
 * [lucide icon]()
 * [react-router-dom]()  
 * [Zod](https://zod.dev/)
+* [Zustand](https://zustand-demo.pmnd.rs/)
+* [axios]()
 
 
 ### Backend

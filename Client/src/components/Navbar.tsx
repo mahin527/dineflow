@@ -8,6 +8,7 @@ import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } fro
 
 import { ModeToggle } from './ModeToggle'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+// import { useCartStore } from '@/store/useCartStore'
 
 function Navbar() {
     const navClasses = 'py-3 md:py-4 w-full text-neutral-700 dark:text-white sticky top-0 left-0 right-0 z-10'
@@ -21,8 +22,6 @@ function Navbar() {
     w-64 sm:w-72 md:w-80 lg:w-auto 
     z-[-1] lg:z-auto shadow-xl lg:shadow-none
 `;
-    // const darkNav = 'bg-neutral-400 dark:bg-neutral-700 border-b-2 border-neutral-700 dark:border-neutral-200 transition-colors ease-in-out duration-300'
-    // const [sticky, setSticky] = useState(false)
 
     const [mobileMenu, setMobileMenu] = useState(false)
     const toggleMenu = () => {
@@ -30,19 +29,11 @@ function Navbar() {
         setMobileMenu(prev => !prev)
     }
 
-    // useEffect(() => {
-    //     const handleScroll = () => {
-    //         window.scrollY > 100 ? setSticky(true) : setSticky(false);
-    //     };
-
-    //     window.addEventListener('scroll', handleScroll);
-
-    //     // Cleanup function: Component unmount hole listener bad jabe
-    //     return () => window.removeEventListener('scroll', handleScroll);
-    // }, []);
-
     const admin: boolean = true
     const loading: boolean = false;
+
+    // const { cart, addToCart, incrementQuantity } = useCartStore();
+    // const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
     return (
         // <nav className={`${navClasses} ${sticky ? darkNav : ''}`}>

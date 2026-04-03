@@ -6,8 +6,13 @@ import { Link } from "react-router-dom"
 import Logo from "@/components/Logo"
 import { useForm } from "@/hooks/useForm"
 import { userSignupSchema } from "@/schema/userSchema";
+import { useUserStore } from "@/store/useUserStore"
+import { Toaster } from "@/components/ui/sonner"
+
 
 function Signup() {
+    const { signup, loading } = useUserStore()
+
     const [showPassword, setShowPassword] = useState(false)
     const loading: boolean = false;
 
@@ -36,6 +41,10 @@ function Signup() {
 
         setErrors({});
         console.log("Valid Data:", result.data);
+
+        // login api implementation starts here
+        await signup(input)
+
 
     }
 
