@@ -8,13 +8,14 @@ import { useForm } from "@/hooks/useForm"
 import { userSignupSchema } from "@/schema/userSchema";
 import { useUserStore } from "@/store/useUserStore"
 import { Toaster } from "@/components/ui/sonner"
-
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
     const { signup, loading } = useUserStore()
 
     const [showPassword, setShowPassword] = useState(false)
-    const loading: boolean = false;
+
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -27,26 +28,33 @@ function Signup() {
         password: "",
     });
 
-    const [errors, setErrors] = useState<any>({})
-
-    const signupSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+    const navigate = useNavigate();
+    const signupSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
         const result = userSignupSchema.safeParse(input);
 
         if (!result.success) {
-            setErrors(result.error.format());
+            const fieldErrors = result.error.flatten().fieldErrors;
+
+            const firstErrorKey = Object.keys(fieldErrors)[0] as keyof typeof fieldErrors;
+            const errorMessage = fieldErrors[firstErrorKey]?.[0];
+
+            if (errorMessage) {
+                toast.error(errorMessage);
+            }
             return;
         }
 
-        setErrors({});
-        console.log("Valid Data:", result.data);
+        try {
+            await signup(input);
+            navigate("/verify-email");
 
-        // login api implementation starts here
-        await signup(input)
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-
-    }
 
     return (
 
@@ -54,6 +62,7 @@ function Signup() {
             <div className="py-10 md:py-6">
                 <Logo />
             </div>
+            <Toaster position="top-center" richColors />
             <form onSubmit={signupSubmitHandler} className="flex items-center justify-center pb-10">
                 <div className="border border-neutral-200 dark:border-neutral-600 px-10 py-10 space-y-4 min-w-70 md:min-w-100 xl:min-w-120 rounded-xl">
                     <div className="text-center space-y-5 tracking-wide xl:tracking-wider">
@@ -72,11 +81,6 @@ function Signup() {
                                 onChange={handleInputChange}
                                 required
                             />
-                            {errors.username?._errors?.[0] && (
-                                <p className="text-red-500 text-xs mt-1">
-                                    {errors.username._errors[0]}
-                                </p>
-                            )}
                         </div>
                         <div className="flex flex-col w-full">
                             <InputWithIcon
@@ -88,11 +92,6 @@ function Signup() {
                                 onChange={handleInputChange}
                                 required
                             />
-                            {errors.fullname?._errors?.[0] && (
-                                <p className="text-red-500 text-xs mt-1">
-                                    {errors.fullname._errors[0]}
-                                </p>
-                            )}
                         </div>
                     </div>
 
@@ -107,11 +106,6 @@ function Signup() {
                                 onChange={handleInputChange}
                                 required
                             />
-                            {errors.contact?._errors?.[0] && (
-                                <p className="text-red-500 text-xs md:text-sm">
-                                    {errors.contact._errors[0]}
-                                </p>
-                            )}
                         </div>
 
                         <div className="flex flex-col w-full">
@@ -129,12 +123,6 @@ function Signup() {
                                 onChange={handleInputChange}
                                 required
                             />
-
-                            {errors.dateOfBirth?._errors?.[0] && (
-                                <p className="text-red-500 text-xs md:text-sm">
-                                    {errors.dateOfBirth._errors[0]}
-                                </p>
-                            )}
                         </div>
                     </div>
 
@@ -148,12 +136,6 @@ function Signup() {
                         required
                     />
 
-                    {errors.email?._errors?.[0] && (
-                        <p className="text-red-500 text-xs md:text-sm">
-                            {errors.email._errors[0]}
-                        </p>
-                    )}
-
                     <InputWithIcon
                         name="password"
                         leftIcon={LockKeyhole}
@@ -165,12 +147,6 @@ function Signup() {
                         onChange={handleInputChange}
                         required
                     />
-
-                    {errors.password?._errors?.[0] && (
-                        <p className="text-red-500 text-xs md:text-sm">
-                            {errors.password._errors[0]}
-                        </p>
-                    )}
 
                     <div className="w-full">
                         {loading ? (
@@ -186,7 +162,7 @@ function Signup() {
 
                     <div className="flex items-center justify-center gap-2 pt-2">
                         <p className="text-xs lg:text-sm text-muted-foreground">Already have an account?</p>
-                        <Link to="/login" className="font-semibold text-sm hover:underline">
+                        <Link to="/signin" className="font-semibold text-sm hover:underline">
                             Sign in
                         </Link>
                     </div>

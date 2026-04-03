@@ -98,7 +98,7 @@ function Signin() {
 
                     <div className="flex items-center justify-center gap-2 pt-2">
                         <p className="text-xs lg:text-sm text-muted-foreground">Don't have an account?</p>
-                        <Link to="/register" className="font-semibold text-sm hover:underline">
+                        <Link to="/signup" className="font-semibold text-sm hover:underline">
                             Sign up
                         </Link>
                     </div>

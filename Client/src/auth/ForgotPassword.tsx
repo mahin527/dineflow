@@ -74,7 +74,7 @@ function ForgotPassword() {
 
                     <div className="flex items-center justify-center gap-2 pt-2">
                         <p className="text-xs lg:text-sm text-muted-foreground">Remember password?</p>
-                        <Link to="/login" className="font-semibold text-sm hover:underline">
+                        <Link to="/signin" className="font-semibold text-sm hover:underline">
                             Sign in
                         </Link>
                     </div>

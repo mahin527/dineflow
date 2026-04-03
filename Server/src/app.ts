@@ -9,6 +9,8 @@ app.use(cors(
     {
         origin: process.env.CORS_ORIGIN,
         credentials: true,
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"]
     }
 ))
 
@@ -32,7 +34,7 @@ app.use(cookieParser())
 // User routes declaration
 import userRouter from './routes/user.routes'
 
-app.use('/api/v1/users', userRouter)
+app.use('/api/v1/user', userRouter)
 // Example: http://localhost:8000/api/v1/users/signup
 
 // Restaurant routes declaration

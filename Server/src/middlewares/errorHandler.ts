@@ -48,7 +48,7 @@ import { registerUser } from './controllers/user.controller';
 const app = express();
 app.use(express.json());
 
-app.post('/register', registerUser);
+app.post('/signup', registerUser);
 
 // global error handler (must be last)
 app.use(errorHandler);

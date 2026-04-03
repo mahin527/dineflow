@@ -59,11 +59,11 @@ const appRouter = createBrowserRouter([
     ]
   },
   {
-    path: "/login",
+    path: "/signin",
     element: <Signin />
   },
   {
-    path: "/register",
+    path: "/signup",
     element: <Signup />
   },
   {
@@ -86,7 +86,7 @@ function App() {
   return (
     <div>
       <RouterProvider router={appRouter}>
-
+        
       </RouterProvider>
     </div>
   )
