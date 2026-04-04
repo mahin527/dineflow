@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button"
 import { InputWithIcon } from "@/components/ui/input-with-icon"
 import { restaurantFormSchema } from "@/schema/RestaurantSchema";
 import { Clock, FileImage, Hamburger, Loader2, LocationEdit, MapPinned, UtensilsCrossed } from "lucide-react"
-import { useState } from "react";
+import { toast } from "sonner";
 import { useForm } from "@/hooks/useForm"
+import { useRestaurantStore } from "@/store/useRestaurantStore";
+import { useEffect } from "react";
 
 interface RestaurantState {
     restaurantName: string;
@@ -11,7 +13,7 @@ interface RestaurantState {
     country: string;
     deliveryTime: string;
     cuisines: string | string[];
-    image: File | undefined;
+    restaurantPicture: File | undefined;
 }
 
 function Restaurant() {
@@ -22,34 +24,83 @@ function Restaurant() {
         country: "",
         deliveryTime: "",
         cuisines: "",
-        image: undefined
+        restaurantPicture: undefined
     });
 
-    const [errors, setErrors] = useState<any>({})
+    const { loading, createRestaurant, restaurant, updateRestaurant, getRestaurant } = useRestaurantStore()
 
-    const restaurantFormSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    const restaurantFormSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        // ১. ডাটা ফরম্যাট করা (Zod validation এর জন্য)
+        const cuisinesArray = typeof input.cuisines === "string"
+            ? input.cuisines.split(",").map((c) => c.trim())
+            : input.cuisines;
 
         const formattedData = {
             ...input,
-            deliveryTime: Number(input.deliveryTime), // String to Number conversion
-            cuisines: (input.cuisines as string).split(",").map((c: string) => c.trim()),
+            deliveryTime: Number(input.deliveryTime),
+            cuisines: cuisinesArray,
         };
 
         const result = restaurantFormSchema.safeParse(formattedData);
-
         if (!result.success) {
-            setErrors(result.error.format());
+            const fieldErrors = result.error.flatten().fieldErrors;
+
+            const firstErrorKey = Object.keys(fieldErrors)[0] as keyof typeof fieldErrors;
+            const errorMessage = fieldErrors[firstErrorKey]?.[0];
+
+            if (errorMessage) {
+                toast.error(errorMessage);
+            }
             return;
         }
 
-        setErrors({});
-        console.log("Data:", result.data);
+        try {
+            const formData = new FormData();
+            formData.append("restaurantName", input.restaurantName);
+            formData.append("city", input.city);
+            formData.append("country", input.country);
+            formData.append("deliveryTime", input.deliveryTime.toString());
+
+            // এখানে গুরুত্বপূর্ণ: stringify করে পাঠানো
+            formData.append("cuisines", JSON.stringify(cuisinesArray));
+
+            if (input.restaurantPicture) {
+                formData.append("restaurantPicture", input.restaurantPicture); // নিশ্চিত হোন Route-এও "image" নাম দেওয়া আছে
+            }
+
+            // restaurant.id বা restaurant._id আছে কি না চেক করুন
+            // || restaurant.id
+            if (restaurant && (restaurant._id)) {
+                // যদি আইডি থাকে তবেই আপডেট
+                await updateRestaurant(formData);
+            } else {
+                // নাহলে নতুন তৈরি
+                await createRestaurant(formData);
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
 
-    const loading: boolean = false;
-    const isUpdateRestaurant = false
+    useEffect(() => {
+        const fetchRestaurant = async () => {
+            await getRestaurant()
+            setInput({
+                restaurantName: restaurant.restaurantName || "",
+                city: restaurant.city || "",
+                country: restaurant.country || "",
+                deliveryTime: restaurant.deliveryTime || "",
+                cuisines: restaurant.cuisines ? restaurant.cuisines.map((cuisine: string) => cuisine) : [],
+                restaurantPicture: restaurant.restaurantPicture || undefined
+            })
+        }
+
+        fetchRestaurant()
+    }, [])
+
+
     return (
         <div className="@container mx-auto px-6">
             <div className="py-6">
@@ -70,11 +121,6 @@ function Restaurant() {
                             onChange={handleInputChange}
                             required
                         />
-                        {errors.restaurantName?._errors?.[0] && (
-                            <p className="text-red-500 text-xs md:text-sm">
-                                {errors.restaurantName._errors[0]}
-                            </p>
-                        )}
                     </div>
                     <div className="w-full">
                         <InputWithIcon
@@ -87,11 +133,7 @@ function Restaurant() {
                             onChange={handleInputChange}
                             required
                         />
-                        {errors.city?._errors?.[0] && (
-                            <p className="text-red-500 text-xs md:text-sm">
-                                {errors.city._errors[0]}
-                            </p>
-                        )}
+
                     </div>
                     <div className="w-full">
                         <InputWithIcon
@@ -104,11 +146,6 @@ function Restaurant() {
                             onChange={handleInputChange}
                             required
                         />
-                        {errors.country?._errors?.[0] && (
-                            <p className="text-red-500 text-xs md:text-sm">
-                                {errors.country._errors[0]}
-                            </p>
-                        )}
                     </div>
                     <div className="w-full">
                         <InputWithIcon
@@ -121,11 +158,6 @@ function Restaurant() {
                             onChange={handleInputChange}
                             required
                         />
-                        {errors.deliveryTime?._errors?.[0] && (
-                            <p className="text-red-500 text-xs md:text-sm">
-                                {errors.deliveryTime._errors[0]}
-                            </p>
-                        )}
                     </div>
                     <div className="w-full">
                         <InputWithIcon
@@ -138,11 +170,6 @@ function Restaurant() {
                             value={input.cuisines}
                             required
                         />
-                        {errors.cuisines?._errors?.[0] && (
-                            <p className="text-red-500 text-xs md:text-sm">
-                                {errors.cuisines._errors[0]}
-                            </p>
-                        )}
                     </div>
                     <div className="w-full text-muted-foreground py-2 rounded-lg border border-input dark:bg-input/30 dark:disabled:bg-input/80 ">
                         <label className="cursor-pointer">
@@ -155,14 +182,9 @@ function Restaurant() {
                                 id="image"
                                 accept="image/*"
                                 className="hidden"
-                                onChange={(e) => setInput({ ...input, image: e.target.files?.[0] })}
+                                onChange={(e) => setInput({ ...input, restaurantPicture: e.target.files?.[0] })}
                             />
                         </label>
-                        {errors.image?._errors?.[0] && (
-                            <p className="text-red-500 text-xs md:text-sm">
-                                {errors.image._errors[0]}
-                            </p>
-                        )}
                     </div>
                 </div>
                 <div className="text-center">
@@ -172,7 +194,7 @@ function Restaurant() {
                         </Button>
                     ) : (
                         <Button type="submit" className="py-5 px-4 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
-                            {isUpdateRestaurant ? "Update restaurant" : "Add restaurant"}
+                            {restaurant ? "Update restaurant" : "Add restaurant"}
                         </Button>
                     )}
                 </div>

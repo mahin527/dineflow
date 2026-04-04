@@ -21,29 +21,30 @@ import { useEffect } from "react"
 import Loading from "./components/Loading"
 
 
+// ১. যারা লগইন নেই তাদের জন্য
 const ProtectedRoutes = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, user } = useUserStore()
+  const { isAuthenticated, isCheckingAuth } = useUserStore();
+
+  if (isCheckingAuth) return <Loading />; // চেক শেষ না হওয়া পর্যন্ত ওয়েট করুন
 
   if (!isAuthenticated) {
-    return <Navigate to="/signin" replace />
+    return <Navigate to="/signin" replace />;
   }
 
-  if (!user?.isVerified) {
-    return <Navigate to="/verify-email" replace />
-  }
+  return children;
+};
 
-  return children
-
-}
-
+// ২. যারা অলরেডি লগইন আছে (যাতে আবার লগইন পেজে না যেতে পারে)
 const AuthenticatedUser = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, user } = useUserStore()
-  if (isAuthenticated && user?.isVerified) {
-    return <Navigate to="/" replace />
-  }
-  return children
+  const { isAuthenticated } = useUserStore();
 
-}
+  // যদি লগইন থাকে, তবে সাইন-ইন পেজে আসার দরকার নেই, হোমে পাঠিয়ে দাও
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
 
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, user } = useUserStore()
@@ -63,6 +64,8 @@ const appRouter = createBrowserRouter([
   {
     path: "/",
     element: <ProtectedRoutes> <MainLayout /></ProtectedRoutes>,
+    // element: <MainLayout />,
+
     children: [
       {
         path: "/",
@@ -90,36 +93,49 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "/admin/restaurant",
-        element: <AdminRoute><AddRestaurant /></AdminRoute>
+        element: <AdminRoute><AddRestaurant /></AdminRoute>,
+        // element: <AddRestaurant />
       },
       {
         path: "/admin/menu",
-        element: <AdminRoute><AddMenu /></AdminRoute>
+        element: <AdminRoute><AddMenu /></AdminRoute>,
+        // element: <AddMenu />
+
       },
       {
         path: "/admin/orders",
         element: <AdminRoute><AddOrders /></AdminRoute>
+        // element: <AddOrders />
+
       }
     ]
   },
   {
     path: "/signin",
     element: <AuthenticatedUser><Signin /></AuthenticatedUser>
+    // element: <Signin />
+
   },
   {
     path: "/signup",
     element: <AuthenticatedUser><Signup /></AuthenticatedUser>
+    // element: <Signup />
+
   },
   {
     path: "/forgot-password",
-    element: <AuthenticatedUser><ForgotPassword /></AuthenticatedUser>
+    // element: <AuthenticatedUser><ForgotPassword /></AuthenticatedUser>
+    element: <ForgotPassword />
+
   },
-{
+  {
     path: "/reset-password/:token",
-    element: <AuthenticatedUser><ResetPassword /></AuthenticatedUser>
-},
+    // element: <AuthenticatedUser><ResetPassword /></AuthenticatedUser>
+    element: <ResetPassword />
+  },
   {
     path: "/verify-email",
+    // If you wrap it with AuthenticatedUser, verified users will no longer be able to enter here
     element: <AuthenticatedUser><VerifyEmail /></AuthenticatedUser>
   },
 
@@ -128,14 +144,11 @@ const appRouter = createBrowserRouter([
 function App() {
 
   const { checkAuthentication, isCheckingAuth } = useUserStore()
-
   useEffect(() => {
     checkAuthentication()
-  }, [])
+  }, [checkAuthentication])
 
-  if (isCheckingAuth) {
-    return <Loading />
-  }
+  if (isCheckingAuth) return <Loading />
 
   return (
     <div>

@@ -75,4 +75,11 @@ const { cart, addToCart, incrementQuantity } = useCartStore();
 
 // To show how many items are in the cart:
 const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+
+
+
+
+// const { cart, addToCart, incrementQuantity } = useCartStore();
+// const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+    
  */

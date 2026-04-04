@@ -40,12 +40,13 @@ function Signin() {
         }
 
         try {
-            await signin(input);
-            navigate("/");
-
+            const response = await signin(input);
+            // যদি রেসপন্স সফল হয়, তবেই নেভিগেট করুন
+            if (response) {
+                navigate("/", { replace: true });
+            }
         } catch (error) {
-            console.error(error);
-            console.error("Signin failed, stay on page.");
+            console.error("Signin failed");
         }
 
     }

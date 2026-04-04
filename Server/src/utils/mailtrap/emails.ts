@@ -49,7 +49,7 @@ const sendWelcomeEmail = async (email: string, name: string) => {
         )
     } catch (error) {
         console.log(error);
-        throw new ApiError(500, "Failed to send welcome email!")
+        throw new ApiError(500, "Failed to send welcome email, please signin!")
     }
 }
 

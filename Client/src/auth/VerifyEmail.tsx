@@ -41,25 +41,10 @@ function VerifyEmail() {
     };
     const navigate = useNavigate();
 
-    // const verifyEmailSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault()
-
-    //     try {
-    //         await verifyEmail(otp);
-    //         navigate("/");
-
-    //     } catch (error) {
-    //         console.error(error);
-    //         // toast.error(error);
-    //         console.error("Email verification failed!");
-    //     }
-
-    // }
-
     const verifyEmailSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // অ্যারে থেকে স্ট্রিং এ রূপান্তর: ["1","2"...] -> "123..."
+        // Convert from array to string: ["1","2"...] -> "123..."
         const otpString = otp.join("");
 
         if (otpString.length < 6) {
@@ -68,12 +53,13 @@ function VerifyEmail() {
         }
 
         try {
-            // স্ট্রিং হিসেবে ওটিপি পাঠাও
+            // Send OTP as a string
             await verifyEmail(otpString);
-            navigate("/");
             toast.success("Email verified successfully!");
+            navigate("/signin");
+
         } catch (error: any) {
-            // স্টোর থেকে অলরেডি টোস্ট হচ্ছে, এখানে শুধু লগ রাখতে পারো
+            // The store is already toasting, you can just log in here.
             console.error("Verification failed");
         }
     };

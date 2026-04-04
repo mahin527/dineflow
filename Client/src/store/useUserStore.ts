@@ -12,8 +12,8 @@ interface UserState {
     isCheckingAuth: boolean;
     loading: boolean;
     signup: (input: any) => Promise<void>;
-    signin: (input: any) => Promise<void>;
-    verifyEmail: (verificationToken: string) => Promise<void>;
+    signin: (input: any) => Promise<any>;
+    verifyEmail: (verificationCode: string) => Promise<void>;
     checkAuthentication: () => Promise<void>;
     signout: () => Promise<void>;
     forgetPassword: () => Promise<void>;
@@ -23,10 +23,10 @@ interface UserState {
 
 export const useUserStore = create<UserState>()(
     persist((set) => ({
+        loading: false,
         user: null,
         isAuthenticated: false,
         isCheckingAuth: true,
-        loading: false,
 
         signup: async (input: any) => {
             try {
@@ -39,7 +39,7 @@ export const useUserStore = create<UserState>()(
                     toast.success(response.data.message || "Signup successful!");
                     set({
                         loading: false,
-                        user: response.data.user,
+                        user: response.data.data,
                         isAuthenticated: true
                     });
                 }
@@ -56,17 +56,18 @@ export const useUserStore = create<UserState>()(
         signin: async (input: any) => {
             try {
                 set({ loading: true });
-                const response = await axios.post(`${API_END_POINT}/signin`, input, {
-                    headers: { "Content-Type": "application/json" }
-                });
+                const response = await axios.post(`${API_END_POINT}/signin`, input);
 
                 if (response.data.success) {
-                    toast.success(response.data.message || "Signin successful!");
+                    // ১. স্টেট আপডেট করুন
                     set({
-                        loading: false,
-                        user: response.data.user,
-                        isAuthenticated: true
+                        user: response.data.data,
+                        isAuthenticated: true,
+                        loading: false
                     });
+                    toast.success(response.data.message || "Signin successful!");
+                    // ২. এটি নিশ্চিত করে যে ফাংশনটি সফলভাবে শেষ হয়েছে
+                    return response.data;
                 }
             } catch (error: any) {
                 // error handling
@@ -78,18 +79,19 @@ export const useUserStore = create<UserState>()(
             }
         },
 
-        verifyEmail: async (verificationToken) => {
+        verifyEmail: async (verificationCode) => {
             try {
                 set({ loading: true });
-                const response = await axios.post(`${API_END_POINT}/verify-email`, { verificationToken }, {
-                    headers: { "Content-Type": "application/json" }
-                });
+                const response = await axios.post(`${API_END_POINT}/verify-email`, { verificationCode });
 
                 if (response.data.success) {
                     toast.success(response.data.message || "Email verification successful!");
+                    // বর্তমান ইউজার অবজেক্ট নিয়ে তার isVerified আপডেট করো
+                    const updatedUser = { ...response.data.data, isVerified: true };
                     set({
                         loading: false,
-                        user: response.data.user,
+                        // user: response.data.data,
+                        user: updatedUser, // আপডেট করা ইউজার সেট করো
                         isAuthenticated: true
                     });
                 }
@@ -110,19 +112,17 @@ export const useUserStore = create<UserState>()(
 
                 if (response.data.success) {
                     set({
-                        user: response.data.user,
+                        user: response.data.data,
                         isAuthenticated: true,
                         isCheckingAuth: false // সফল হলে ফলস
                     });
                 }
             } catch (error) {
-                // ৪০১ এরর মানে ইউজার লগইন নেই, এটা কোনো ক্রাশ না। 
-                // তাই এখানেও isCheckingAuth এবং loading কে false করতে হবে।
                 set({
                     user: null,
                     isAuthenticated: false,
-                    isCheckingAuth: false, // এটিই তোমাকে লোডিং থেকে মুক্তি দিবে
-                    loading: false // বাটন এনাবল করার জন্য
+                    isCheckingAuth: false,
+                    // loading: false
                 });
                 console.log("User not authenticated (Expected on first visit)");
             }
@@ -164,7 +164,7 @@ export const useUserStore = create<UserState>()(
                     toast.success(response.data.message);
                     set({
                         loading: false,
-                        user: response.data.user,
+                        user: response.data.data,
                         isAuthenticated: true
                     });
                 }
@@ -190,7 +190,7 @@ export const useUserStore = create<UserState>()(
                     toast.success(response.data.message);
                     set({
                         loading: false,
-                        user: response.data.user,
+                        user: response.data.data,
                         isAuthenticated: true
                     });
                 }
@@ -215,7 +215,7 @@ export const useUserStore = create<UserState>()(
                     toast.success(response.data.message || "Profile update successful!");
                     set({
                         loading: false,
-                        user: response.data.user,
+                        user: response.data.data,
                         isAuthenticated: true
                     });
                 }

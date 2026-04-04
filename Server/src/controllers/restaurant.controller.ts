@@ -57,10 +57,14 @@ const createRestaurant = asyncHandler(async (req: AuthenticatedRequest, res: Res
 const getRestaurant = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
 
     const userId = req.user?._id as any // mongoose.Types.ObjectId;
-    const restaurant = await Restaurant.find({ user: userId });
-
+    // const restaurant = await Restaurant.find({ user: userId });
+    // .findOne ব্যবহার করা ভালো যদি একজন ইউজারের একটিই রেস্টুরেন্ট থাকে
+    const restaurant = await Restaurant.findOne({ user: userId }).populate("menus");
     if (!restaurant) {
-        throw new ApiError(400, "Restaurant not found!");
+        // throw new ApiError(400, "Restaurant not found!");
+        // এখানে এরর থ্রো না করে সফল রেসপন্স কিন্তু ডাটা null পাঠানো ভালো 
+        // যাতে ফ্রন্টএন্ড বুঝতে পারে রেস্টুরেন্ট নেই।
+        return res.status(200).json(new ApiResponse(200, null, "No restaurant found"));
     }
 
     return res.status(200).json(
@@ -223,7 +227,7 @@ const getSingleRestaurant = asyncHandler(async (req: Request, res: Response) => 
         })
 
     if (!restaurant) {
-        throw new ApiError(400, "Restaurant not fountd!");
+        throw new ApiError(400, "Restaurant not found!");
     }
 
     return res.status(200).json(

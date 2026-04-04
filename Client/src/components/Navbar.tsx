@@ -1,14 +1,13 @@
-// import { useEffect, useState } from 'react'
 import { useState } from 'react'
 import { Loader2, MenuIcon, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Logo from "@/components/Logo"
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from './ui/menubar'
-
 import { ModeToggle } from './ModeToggle'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
-// import { useCartStore } from '@/store/useCartStore'
+import { useUserStore } from '@/store/useUserStore'
+
 
 function Navbar() {
     const navClasses = 'py-3 md:py-4 w-full text-neutral-700 dark:text-white sticky top-0 left-0 right-0 z-10'
@@ -25,18 +24,16 @@ function Navbar() {
 
     const [mobileMenu, setMobileMenu] = useState(false)
     const toggleMenu = () => {
-        // setMobileMenu(!mobileMenu)
         setMobileMenu(prev => !prev)
     }
 
-    const admin: boolean = true
-    const loading: boolean = false;
-
-    // const { cart, addToCart, incrementQuantity } = useCartStore();
-    // const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-
+    const navigate = useNavigate();
+    const { user, loading, signout } = useUserStore()
+    const logoutHandler = async () => {
+        await signout();
+        navigate("/signin");
+    };
     return (
-        // <nav className={`${navClasses} ${sticky ? darkNav : ''}`}>
         <nav className={`${navClasses}`}>
 
             <div className={`${navContetWrapperClasses}`}>
@@ -48,11 +45,6 @@ function Navbar() {
                         </Link>
                     </li>
                     <li>
-                        <Link to="/profile">
-                            Profile
-                        </Link>
-                    </li>
-                    <li>
                         <Link to="/orders/status">
                             Orders
                         </Link>
@@ -61,7 +53,7 @@ function Navbar() {
                         <ul className="flex flex-col lg:flex-row items-center justify-center gap-2 md:gap-3 xl:gap-4">
                             <li>
                                 {
-                                    admin && (
+                                    user?.isAdmin && (
                                         <Menubar>
                                             <MenubarMenu>
                                                 <MenubarTrigger className='px-3 py-2'>
@@ -101,21 +93,21 @@ function Navbar() {
                                 </div>
                             </li>
                             <li className="flex items-center justify-center gap-3 md:gap-4 py-3 md:py-0">
-                                <Avatar size='lg'>
-                                    <AvatarImage />
-                                    <AvatarFallback>
-                                        CN
-                                    </AvatarFallback>
-                                </Avatar>
+                                <Link to="/profile">
+                                    <Avatar size='lg'>
+                                        <AvatarImage src={user?.profilePicture} alt="profile" />
+                                        <AvatarFallback>
+                                            {user?.fullname?.charAt(0).toUpperCase() || "CN"}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </Link>
                                 <div>
-
-
                                     {loading ? (
                                         <Button disabled className="w-full py-5 rounded-xl text-xs md:text-sm xl:text-base">
                                             <Loader2 className="animate-spin mr-2" /> Please wait...
                                         </Button>
                                     ) : (
-                                        <Button type="submit" className="w-full py-5 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
+                                        <Button onClick={logoutHandler} type="submit" className="w-full py-5 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
                                             Logout
                                         </Button>
                                     )}
