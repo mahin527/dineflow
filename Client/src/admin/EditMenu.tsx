@@ -1,4 +1,5 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react"
+import { useEffect, type Dispatch, type SetStateAction } from "react"
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -12,23 +13,24 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
 import { useForm } from "@/hooks/useForm"
-import { CircleDollarSign, FileImage, Hamburger, Loader2, ScrollText } from "lucide-react"
+import { CircleDollarSign, FileImage, Hamburger, Loader2, ScrollText, Trash2 } from "lucide-react"
 import { InputWithIcon } from "@/components/ui/input-with-icon"
 import { menuFormSchema } from "@/schema/AddMenuSchema"
+import { useMenuStore } from "@/store/useMenuStore";
 
 
 function EditMenu({ selectedMenu, editOpen, setEditOpen }: { selectedMenu: any, editOpen: boolean, setEditOpen: Dispatch<SetStateAction<boolean>> }) {
-    const loading: boolean = false;
 
     const { input, handleInputChange, setInput } = useForm({
-        title: "",
+        menuTitle: "",
         description: "",
         price: "",
         image: undefined as File | undefined
     });
-    const [errors, setErrors] = useState<any>({})
 
-    const editMenuFormSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    const { loading, deleteMenu, updateMenu } = useMenuStore()
+
+    const editMenuFormSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
         const formattedData = {
@@ -37,25 +39,50 @@ function EditMenu({ selectedMenu, editOpen, setEditOpen }: { selectedMenu: any, 
         }
 
         const result = menuFormSchema.safeParse(formattedData);
-
         if (!result.success) {
-            setErrors(result.error.format());
+            const fieldErrors = result.error.flatten().fieldErrors;
+
+            const firstErrorKey = Object.keys(fieldErrors)[0] as keyof typeof fieldErrors;
+            const errorMessage = fieldErrors[firstErrorKey]?.[0];
+
+            if (errorMessage) {
+                toast.error(errorMessage);
+            }
             return;
         }
 
-        setErrors({});
-        console.log("Data:", result.data);
+        try {
+            const formData = new FormData();
+
+            formData.append("menuTitle", input.menuTitle);
+            formData.append("description", input.description);
+            formData.append("price", String(input.price));
+
+            if (input.image) {
+                formData.append("menuImage", input.image);
+            }
+
+            await updateMenu(selectedMenu._id, formData);
+
+            toast.success("Menu updated successfully");
+
+            setEditOpen(false);
+
+        } catch (error) {
+            console.log(error);
+            toast.error("Update failed");
+        }
 
     }
 
     useEffect(() => {
         setInput({
-            title: selectedMenu.title,
+            menuTitle: selectedMenu.menuTitle,
             description: selectedMenu.description,
-            price: selectedMenu.price,
-            image: selectedMenu.image
+            price: String(selectedMenu.price),
+            image: undefined // important
         })
-    }, [selectedMenu])
+    }, [selectedMenu, setInput])
 
 
     return (
@@ -73,20 +100,15 @@ function EditMenu({ selectedMenu, editOpen, setEditOpen }: { selectedMenu: any, 
                             <Field>
                                 <Label htmlFor="title">Title</Label>
                                 <InputWithIcon
-                                    name="title"
+                                    name="menuTitle"
                                     id="title"
                                     leftIcon={Hamburger}
                                     type="text"
                                     placeholder="Enter menu title"
-                                    value={input.title}
+                                    value={input.menuTitle}
                                     onChange={handleInputChange}
                                     required
                                 />
-                                {errors.title?._errors?.[0] && (
-                                    <p className="text-red-500 text-xs md:text-sm">
-                                        {errors.title._errors[0]}
-                                    </p>
-                                )}
                             </Field>
                             <Field>
                                 <Label htmlFor="description">Description</Label>
@@ -100,11 +122,6 @@ function EditMenu({ selectedMenu, editOpen, setEditOpen }: { selectedMenu: any, 
                                     onChange={handleInputChange}
                                     required
                                 />
-                                {errors.description?._errors?.[0] && (
-                                    <p className="text-red-500 text-xs md:text-sm">
-                                        {errors.description._errors[0]}
-                                    </p>
-                                )}
                             </Field>
                             <Field>
                                 <Label htmlFor="price">Price</Label>
@@ -118,11 +135,6 @@ function EditMenu({ selectedMenu, editOpen, setEditOpen }: { selectedMenu: any, 
                                     onChange={handleInputChange}
                                     required
                                 />
-                                {errors.price?._errors?.[0] && (
-                                    <p className="text-red-500 text-xs md:text-sm">
-                                        {errors.price._errors[0]}
-                                    </p>
-                                )}
                             </Field>
                             <Field>
                                 Image
@@ -141,11 +153,6 @@ function EditMenu({ selectedMenu, editOpen, setEditOpen }: { selectedMenu: any, 
                                         />
                                     </label>
                                 </div>
-                                {errors.image?._errors?.[0] && (
-                                    <p className="text-red-500 text-xs md:text-sm">
-                                        {errors.image._errors[0]}
-                                    </p>
-                                )}
                             </Field>
                         </FieldGroup>
                         <DialogFooter>
@@ -161,6 +168,15 @@ function EditMenu({ selectedMenu, editOpen, setEditOpen }: { selectedMenu: any, 
                                     Update Menu
                                 </Button>
                             )}
+                            <Button
+                                variant="destructive"
+                                onClick={async () => {
+                                    await deleteMenu(selectedMenu._id);
+                                    setEditOpen(false);
+                                }}
+                            >
+                                <Trash2 />
+                            </Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>

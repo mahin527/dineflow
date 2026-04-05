@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { toast } from "sonner";
 import {
     Dialog,
     DialogClose,
@@ -11,7 +12,6 @@ import {
 } from "@/components/ui/dialog"
 import {
     Card,
-    CardAction,
     CardDescription,
     CardFooter,
     CardHeader,
@@ -19,58 +19,90 @@ import {
 } from "@/components/ui/card"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
-import { Badge, CircleDollarSign, FileImage, Hamburger, Loader2, Plus, ScrollText } from "lucide-react"
-import Image from "@/assets/menuBanner.jpg"
+import { CircleDollarSign, FileImage, Hamburger, Loader2, Plus, ScrollText } from "lucide-react"
 import React, { useState } from "react"
 import EditMenu from "./EditMenu"
 import { useForm } from "@/hooks/useForm"
 import { InputWithIcon } from "@/components/ui/input-with-icon"
 import { menuFormSchema } from "@/schema/AddMenuSchema";
+import { useMenuStore } from "@/store/useMenuStore";
+import { useRestaurantStore } from "@/store/useRestaurantStore";
 
 function AddMenu() {
-    const loading: boolean = false;
+    const [open, setOpen] = useState<boolean>(false); // এটি নতুন মেনু ডায়ালগ কন্ট্রোল করবে
     const [editOpen, setEditOpen] = useState<boolean>(false);
     const [selectedMenu, setSelectedMenu] = useState<any>({});
-    const menus = [
-        {
-            title: "Biryani",
-            description: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolorum, veritatis!",
-            price: 80,
-            image: Image
-        }, {
-            title: "Chicken Tandoori",
-            description: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolorum, veritatis!",
-            price: 180,
-            image: Image
-        },
-    ]
 
     const { input, handleInputChange, setInput } = useForm({
-        title: "",
+        menuTitle: "",
         description: "",
         price: "",
-        image: undefined as File | undefined
+        menuImage: undefined as File | undefined
     });
-    const [errors, setErrors] = useState<any>({})
 
-    const addMenuFormSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    const { restaurant } = useRestaurantStore()
+    const { loading, createMenu } = useMenuStore()
+
+    const addMenuFormSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
         const formattedData = {
-            ...input,
-            price: Number(input.price)
-        }
+            menuTitle: input.menuTitle, // এটি নিশ্চিত করো তোমার schema তে 'menuTitle' নামেই আছে
+            description: input.description,
+            price: Number(input.price),
+            menuImage: input.menuImage
+        };
 
         const result = menuFormSchema.safeParse(formattedData);
 
         if (!result.success) {
-            setErrors(result.error.format());
+            const fieldErrors = result.error.flatten().fieldErrors;
+            const firstErrorKey = Object.keys(fieldErrors)[0] as keyof typeof fieldErrors;
+            const errorMessage = fieldErrors[firstErrorKey]?.[0];
+            toast.error(errorMessage || "Validation failed");
             return;
         }
 
-        setErrors({});
-        console.log("Data:", result.data);
+        // try {
+        //     const formData = new FormData();
+        //     // ব্যাকএন্ডের সাথে মিলিয়ে কী (Key) গুলোর নাম দাও
+        //     formData.append("menuTitle", input.menuTitle);
+        //     formData.append("description", input.description);
+        //     formData.append("price", input.price);
+        //     if (input.menuImage) {
+        //         formData.append("menuImage", input.menuImage);
+        //     }
 
+        //     await createMenu(formData);
+
+        //     // ৩. সাকসেস হলে ফর্ম রিসেট করো
+        //     setInput({ menuTitle: "", description: "", price: "", menuImage: undefined });
+        //     setOpen(false);
+
+        // } catch (error) {
+        //     console.log(error);
+        // }
+
+        try {
+            const formData = new FormData();
+            formData.append("menuTitle", input.menuTitle);
+            formData.append("description", input.description);
+            formData.append("price", input.price);
+            if (input.menuImage) {
+                formData.append("menuImage", input.menuImage);
+            }
+
+            await createMenu(formData);
+
+            // ১. ফর্ম রিসেট
+            setInput({ menuTitle: "", description: "", price: "", menuImage: undefined });
+
+            // ২. ডায়ালগ বন্ধ করা (setEditOpen নয়, এটি হবে setOpen)
+            setOpen(false);
+
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -79,9 +111,11 @@ function AddMenu() {
                 <div className="py-2">
                     <h2 className="text-xl md:text-2xl xl:text-3xl pb-2 font-bold">Available Menus</h2>
                 </div>
-                <Dialog>
+                <Dialog open={open} onOpenChange={setOpen}>
                     <DialogTrigger asChild>
-                        <Button variant="outline" size="lg">Add Menu <Plus className="font-bold" /></Button>
+                        <Button variant="outline" size="lg" onClick={() => setOpen(true)}>
+                            Add Menu <Plus className="font-bold" />
+                        </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-xl">
                         <form onSubmit={addMenuFormSubmitHandler}>
@@ -95,20 +129,15 @@ function AddMenu() {
                                 <Field>
                                     <Label htmlFor="title">Title</Label>
                                     <InputWithIcon
-                                        name="title"
+                                        name="menuTitle"
                                         id="title"
                                         leftIcon={Hamburger}
                                         type="text"
                                         placeholder="Enter menu title"
-                                        value={input.title}
+                                        value={input.menuTitle}
                                         onChange={handleInputChange}
                                         required
                                     />
-                                    {errors.title?._errors?.[0] && (
-                                        <p className="text-red-500 text-xs md:text-sm">
-                                            {errors.title._errors[0]}
-                                        </p>
-                                    )}
                                 </Field>
                                 <Field>
                                     <Label htmlFor="description">Description</Label>
@@ -122,11 +151,6 @@ function AddMenu() {
                                         onChange={handleInputChange}
                                         required
                                     />
-                                    {errors.description?._errors?.[0] && (
-                                        <p className="text-red-500 text-xs md:text-sm">
-                                            {errors.description._errors[0]}
-                                        </p>
-                                    )}
                                 </Field>
                                 <Field>
                                     <Label htmlFor="price">Price</Label>
@@ -140,11 +164,6 @@ function AddMenu() {
                                         onChange={handleInputChange}
                                         required
                                     />
-                                    {errors.price?._errors?.[0] && (
-                                        <p className="text-red-500 text-xs md:text-sm">
-                                            {errors.price._errors[0]}
-                                        </p>
-                                    )}
                                 </Field>
                                 <Field>
                                     Image
@@ -155,19 +174,14 @@ function AddMenu() {
                                             </span>
                                             <input
                                                 type="file"
-                                                name="image"
+                                                name="menuImage"
                                                 id="image"
                                                 accept="image/*"
                                                 className="hidden"
-                                                onChange={(e) => setInput({ ...input, image: e.target.files?.[0] })}
+                                                onChange={(e) => setInput({ ...input, menuImage: e.target.files?.[0] })}
                                             />
                                         </label>
                                     </div>
-                                    {errors.image?._errors?.[0] && (
-                                        <p className="text-red-500 text-xs md:text-sm">
-                                            {errors.image._errors[0]}
-                                        </p>
-                                    )}
                                 </Field>
                             </FieldGroup>
                             <DialogFooter>
@@ -180,7 +194,7 @@ function AddMenu() {
                                     </Button>
                                 ) : (
                                     <Button type="submit" className="rounded-xl text-xs md:text-sm xl:text-base">
-                                        Submit Menu
+                                        Create Menu
                                     </Button>
                                 )}
                             </DialogFooter>
@@ -190,20 +204,17 @@ function AddMenu() {
             </div>
             {/* Show menus */}
             <div className="py-6">
-                <div className="flex flex-col md:flex-row md:items-center flex-wrap gap-5">
-                    {menus.map((menu: any, index: number) => (
-                        <Card key={index} className="relative w-full max-w-xs pt-0 shadow-md rounded-xl overflow-hidden hover:shadow-lg shadow-neutral-600 dark:shadow-neutral-800 transition-shadow duration-300">
+                <div className="w-full flex flex-col md:flex-row md:items-center flex-wrap gap-5">
+                    {restaurant?.menus?.map((menu: any) => (
+                        <Card key={menu._id} className="relative w-full max-w-xs min-w-100 pt-0 shadow-md rounded-xl overflow-hidden hover:shadow-lg shadow-neutral-600 dark:shadow-neutral-800 transition-shadow duration-300">
                             <div className="absolute inset-0 aspect-video bg-black/5 dark:bg-white/5" />
                             <img
-                                src={menu.image}
-                                alt="Event cover"
+                                src={menu.menuImage}
+                                alt={menu.menuTitle}
                                 className="relative aspect-video w-full object-cover"
                             />
-                            <CardAction className="absolute py-2 px-2">
-                                <Badge>Featured</Badge>
-                            </CardAction>
                             <CardHeader>
-                                <CardTitle>{menu.title}</CardTitle>
+                                <CardTitle className="capitalize">{menu.menuTitle}</CardTitle>
                                 <CardDescription>
                                     <p>
                                         {menu.description}

@@ -17,7 +17,7 @@ router.route("/").post(
 );
 
 // updateMenu
-router.route("/update").patch(
+router.route("/update/:menuId").patch(
     isAuthenticated,
     upload.single("menuImage"),
     updateMenu

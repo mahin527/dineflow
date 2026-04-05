@@ -15,7 +15,7 @@ interface RestaurantState {
     getRestaurant: () => Promise<void>;
     updateRestaurant: (data: any) => Promise<void>;
     searchRestaurants: (searchText: string, searchQuery: string, searchCuisines: any) => Promise<void>;
-
+    addMenuToRestaurant: (menu: any) => Promise<void>;
 }
 
 export const useRestaurantStore = create<RestaurantState>()(
@@ -55,7 +55,7 @@ export const useRestaurantStore = create<RestaurantState>()(
                 const response = await axios.get(`${API_END_POINT}/`);
 
                 if (response.data.success) {
-                    toast.success(response.data.message || "Restaurant fetched successfully!");
+                    // toast.success(response.data.message || "Restaurant fetched successfully!");
                     set({
                         loading: false,
                         restaurant: response.data.data,
@@ -123,8 +123,34 @@ export const useRestaurantStore = create<RestaurantState>()(
             }
         },
 
+        addMenuToRestaurant: async (menu: any) => {
+            try {
+                set((state) => ({
+                    restaurant: state.restaurant ? {...state.restaurant, menus: [...state.restaurant.menus, menu]} : null
+
+                }));
+                const response = await axios.get(`${API_END_POINT}/`);
+
+                if (response.data.success) {
+                    // toast.success(response.data.message || "Restaurant fetched successfully!");
+                    set({
+                        loading: false,
+                        restaurant: response.data.data,
+                        isAuthenticated: true
+                    });
+                }
+            } catch (error: any) {
+                // error handling
+                set({ loading: false });
+                const errorMessage = error.response?.data?.message || "Restaurant fetch failed!";
+                toast.error(errorMessage);
+                console.error("Restaurant fetch Error:", error);
+                throw error;
+            }
+        },
+
     }), {
-        name: 'user-storage',
+        name: 'restaurant-storage',
         storage: createJSONStorage(() => localStorage),
     })
 );
