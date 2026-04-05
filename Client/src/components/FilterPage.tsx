@@ -1,5 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "./ui/button"
+import { useRestaurantStore } from "@/store/useRestaurantStore"
 
 
 function FilterPage() {
@@ -26,9 +27,9 @@ function FilterPage() {
         }
     ]
 
-
-    const appliedFilderHandler = (value:string) => {
-        console.log(value)
+    const { setAppliedFilter } = useRestaurantStore()
+    const appliedFilderHandler = (value: string) => {
+        setAppliedFilter(value)
     }
 
     return (
@@ -42,8 +43,8 @@ function FilterPage() {
             {
                 filterOptions.map((option) => (
                     <div key={option.id} className="flex items-center gap-2 py-1">
-                            <Checkbox id={option.id} onClick={() => appliedFilderHandler(option.label)} />
-                            <label htmlFor={option.id}>{option.label}</label>
+                        <Checkbox id={option.id} onClick={() => appliedFilderHandler(option.label)} />
+                        <label htmlFor={option.id}>{option.label}</label>
                     </div>
                 ))
             }

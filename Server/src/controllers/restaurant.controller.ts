@@ -32,7 +32,7 @@ const createRestaurant = asyncHandler(async (req: AuthenticatedRequest, res: Res
         throw new ApiError(400, "Restaurant image is required!");
     }
 
-    const uploadResult = await uploadOnCloudinary(file.path);
+    const uploadResult: any = await uploadOnCloudinary(file.path);
     if (!uploadResult) {
         throw new ApiError(500, "Upload failed!");
     }
@@ -191,7 +191,7 @@ const searchRestaurants = asyncHandler(async (req: Request, res: Response) => {
     // It is safe to use `.filter(c => c.trim() !== "")`, because sometimes only commas (,) may be passed from the frontend.
 
     const query: any = {};
-
+    
     // 1. Text search logic (name, city or country)
     // We will search if either searchText or searchQuery exists
     const search = searchText || searchQuery;

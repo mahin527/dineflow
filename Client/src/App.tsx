@@ -80,7 +80,7 @@ const appRouter = createBrowserRouter([
         element: <Success />
       },
       {
-        path: "/search/:srcText",
+        path: "/search/:searchText",
         element: <SearchPage />
       },
       {
