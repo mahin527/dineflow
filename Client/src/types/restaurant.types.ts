@@ -7,6 +7,15 @@ export interface MenuItem {
     menuImageId: string;
 }
 
+export interface RestaurantFormData {
+    restaurantName: string;
+    city: string;
+    country: string;
+    deliveryTime: string;
+    cuisines: string;
+    restaurantPicture?: File;
+}
+
 export interface RestaurantTypes {
     _id: string;
     restaurantName: string;
@@ -32,4 +41,5 @@ export interface RestaurantState {
     addMenuToRestaurant: (menu: MenuItem) => Promise<void>;
     setAppliedFilter: (value: string) => Promise<void>;
     searchedRestaurant: any;
+    resetAppliedFilter: () => void;
 }

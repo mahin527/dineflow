@@ -6,19 +6,12 @@ import { toast } from "sonner";
 import { useForm } from "@/hooks/useForm"
 import { useRestaurantStore } from "@/store/useRestaurantStore";
 import { useEffect } from "react";
+import { type RestaurantFormData } from "@/types/restaurant.types"
 
-interface RestaurantState {
-    restaurantName: string;
-    city: string;
-    country: string;
-    deliveryTime: string;
-    cuisines: string | string[];
-    restaurantPicture: File | undefined;
-}
 
 function Restaurant() {
 
-    const { input, handleInputChange, setInput } = useForm<RestaurantState>({
+    const { input, handleInputChange, setInput } = useForm<RestaurantFormData>({
         restaurantName: "",
         city: "",
         country: "",
@@ -61,7 +54,7 @@ function Restaurant() {
             formData.append("restaurantName", input.restaurantName);
             formData.append("city", input.city);
             formData.append("country", input.country);
-            formData.append("deliveryTime", input.deliveryTime.toString());
+            formData.append("deliveryTime", input.deliveryTime);
 
             // এখানে গুরুত্বপূর্ণ: stringify করে পাঠানো
             formData.append("cuisines", JSON.stringify(cuisinesArray));
@@ -85,20 +78,37 @@ function Restaurant() {
     };
 
     useEffect(() => {
-        const fetchRestaurant = async () => {
-            await getRestaurant()
+        getRestaurant();
+    }, []);
+
+    useEffect(() => {
+        if (restaurant) {
             setInput({
                 restaurantName: restaurant.restaurantName || "",
                 city: restaurant.city || "",
                 country: restaurant.country || "",
-                deliveryTime: restaurant.deliveryTime || "",
-                cuisines: restaurant.cuisines ? restaurant.cuisines.map((cuisine: string) => cuisine) : [],
-                restaurantPicture: restaurant.restaurantPicture || undefined
-            })
+                deliveryTime: restaurant.deliveryTime?.toString() || "",
+                cuisines: restaurant.cuisines?.join(", ") || "",
+                restaurantPicture: undefined
+            });
         }
+    }, [restaurant]);
 
-        fetchRestaurant()
-    }, [])
+    // useEffect(() => {
+    //     const fetchRestaurant = async () => {
+    //         await getRestaurant()
+    //         setInput({
+    //             restaurantName: restaurant?.restaurantName || "",
+    //             city: restaurant?.city || "",
+    //             country: restaurant?.country || "",
+    //             deliveryTime: restaurant?.deliveryTime?.toString() || "",
+    //             cuisines: restaurant?.cuisines?.join(", ") || "",
+    //             restaurantPicture: undefined
+    //         })
+    //     }
+
+    //     fetchRestaurant()
+    // }, [])
 
 
     return (
@@ -178,7 +188,7 @@ function Restaurant() {
                             </span>
                             <input
                                 type="file"
-                                name="image"
+                                name="restaurantPicture"
                                 id="image"
                                 accept="image/*"
                                 className="hidden"

@@ -112,9 +112,7 @@ export const useRestaurantStore = create<RestaurantState>()(
         updateRestaurant: async (formData) => {
             try {
                 set({ loading: true });
-                const response = await axios.patch(`${API_END_POINT}/update`, formData, {
-                    headers: { "Content-Type": "multipart/form-data" }
-                });
+                const response = await axios.patch(`${API_END_POINT}/update`, formData);
 
                 if (response.data.success) {
                     toast.success(response.data.message || "Restaurant updated successfully!");
@@ -140,6 +138,8 @@ export const useRestaurantStore = create<RestaurantState>()(
                 params.set("searchQuery", searchQuery)
                 params.set("selectedCuisines", selectedCuisines.join(","))
                 const response = await axios.get(`${API_END_POINT}/search/${searchText}?${params.toString()}`);
+
+                // await new Promise((resolve) => setTimeout(resolve, 1000));
 
                 if (response.data.success) {
                     set({
@@ -191,6 +191,10 @@ export const useRestaurantStore = create<RestaurantState>()(
                     .filter((item) => item !== value) : [...state.appliedFilter, value]
                 return { appliedFilter: updatedFilter }
             })
+        },
+
+        resetAppliedFilter: () => {
+            set({appliedFilter: []})
         }
     }), {
         name: 'restaurant-storage',

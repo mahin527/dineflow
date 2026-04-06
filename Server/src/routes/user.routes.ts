@@ -37,7 +37,7 @@ router.route("/check-auth").get(isAuthenticated, checkAuth)
 
 
 // updateProfile
-router.route("profile/update-profile").patch(
+router.route("/profile/update").patch(
     isAuthenticated,
     upload.single("profilePicture"), // "profilePicture" is the key sent from the frontend
     updateProfile

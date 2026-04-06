@@ -15,35 +15,32 @@ function FilterPage() {
             label: 'Burger'
         },
         {
-            id: 'thali',
-            label: 'Thali'
-        }, {
             id: 'biryani',
             label: 'Biryani'
         },
         {
-            id: 'momos',
-            label: 'Momos'
+            id: 'lobster',
+            label: 'lobster'
         }
     ]
 
-    const { setAppliedFilter } = useRestaurantStore()
-    const appliedFilderHandler = (value: string) => {
+    const { setAppliedFilter, appliedFilter, resetAppliedFilter } = useRestaurantStore()
+    const appliedFilterHandler = (value: string) => {
         setAppliedFilter(value)
     }
 
     return (
         <div className="md:w-70">
-            <div className="flex items-center justify-between">
-                <h2>
+            <div className="flex items-center justify-between pb-1">
+                <h2 className="font-bold">
                     Filter by cuisins
                 </h2>
-                <Button variant="link">Reset</Button>
+                <Button variant="link" onClick={resetAppliedFilter}>Reset</Button>
             </div>
             {
                 filterOptions.map((option) => (
                     <div key={option.id} className="flex items-center gap-2 py-1">
-                        <Checkbox id={option.id} onClick={() => appliedFilderHandler(option.label)} />
+                        <Checkbox id={option.id} checked={appliedFilter.includes(option.label)} onClick={() => appliedFilterHandler(option.label)} />
                         <label htmlFor={option.id}>{option.label}</label>
                     </div>
                 ))

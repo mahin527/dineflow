@@ -16,9 +16,9 @@ interface UserState {
     verifyEmail: (verificationCode: string) => Promise<void>;
     checkAuthentication: () => Promise<void>;
     signout: () => Promise<void>;
-    forgetPassword: () => Promise<void>;
+    forgetPassword: (email: string) => Promise<void>;
     resetPassword: (token: string, newPassword: string) => Promise<void>;
-    updateProfile: (input: any) => Promise<void>;
+    updateProfile: (formData: FormData) => Promise<void>;
 }
 
 export const useUserStore = create<UserState>()(
@@ -61,7 +61,7 @@ export const useUserStore = create<UserState>()(
                 if (response.data.success) {
                     // ১. স্টেট আপডেট করুন
                     set({
-                        user: response.data.data,
+                        user: response.data.data.user,
                         isAuthenticated: true,
                         loading: false
                     });
@@ -153,10 +153,10 @@ export const useUserStore = create<UserState>()(
             }
         },
 
-        forgetPassword: async () => {
+        forgetPassword: async (email) => {
             try {
                 set({ loading: true });
-                const response = await axios.post(`${API_END_POINT}/forget-password`, {
+                const response = await axios.post(`${API_END_POINT}/forget-password`, { email }, {
                     headers: { "Content-Type": "application/json" }
                 });
 
@@ -182,7 +182,7 @@ export const useUserStore = create<UserState>()(
             try {
                 set({ loading: true });
                 const response = await axios.post(`${API_END_POINT}/reset-password/${token}`,
-                    { password: newPassword }, {
+                    { newPassword }, {
                     headers: { "Content-Type": "application/json" }
                 });
 
@@ -204,17 +204,13 @@ export const useUserStore = create<UserState>()(
             }
         },
 
-        updateProfile: async (input) => {
+        updateProfile: async (formData) => {
             try {
-                set({ loading: true });
-                const response = await axios.patch(`${API_END_POINT}/profile/update-profile`, input, {
-                    headers: { "Content-Type": "application/json" }
-                });
+                const response = await axios.patch(`${API_END_POINT}/profile/update`, formData);
 
                 if (response.data.success) {
-                    toast.success(response.data.message || "Profile update successful!");
+                    toast.success(response.data.message || "Profile updated successfully!");
                     set({
-                        loading: false,
                         user: response.data.data,
                         isAuthenticated: true
                     });
@@ -223,7 +219,6 @@ export const useUserStore = create<UserState>()(
                 // error handling
                 const errorMessage = error.response?.data?.message || "Profile update failed!";
                 toast.error(errorMessage);
-                set({ loading: false });
                 console.error("Profile update Error:", error);
                 throw error;
             }

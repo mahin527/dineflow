@@ -135,6 +135,7 @@ const deleteMenu = asyncHandler(async (req: AuthenticatedRequest, res: Response)
     // 4. $pull (remove) this ID from the restaurant's 'menus' array 
     // It is very important that the restaurant model does not contain any 'orphan' or invalid IDs
     await Restaurant.findOneAndUpdate(
+        // TODO: (node:2183) [MONGOOSE] Warning: mongoose: the `new` option for `findOneAndUpdate()` and `findOneAndReplace()` is deprecated. Use `returnDocument: 'after'` instead.
         { user: userId },
         {
             $pull: { menus: menuId }
