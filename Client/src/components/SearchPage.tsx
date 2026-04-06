@@ -19,7 +19,7 @@ import SearcPageSkeleton from "@/components/SearcPageSkeleton"
 
 function SearchPage() {
     const params = useParams()
-    const searchText = params.searchText || "";
+    const searchText = params?.searchText || "";
     const [searchQuery] = useState<string>("")
     const { loading, searchedRestaurant, searchRestaurants, appliedFilter, setAppliedFilter } = useRestaurantStore()
 

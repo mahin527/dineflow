@@ -32,6 +32,7 @@ export interface RestaurantTypes {
 export interface RestaurantState {
     loading: boolean;
     restaurant: RestaurantTypes | null;
+    singleRestaurant: RestaurantTypes | null;
     isAuthenticated: boolean;
     appliedFilter: string[];
     createRestaurant: (formData: FormData) => Promise<void>;
@@ -42,4 +43,5 @@ export interface RestaurantState {
     setAppliedFilter: (value: string) => Promise<void>;
     searchedRestaurant: any;
     resetAppliedFilter: () => void;
+    getSingleRestaurant: (restaurantId: string) => Promise<void>;
 }

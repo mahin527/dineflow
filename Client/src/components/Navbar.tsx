@@ -88,7 +88,9 @@ function Navbar() {
                                 <div>
                                     <Link to="/cart" className='relative cursor-pointer'>
                                         <ShoppingCart />
-                                        <Button size={"icon"} className='absolute dark:bg-neutral-500 bg-neutral-700 text-white -inset-y-3 left-2 p-2 w-4 h-4 text-xs rounded-lg'>0</Button>
+                                        <Button size={"icon"} className='absolute dark:bg-neutral-500 bg-neutral-700 text-white -inset-y-3 left-2 p-2 w-4 h-4 text-xs rounded-lg'>
+                                            0
+                                        </Button>
                                     </Link>
                                 </div>
                             </li>

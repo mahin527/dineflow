@@ -60,6 +60,7 @@ export const useRestaurantStore = create<RestaurantState>()(
         isAuthenticated: false,
         appliedFilter: [],
         searchedRestaurant: null,
+        singleRestaurant: null,
 
         createRestaurant: async (formData) => {
             try {
@@ -108,6 +109,25 @@ export const useRestaurantStore = create<RestaurantState>()(
                 throw error;
             }
         },
+
+        getSingleRestaurant: async (restaurantId) => {
+            try {
+                const response = await axios.get(`${API_END_POINT}/${restaurantId}`);
+
+                if (response.data.success) {
+                    set({
+                        singleRestaurant: response.data.data,
+                    });
+                    // console.log(response.data.data);
+                }
+            } catch (error: any) {
+                const errorMessage = error.response?.data?.message || "Restaurant fetch failed!";
+                toast.error(errorMessage);
+                console.error("Restaurant fetch Error:", error);
+                throw error;
+            }
+        },
+
 
         updateRestaurant: async (formData) => {
             try {
@@ -194,7 +214,7 @@ export const useRestaurantStore = create<RestaurantState>()(
         },
 
         resetAppliedFilter: () => {
-            set({appliedFilter: []})
+            set({ appliedFilter: [] })
         }
     }), {
         name: 'restaurant-storage',

@@ -46,6 +46,6 @@ router.route("/search/:searchText").get(searchRestaurants);
 // You can make searchText optional here, meaning that if someone wants to search using just the filter (without the search text), the route will still work.
 
 // 7. Get Single Restaurant Details (Public view)
-router.route("/:id").get(getSingleRestaurant);
+router.route("/:restaurantId").get(getSingleRestaurant);
 
 export default router;

@@ -1,23 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-
-// Defining the type of cart item (good for TypeScript)
-interface CartItem {
-    menuId: string;
-    name: string;
-    image: string;
-    price: number;
-    quantity: number;
-}
-
-interface CartState {
-    cart: CartItem[];
-    addToCart: (item: CartItem) => void;
-    removeFromCart: (menuId: string) => void;
-    incrementQuantity: (menuId: string) => void;
-    decrementQuantity: (menuId: string) => void;
-    clearCart: () => void;
-}
+import type { CartState, CartItem } from "@/types/cart.types"
 
 export const useCartStore = create<CartState>()(
     persist(
@@ -25,13 +8,13 @@ export const useCartStore = create<CartState>()(
             cart: [],
 
             // 1. Add items to cart
-            addToCart: (item) => set((state) => {
-                const existingItem = state.cart.find((i) => i.menuId === item.menuId);
+            addToCart: (item: CartItem) => set((state) => {
+                const existingItem = state.cart.find((cartItem) => cartItem._id === item._id);
                 if (existingItem) {
                     // If the item already exists, only the quantity will increase.
                     return {
-                        cart: state.cart.map((i) =>
-                            i.menuId === item.menuId ? { ...i, quantity: i.quantity + 1 } : i
+                        cart: state.cart.map((cartItem) =>
+                            cartItem._id === item._id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
                         ),
                     };
                 }
@@ -41,20 +24,20 @@ export const useCartStore = create<CartState>()(
 
             // 2. Removing items from cart
             removeFromCart: (menuId) => set((state) => ({
-                cart: state.cart.filter((i) => i.menuId !== menuId),
+                cart: state.cart.filter((item) => item._id !== menuId),
             })),
 
             // 3. Increasing the quantity
             incrementQuantity: (menuId) => set((state) => ({
-                cart: state.cart.map((i) =>
-                    i.menuId === menuId ? { ...i, quantity: i.quantity + 1 } : i
+                cart: state.cart.map((item) =>
+                    item._id === menuId ? { ...item, quantity: item.quantity + 1 } : item
                 ),
             })),
 
             // 4. Reduce the quantity
             decrementQuantity: (menuId) => set((state) => ({
-                cart: state.cart.map((i) =>
-                    i.menuId === menuId && i.quantity > 1 ? { ...i, quantity: i.quantity - 1 } : i
+                cart: state.cart.map((item) =>
+                    item._id === menuId && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
                 ),
             })),
 
