@@ -101,7 +101,6 @@ export const useRestaurantStore = create<RestaurantState>()(
                     });
                 }
             } catch (error: any) {
-                // error handling
                 set({ loading: false });
                 const errorMessage = error.response?.data?.message || "Restaurant fetch failed!";
                 toast.error(errorMessage);

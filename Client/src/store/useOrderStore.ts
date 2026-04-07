@@ -22,7 +22,7 @@ export const useOrderStore = create<OrderState>()(
                         const sessionUrl = response.data.data.sessionUrl;
                         window.location.href = sessionUrl;
                         console.log(response.data);
-                        
+
                         set({
                             loading: false
                         });
@@ -36,7 +36,20 @@ export const useOrderStore = create<OrderState>()(
                 }
             },
             getOrderDetails: async () => {
+                try {
+                    set({ loading: true });
+                    const response = await axios.get(`${API_END_POINT}/`);
+                    if (response.data.success) {
+                        set({
+                            loading: false,
+                            orders: response.data.data,
+                        });
+                    }
 
+                } catch (error) {
+                    set({ loading: false });
+                    console.log(error);
+                }
             }
 
         }),
@@ -46,4 +59,6 @@ export const useOrderStore = create<OrderState>()(
         }
     )
 );
+
+
 
