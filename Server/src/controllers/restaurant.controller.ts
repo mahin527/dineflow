@@ -161,7 +161,7 @@ const getRestaurantOrder = asyncHandler(async (req: AuthenticatedRequest, res: R
 const updateOrderStatus = asyncHandler(async (req: Request, res: Response) => {
     const { orderId } = req.params;
     const { orderStatus } = req.body;
-
+    
     if (!orderStatus) {
         throw new ApiError(400, "Order status is required!");
     }

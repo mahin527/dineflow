@@ -1,3 +1,5 @@
+import type { Orders } from "./order.types";
+
 export interface MenuItem {
     _id: string;
     menuTitle: string;
@@ -35,6 +37,7 @@ export interface RestaurantState {
     singleRestaurant: RestaurantTypes | null;
     isAuthenticated: boolean;
     appliedFilter: string[];
+    restaurantOrders: Orders[];
     createRestaurant: (formData: FormData) => Promise<void>;
     getRestaurant: () => Promise<void>;
     updateRestaurant: (formData: FormData) => Promise<void>;
@@ -44,4 +47,6 @@ export interface RestaurantState {
     searchedRestaurant: any;
     resetAppliedFilter: () => void;
     getSingleRestaurant: (restaurantId: string) => Promise<void>;
+    getRestaurantOrders: () => Promise<void>;
+    updateOrderStatus: (orderId: string, status: string) => Promise<void>;
 }

@@ -20,7 +20,6 @@ interface User {
     isVerified: boolean;
 }
 
-
 interface UserState {
     user: User | null;
     isAuthenticated: boolean;

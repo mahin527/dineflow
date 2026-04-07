@@ -54,13 +54,14 @@ axios.defaults.withCredentials = true;
 
 
 export const useRestaurantStore = create<RestaurantState>()(
-    persist((set) => ({
+    persist((set, get) => ({
         loading: false,
         restaurant: null,
         isAuthenticated: false,
         appliedFilter: [],
         searchedRestaurant: null,
         singleRestaurant: null,
+        restaurantOrders: [],
 
         createRestaurant: async (formData) => {
             try {
@@ -214,7 +215,47 @@ export const useRestaurantStore = create<RestaurantState>()(
 
         resetAppliedFilter: () => {
             set({ appliedFilter: [] })
-        }
+        },
+
+        getRestaurantOrders: async () => {
+            try {
+                const response = await axios.get(`${API_END_POINT}/orders`);
+
+                if (response.data.success) {
+                    set({
+                        restaurantOrders: response.data.data,
+                    });
+                    // console.log("restaurantOrders", response.data.data);
+                }
+            } catch (error) {
+                throw error;
+            }
+        },
+
+        updateOrderStatus: async (orderId: string, status: string) => {
+            try {
+                const response = await axios.patch(
+                    `${API_END_POINT}/orders/${orderId}/status`,
+                    { orderStatus: status }
+                );
+                if (response.data.success) {
+                    const updatedOrders = get().restaurantOrders.map((order: any) => {
+                        // তোমার মডেলে ফিল্ডের নাম 'status', তাই এখানেও 'status' আপডেট করো
+                        return order._id === orderId
+                            ? { ...order, status: response.data.data.status }
+                            : order;
+                    });
+
+                    set({ restaurantOrders: updatedOrders });
+                    toast.success(response.data.message);
+                }
+            } catch (error: any) {
+                const errorMessage = error.response?.data?.message;
+                toast.error(errorMessage);
+                console.error("Order status update failed:", error);
+                throw error;
+            }
+        },
     }), {
         name: 'restaurant-storage',
         storage: createJSONStorage(() => localStorage),
