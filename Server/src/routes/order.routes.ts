@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { upload } from "../middlewares/multer.middleware";
 import { isAuthenticated } from "../middlewares/isAuthenticated";
 import {
     createCheckoutSession,
-    getOrders
+    getOrders,
+    stripeWebhook
 } from "../controllers/order.controller"
+import express from 'express'
 
 const router = Router();
 
@@ -21,6 +22,6 @@ router.route("/checkout/create-checkout-session").post(
 );
 
 // Webhook route
-// router.route("webhook").post()
+router.route("/webhook").post(express.raw({ type: 'application/json' }), stripeWebhook)
 
 export default router

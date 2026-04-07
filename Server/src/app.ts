@@ -47,8 +47,7 @@ app.use("/api/v1/menu", menuRouter);
 
 // Order routes declaration
 import orderRouter from './routes/order.routes'
-app.use("/api/v1/order", orderRouter);
-
+app.use("/api/v1/orders", orderRouter);
 
 // global error handler (must be last)
 app.use(errorHandler);

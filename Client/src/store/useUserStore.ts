@@ -6,8 +6,23 @@ import { toast } from "sonner";
 const API_END_POINT = `http://localhost:8000/api/v1/user`;
 axios.defaults.withCredentials = true;
 
+interface User {
+    username: string;
+    fullname: string;
+    email: string;
+    contact: number;
+    address: string;
+    city: string;
+    country: string;
+    profilePicture: string;
+    profilePicturePublicId: string
+    isAdmin: boolean;
+    isVerified: boolean;
+}
+
+
 interface UserState {
-    user: any;
+    user: User | null;
     isAuthenticated: boolean;
     isCheckingAuth: boolean;
     loading: boolean;

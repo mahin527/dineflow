@@ -7,20 +7,19 @@ import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } fro
 import { ModeToggle } from './ModeToggle'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { useUserStore } from '@/store/useUserStore'
+import { useCartStore } from '@/store/useCartStore'
 
 
 function Navbar() {
     const navClasses = 'py-3 md:py-4 w-full text-neutral-700 dark:text-white sticky top-0 left-0 right-0 z-10'
     const navContetWrapperClasses = '@container mx-auto px-6 flex justify-between items-center'
-    const menuLinkClasses = `
-    flex flex-col lg:flex-row items-center
+    const menuLinkClasses = `flex flex-col lg:flex-row items-center
     fixed lg:static top-0 bottom-0 h-screen lg:h-auto 
     px-10 bg-neutral-100 dark:bg-neutral-800 lg:bg-transparent dark:lg:bg-transparent 
     pt-24 lg:pt-0 transition-all duration-500 gap-8 
     text-sm lg:text-base xl:text-lg font-bold 
     w-64 sm:w-72 md:w-80 lg:w-auto 
-    z-[-1] lg:z-auto shadow-xl lg:shadow-none
-`;
+    z-[-1] lg:z-auto shadow-xl lg:shadow-none`;
 
     const [mobileMenu, setMobileMenu] = useState(false)
     const toggleMenu = () => {
@@ -33,6 +32,8 @@ function Navbar() {
         await signout();
         navigate("/signin");
     };
+
+    const { cart } = useCartStore()
     return (
         <nav className={`${navClasses}`}>
 
@@ -88,16 +89,21 @@ function Navbar() {
                                 <div>
                                     <Link to="/cart" className='relative cursor-pointer'>
                                         <ShoppingCart />
-                                        <Button size={"icon"} className='absolute dark:bg-neutral-500 bg-neutral-700 text-white -inset-y-3 left-2 p-2 w-4 h-4 text-xs rounded-lg'>
-                                            0
-                                        </Button>
+                                        {
+                                            cart?.length > 0 && (
+                                                <Button size={"icon"} className='absolute dark:bg-neutral-500 bg-neutral-700 text-white -inset-y-3 left-2 p-2 w-4 h-4 text-xs rounded-lg'>
+                                                    {cart?.length}
+                                                </Button>
+                                            )
+                                        }
+
                                     </Link>
                                 </div>
                             </li>
                             <li className="flex items-center justify-center gap-3 md:gap-4 py-3 md:py-0">
                                 <Link to="/profile">
                                     <Avatar size='lg'>
-                                        <AvatarImage src={user?.profilePicture} alt="profile" />
+                                        <AvatarImage src={user?.profilePicture} alt={user?.fullname}  />
                                         <AvatarFallback>
                                             {user?.fullname?.charAt(0).toUpperCase() || "CN"}
                                         </AvatarFallback>

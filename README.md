@@ -145,7 +145,7 @@ JWT_SECRET=your_secret_key
 | POST   | /api/auth/signup | Register user |
 | POST   | /api/auth/signin    | Login user    |
 | GET    | /api/menu          | Get all menu  |
-| POST   | /api/order         | Place order   |
+| POST   | /api/orders        | Place order   |
 
 ---
 

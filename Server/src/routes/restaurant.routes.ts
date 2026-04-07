@@ -34,7 +34,7 @@ router.route("/update").patch(
 router.route("/orders").get(isAuthenticated, getRestaurantOrder);
 
 // 5. Update Order Status
-router.route("/order/:orderId/status").patch(isAuthenticated, updateOrderStatus);
+router.route("/orders/:orderId/status").patch(isAuthenticated, updateOrderStatus);
 
 // 6. Search Restaurants (Searches are usually GET requests.)
 // 1. Only the /search route (when one filters cuisine only with no text)

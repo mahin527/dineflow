@@ -12,16 +12,24 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
 import { InputWithIcon } from "./ui/input-with-icon"
-import { LocationEdit, Mail, MapPinHouse, MapPinned, Phone, UserPen } from "lucide-react"
+import { Loader2, LocationEdit, Mail, MapPinHouse, MapPinned, Phone, UserPen } from "lucide-react"
+import { useUserStore } from "@/store/useUserStore"
+import type { CheckoutSessionReq } from "@/types/order.types"
+import { useCartStore } from "@/store/useCartStore"
+import { useRestaurantStore } from "@/store/useRestaurantStore"
+import { useOrderStore } from "@/store/useOrderStore"
+import { toast } from "sonner";
+
 
 function CheckoutConfirmPage({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStateAction<boolean>> }) {
+    const { user } = useUserStore()
     const [input, setInput] = useState({
-        fullname: "",
-        email: "",
-        contact: "",
-        address: "",
-        city: "",
-        country: ""
+        fullname: user?.fullname || "",
+        email: user?.email || "",
+        contact: user?.contact || "",
+        address: user?.address || "",
+        city: user?.city || "",
+        country: user?.country || ""
     })
 
     const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,10 +37,43 @@ function CheckoutConfirmPage({ open, setOpen }: { open: boolean, setOpen: Dispat
         setInput({ ...input, [name]: value })
     }
 
-    const checkoutHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    const { cart } = useCartStore()
+    const { restaurant } = useRestaurantStore()
+    const { createCheckoutSession, loading } = useOrderStore()
+    const checkoutHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        console.log(input);
 
+        if (!restaurant?._id) {
+            toast.error("Restaurant information is missing!");
+            return;
+        }
+
+        if (cart.length === 0) {
+            toast.error("Your cart is empty!");
+            return;
+        }
+        try {
+            const checkoutData: CheckoutSessionReq = {
+                cartItems: cart.map((cartItem) => ({
+                    menuId: cartItem._id,
+                    menuTitle: cartItem.menuTitle,
+                    menuImage: cartItem.menuImage,
+                    price: cartItem.price,
+                    quantity: cartItem.quantity
+                })),
+                deliveryDetails: {
+                    ...input,
+                    contact: String(input.contact)
+                },
+                restaurantId: restaurant?._id as string
+            }
+            await createCheckoutSession(checkoutData)
+            console.log(checkoutData);
+            
+        } catch (error) {
+            console.log(error);
+
+        }
     }
 
     return (
@@ -67,7 +108,7 @@ function CheckoutConfirmPage({ open, setOpen }: { open: boolean, setOpen: Dispat
                                         name="contact"
                                         id="contact"
                                         leftIcon={Phone}
-                                        type="number"
+                                        type="text"
                                         value={input.contact}
                                         onChange={changeEventHandler}
                                         required
@@ -83,6 +124,7 @@ function CheckoutConfirmPage({ open, setOpen }: { open: boolean, setOpen: Dispat
                                     type="email"
                                     value={input.email}
                                     onChange={changeEventHandler}
+                                    disabled
                                     required
                                 />
                             </Field>
@@ -129,7 +171,15 @@ function CheckoutConfirmPage({ open, setOpen }: { open: boolean, setOpen: Dispat
                             <DialogClose asChild>
                                 <Button variant="outline">Cancel</Button>
                             </DialogClose>
-                            <Button type="submit">Continue to Payment</Button>
+                            {loading ? (
+                                <Button disabled className="rounded-xl text-xs md:text-sm xl:text-base">
+                                    <Loader2 className="animate-spin mr-2" /> Please wait...
+                                </Button>
+                            ) : (
+                                <Button type="submit" className="rounded-xl text-xs md:text-sm xl:text-base">
+                                    Continue to Payment
+                                </Button>
+                            )}
                         </DialogFooter>
                     </form>
                 </DialogContent>

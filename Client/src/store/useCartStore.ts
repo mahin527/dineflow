@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { CartState, CartItem } from "@/types/cart.types"
+import { toast } from "sonner";
 
 export const useCartStore = create<CartState>()(
     persist(
@@ -18,13 +19,14 @@ export const useCartStore = create<CartState>()(
                         ),
                     };
                 }
+                toast.success("Item added to cart!");
                 // If there is a new item, it will be pushed into the array.
                 return { cart: [...state.cart, { ...item, quantity: 1 }] };
             }),
 
             // 2. Removing items from cart
             removeFromCart: (menuId) => set((state) => ({
-                cart: state.cart.filter((item) => item._id !== menuId),
+                cart: state.cart.filter((item) => item._id !== menuId)
             })),
 
             // 3. Increasing the quantity
@@ -51,18 +53,3 @@ export const useCartStore = create<CartState>()(
     )
 );
 
-
-// How to use it:
-/*
-const { cart, addToCart, incrementQuantity } = useCartStore();
-
-// To show how many items are in the cart:
-const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-
-
-
-
-// const { cart, addToCart, incrementQuantity } = useCartStore();
-// const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-    
- */

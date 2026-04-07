@@ -11,9 +11,9 @@ export interface IOrder {
     };
     cartItems: {
         menuId: string;
-        name: string;
-        image: string;
+        menuTitle: string;
         price: number;
+        menuImage: string;
         quantity: number;
     }[];
     total: number;
@@ -37,8 +37,8 @@ const orderSchema = new mongoose.Schema<IOrderDocument>(
         },
         cartItems: [{
             menuId: { type: String, required: true },
-            name: { type: String, required: true },
-            image: { type: String, required: true },
+            menuTitle: { type: String, required: true },
+            menuImage: { type: String, required: true },
             price: { type: Number, required: true },
             quantity: { type: Number, required: true }
         }],
