@@ -13,13 +13,13 @@ function VerifyEmail() {
     const { verifyEmail, loading } = useUserStore()
 
     const handleChange = (index: number, value: string) => {
-        // শুধু লেটার এবং নাম্বার এলাউ করবে
+        // Only letters and numbers will be allowed
         if (/^[a-zA-Z0-9]$/.test(value) || value === "") {
             const newOtp = [...otp];
             newOtp[index] = value;
             setOtp(newOtp);
 
-            // ভ্যালু ইনপুট হলে পরের ঘরে যাবে
+            // If the value is input, it will go to the next cell
             if (value !== "" && index < otp.length - 1) {
                 inputRef.current[index + 1]?.focus();
             }
@@ -29,10 +29,10 @@ function VerifyEmail() {
     const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Backspace") {
             if (otp[index] === "" && index > 0) {
-                // যদি বর্তমান ঘর খালি থাকে, তবে আগের ঘরে গিয়ে ফোকাস করবে
+                // If the current room is empty, go to the previous room and focus
                 inputRef.current[index - 1]?.focus();
             } else {
-                // বর্তমান ঘরে ডাটা থাকলে সেটা মুছে দিবে (স্মুথ এক্সপেরিয়েন্স)
+                // If there is data in the current cell, it will be deleted (Smooth Experience)
                 const newOtp = [...otp];
                 newOtp[index] = "";
                 setOtp(newOtp);

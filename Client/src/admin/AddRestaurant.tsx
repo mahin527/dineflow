@@ -25,7 +25,7 @@ function Restaurant() {
     const restaurantFormSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // ১. ডাটা ফরম্যাট করা (Zod validation এর জন্য)
+        // 1. Formatting data (for Zod validation)
         const cuisinesArray = typeof input.cuisines === "string"
             ? input.cuisines.split(",").map((c) => c.trim())
             : input.cuisines;
@@ -56,20 +56,19 @@ function Restaurant() {
             formData.append("country", input.country);
             formData.append("deliveryTime", input.deliveryTime);
 
-            // এখানে গুরুত্বপূর্ণ: stringify করে পাঠানো
+            // Important here: sent by stringify
             formData.append("cuisines", JSON.stringify(cuisinesArray));
 
             if (input.restaurantPicture) {
-                formData.append("restaurantPicture", input.restaurantPicture); // নিশ্চিত হোন Route-এও "image" নাম দেওয়া আছে
+                formData.append("restaurantPicture", input.restaurantPicture); // Make sure Route is also named "image"
             }
 
-            // restaurant.id বা restaurant._id আছে কি না চেক করুন
-            // || restaurant.id
+            // check if there's restaurant.id or restaurant._id
             if (restaurant && (restaurant._id)) {
-                // যদি আইডি থাকে তবেই আপডেট
+                // Update only if ID is available
                 await updateRestaurant(formData);
             } else {
-                // নাহলে নতুন তৈরি
+                // Otherwise create new
                 await createRestaurant(formData);
             }
         } catch (error) {

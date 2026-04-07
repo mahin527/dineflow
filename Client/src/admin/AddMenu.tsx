@@ -29,7 +29,7 @@ import { useMenuStore } from "@/store/useMenuStore";
 import { useRestaurantStore } from "@/store/useRestaurantStore";
 
 function AddMenu() {
-    const [open, setOpen] = useState<boolean>(false); // এটি নতুন মেনু ডায়ালগ কন্ট্রোল করবে
+    const [open, setOpen] = useState<boolean>(false); // It will control the new menu dialog
     const [editOpen, setEditOpen] = useState<boolean>(false);
     const [selectedMenu, setSelectedMenu] = useState<any>({});
 
@@ -47,7 +47,7 @@ function AddMenu() {
         e.preventDefault()
 
         const formattedData = {
-            menuTitle: input.menuTitle, // এটি নিশ্চিত করো তোমার schema তে 'menuTitle' নামেই আছে
+            menuTitle: input.menuTitle, // Make sure your schema has the name 'menuTitle'
             description: input.description,
             price: Number(input.price),
             menuImage: input.menuImage
@@ -63,26 +63,6 @@ function AddMenu() {
             return;
         }
 
-        // try {
-        //     const formData = new FormData();
-        //     // ব্যাকএন্ডের সাথে মিলিয়ে কী (Key) গুলোর নাম দাও
-        //     formData.append("menuTitle", input.menuTitle);
-        //     formData.append("description", input.description);
-        //     formData.append("price", input.price);
-        //     if (input.menuImage) {
-        //         formData.append("menuImage", input.menuImage);
-        //     }
-
-        //     await createMenu(formData);
-
-        //     // ৩. সাকসেস হলে ফর্ম রিসেট করো
-        //     setInput({ menuTitle: "", description: "", price: "", menuImage: undefined });
-        //     setOpen(false);
-
-        // } catch (error) {
-        //     console.log(error);
-        // }
-
         try {
             const formData = new FormData();
             formData.append("menuTitle", input.menuTitle);
@@ -94,10 +74,10 @@ function AddMenu() {
 
             await createMenu(formData);
 
-            // ১. ফর্ম রিসেট
+            // 1. Reset form
             setInput({ menuTitle: "", description: "", price: "", menuImage: undefined });
 
-            // ২. ডায়ালগ বন্ধ করা (setEditOpen নয়, এটি হবে setOpen)
+            // 2. Closing the dialog (not setEditOpen, it would be setOpen)
             setOpen(false);
 
         } catch (error) {

@@ -12,7 +12,7 @@ function SearchInputBlock({ initialValue = "" }: SearchInputProps) {
     const [searchText, setSearchText] = useState<string>(initialValue);
     const navigate = useNavigate();
 
-    // যদি URL পরিবর্তন হয় (যেমন কেউ ব্রাউজারের ব্যাক বাটন চাপে), তবে ইনপুট বক্স আপডেট হবে
+    // If the URL changes (as someone presses the browser's back button), the input box will update
     useEffect(() => {
         setSearchText(initialValue);
     }, [initialValue]);

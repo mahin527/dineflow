@@ -18,7 +18,7 @@ export const useOrderStore = create<OrderState>()(
                     set({ loading: true });
                     const response = await axios.post(`${API_END_POINT}/checkout/create-checkout-session/`, checkoutSession);
                     if (response.data.success) {
-                        // ব্যাকএন্ডের ApiResponse অনুযায়ী: response.data.data.sessionUrl
+                        // According to ApiResponse of the backend: response.data.data.sessionUrl
                         const sessionUrl = response.data.data.sessionUrl;
                         window.location.href = sessionUrl;
                         console.log(response.data);

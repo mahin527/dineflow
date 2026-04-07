@@ -21,11 +21,11 @@ import { useEffect } from "react"
 import Loading from "./components/Loading"
 
 
-// ১. যারা লগইন নেই তাদের জন্য
+// 1. For those who don't have login
 const ProtectedRoutes = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isCheckingAuth } = useUserStore();
 
-  if (isCheckingAuth) return <Loading />; // চেক শেষ না হওয়া পর্যন্ত ওয়েট করুন
+  if (isCheckingAuth) return <Loading />; // Wait until the check is over
 
   if (!isAuthenticated) {
     return <Navigate to="/signin" replace />;
@@ -34,11 +34,11 @@ const ProtectedRoutes = ({ children }: { children: React.ReactNode }) => {
   return children;
 };
 
-// ২. যারা অলরেডি লগইন আছে (যাতে আবার লগইন পেজে না যেতে পারে)
+// 2. Those who already have login (so as not to go to login page again)
 const AuthenticatedUser = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useUserStore();
 
-  // যদি লগইন থাকে, তবে সাইন-ইন পেজে আসার দরকার নেই, হোমে পাঠিয়ে দাও
+  // If there is a login, no need to come to the sign-in page, send it home
   if (isAuthenticated) {
     return <Navigate to="/" replace />;
   }
@@ -123,15 +123,15 @@ const appRouter = createBrowserRouter([
 
   },
   {
-    path: "/forgot-password",
-    // element: <AuthenticatedUser><ForgotPassword /></AuthenticatedUser>
-    element: <ForgotPassword />
+    path: "/forgot-password", // TODO: Check this 
+    element: <AuthenticatedUser><ForgotPassword /></AuthenticatedUser>
+    // element: <ForgotPassword />
 
   },
   {
-    path: "/reset-password/:token",
-    // element: <AuthenticatedUser><ResetPassword /></AuthenticatedUser>
-    element: <ResetPassword />
+    path: "/reset-password/:token", // TODO: Check this
+    element: <AuthenticatedUser><ResetPassword /></AuthenticatedUser>
+    // element: <ResetPassword />
   },
   {
     path: "/verify-email",

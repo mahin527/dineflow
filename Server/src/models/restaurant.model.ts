@@ -9,7 +9,7 @@ export interface IRestaurant {
     cuisines: string[];
     restaurantPicture: string;
     restaurantPicturePublicId: string;
-    menus: mongoose.Schema.Types.ObjectId[]; // এখানে [] যোগ করো
+    menus: mongoose.Schema.Types.ObjectId[];
 }
 
 export interface IRestaurantDocument extends Document, IRestaurant {

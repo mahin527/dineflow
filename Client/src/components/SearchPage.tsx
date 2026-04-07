@@ -24,9 +24,9 @@ function SearchPage() {
     const { loading, searchedRestaurant, searchRestaurants, appliedFilter, setAppliedFilter } = useRestaurantStore()
 
     useEffect(() => {
-        // API কল করার সময় সব প্যারামিটার পাস করো
+        // Pass all parameters when calling API
         searchRestaurants(searchText, searchQuery, appliedFilter);
-    }, [searchText, appliedFilter]); // searchQuery এখানে না দেওয়াই ভালো, ইউজার বাটনে ক্লিক করলে বা এন্টার দিলে কল হবে।
+    }, [searchText, appliedFilter]); // It is better not to give searchQuery here, if you click or enter the user button, the call will be made.
 
     return (
         <div className="@container mx-auto px-6 py-8">

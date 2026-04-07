@@ -58,12 +58,12 @@ const getRestaurant = asyncHandler(async (req: AuthenticatedRequest, res: Respon
 
     const userId = req.user?._id as any // mongoose.Types.ObjectId;
     // const restaurant = await Restaurant.find({ user: userId });
-    // .findOne ব্যবহার করা ভালো যদি একজন ইউজারের একটিই রেস্টুরেন্ট থাকে
+    // It is best to use`.findOne` if a user has only one restaurant
     const restaurant = await Restaurant.findOne({ user: userId }).populate("menus");
     if (!restaurant) {
         // throw new ApiError(400, "Restaurant not found!");
-        // এখানে এরর থ্রো না করে সফল রেসপন্স কিন্তু ডাটা null পাঠানো ভালো 
-        // যাতে ফ্রন্টএন্ড বুঝতে পারে রেস্টুরেন্ট নেই।
+        // Here it is better to send successful response but data null without throwing error 
+        // So that the frontend realizes that there is no restaurant.
         return res.status(200).json(new ApiResponse(200, null, "No restaurant found"));
     }
 
@@ -161,7 +161,7 @@ const getRestaurantOrder = asyncHandler(async (req: AuthenticatedRequest, res: R
 const updateOrderStatus = asyncHandler(async (req: Request, res: Response) => {
     const { orderId } = req.params;
     const { orderStatus } = req.body;
-    
+
     if (!orderStatus) {
         throw new ApiError(400, "Order status is required!");
     }
@@ -191,7 +191,7 @@ const searchRestaurants = asyncHandler(async (req: Request, res: Response) => {
     // It is safe to use `.filter(c => c.trim() !== "")`, because sometimes only commas (,) may be passed from the frontend.
 
     const query: any = {};
-    
+
     // 1. Text search logic (name, city or country)
     // We will search if either searchText or searchQuery exists
     const search = searchText || searchQuery;

@@ -73,14 +73,14 @@ export const useUserStore = create<UserState>()(
                 const response = await axios.post(`${API_END_POINT}/signin`, input);
 
                 if (response.data.success) {
-                    // ১. স্টেট আপডেট করুন
+                    // 1. Update state
                     set({
                         user: response.data.data.user,
                         isAuthenticated: true,
                         loading: false
                     });
                     toast.success(response.data.message || "Signin successful!");
-                    // ২. এটি নিশ্চিত করে যে ফাংশনটি সফলভাবে শেষ হয়েছে
+                    // 2. This ensures that the function is completed successfully
                     return response.data;
                 }
             } catch (error: any) {
@@ -100,12 +100,12 @@ export const useUserStore = create<UserState>()(
 
                 if (response.data.success) {
                     toast.success(response.data.message || "Email verification successful!");
-                    // বর্তমান ইউজার অবজেক্ট নিয়ে তার isVerified আপডেট করো
+                    // Update its isVerified with the current user object
                     const updatedUser = { ...response.data.data, isVerified: true };
                     set({
                         loading: false,
                         // user: response.data.data,
-                        user: updatedUser, // আপডেট করা ইউজার সেট করো
+                        user: updatedUser, // Set updated users
                         isAuthenticated: true
                     });
                 }
@@ -121,14 +121,14 @@ export const useUserStore = create<UserState>()(
 
         checkAuthentication: async () => {
             try {
-                set({ isCheckingAuth: true }); // চেক শুরু হলে ট্রু
+                set({ isCheckingAuth: true }); // True when the check starts
                 const response = await axios.get(`${API_END_POINT}/check-auth`);
 
                 if (response.data.success) {
                     set({
                         user: response.data.data,
                         isAuthenticated: true,
-                        isCheckingAuth: false // সফল হলে ফলস
+                        isCheckingAuth: false // False if successful
                     });
                 }
             } catch (error) {

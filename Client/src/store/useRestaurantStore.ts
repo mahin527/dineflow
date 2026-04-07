@@ -7,8 +7,8 @@ import { type RestaurantState } from "@/types/restaurant.types"
 /* TODO: https://chatgpt.com/c/69cb3d61-3bc4-8323-9c06-f91a0ca60a70
 headers: { "Content-Type": "multipart/form-data" }
 
-👉 বারবার লিখছো
-axios instance বানাও
+👉 You write again and again
+make => axios instance 
 
 const api = axios.create({
     baseURL: API_END_POINT,
@@ -22,7 +22,7 @@ same code copy-paste:
 const errorMessage = error.response?.data?.message
 ✅ FIX:
 
-helper function বানাও:
+make => helper function:
 
 const handleError = (error: any, defaultMsg: string) => {
     return error.response?.data?.message || defaultMsg;
@@ -33,12 +33,12 @@ isAuthenticated: true
 
 👉 restaurant fetch = auth success? 😐
 
-👉 এটা auth store এর কাজ, restaurant store না
+👉 It is the work of the auth store, not the restaurant store
 
 ISSUE 9 — persist overkill
 persist(...)
 
-👉 তুমি পুরো restaurant localStorage এ রাখছো
+👉 You put it in the entire restaurant localStorage
 
 💥 problem:
 
@@ -240,7 +240,7 @@ export const useRestaurantStore = create<RestaurantState>()(
                 );
                 if (response.data.success) {
                     const updatedOrders = get().restaurantOrders.map((order: any) => {
-                        // তোমার মডেলে ফিল্ডের নাম 'status', তাই এখানেও 'status' আপডেট করো
+                        // Field's name on your model is 'status', so update 'status' here too
                         return order._id === orderId
                             ? { ...order, status: response.data.data.status }
                             : order;

@@ -37,7 +37,7 @@ const createCheckoutSession = asyncHandler(async (req: AuthenticatedRequest, res
             quantity: item.quantity
         })),
         status: "pending",
-        total: cartItems.reduce((acc: any, item: any) => acc + (item.price * item.quantity), 0) // টোটালটাও ক্যালকুলেট করে নাও
+        total: cartItems.reduce((acc: any, item: any) => acc + (item.price * item.quantity), 0) // Calculate the total too
     });
 
     // ৩. Line Items creating 
