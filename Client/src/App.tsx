@@ -5,7 +5,7 @@ import Signup from "./auth/Signup"
 import ForgotPassword from "./auth/ForgotPassword"
 import ResetPassword from "./auth/ResetPassword"
 import VerifyEmail from "./auth/VerifyEmail"
-import HeroSection from "./components/HeroSection"
+import Home from "./components/Home"
 import Profile from "./components/Profile"
 import SearchPage from "./components/SearchPage"
 import RestaurantDetails from "./components/RestaurantDetails"
@@ -69,7 +69,7 @@ const appRouter = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <HeroSection />
+        element: <Home />
       },
       {
         path: "/profile",

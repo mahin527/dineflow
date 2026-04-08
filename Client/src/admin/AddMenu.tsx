@@ -27,6 +27,7 @@ import { InputWithIcon } from "@/components/ui/input-with-icon"
 import { menuFormSchema } from "@/schema/AddMenuSchema";
 import { useMenuStore } from "@/store/useMenuStore";
 import { useRestaurantStore } from "@/store/useRestaurantStore";
+import { Link } from "react-router-dom";
 
 function AddMenu() {
     const [open, setOpen] = useState<boolean>(false); // It will control the new menu dialog
@@ -93,7 +94,7 @@ function AddMenu() {
                 </div>
                 <Dialog open={open} onOpenChange={setOpen}>
                     <DialogTrigger asChild>
-                        <Button variant="outline" size="lg" onClick={() => setOpen(true)}>
+                        <Button className="text-orange-600 hover:text-orange-700 rounded-xl" variant="outline" size="lg" onClick={() => setOpen(true)}>
                             Add Menu <Plus className="font-bold" />
                         </Button>
                     </DialogTrigger>
@@ -166,14 +167,14 @@ function AddMenu() {
                             </FieldGroup>
                             <DialogFooter>
                                 <DialogClose asChild>
-                                    <Button variant="outline">Cancel</Button>
+                                    <Button className="border-orange-600 text-orange-600 hover:text-orange-700 rounded-xl" variant="outline">Cancel</Button>
                                 </DialogClose>
                                 {loading ? (
-                                    <Button disabled className="rounded-xl text-xs md:text-sm xl:text-base">
+                                    <Button disabled className="bg-orange-600 rounded-xl text-xs md:text-sm xl:text-base">
                                         <Loader2 className="animate-spin mr-2" /> Please wait...
                                     </Button>
                                 ) : (
-                                    <Button type="submit" className="rounded-xl text-xs md:text-sm xl:text-base">
+                                    <Button type="submit" className="text-xs md:text-sm xl:text-base bg-orange-600 hover:bg-orange-700 text-white rounded-xl">
                                         Create Menu
                                     </Button>
                                 )}
@@ -184,36 +185,48 @@ function AddMenu() {
             </div>
             {/* Show menus */}
             <div className="py-6">
-                <div className="w-full flex flex-col md:flex-row md:items-center flex-wrap gap-5">
-                    {restaurant?.menus?.map((menu: any) => (
-                        <Card key={menu._id} className="relative w-full max-w-xs min-w-100 pt-0 shadow-md rounded-xl overflow-hidden hover:shadow-lg shadow-neutral-600 dark:shadow-neutral-800 transition-shadow duration-300">
-                            <div className="absolute inset-0 aspect-video bg-black/5 dark:bg-white/5" />
-                            <img
-                                src={menu.menuImage}
-                                alt={menu.menuTitle}
-                                className="relative aspect-video w-full object-cover"
-                            />
-                            <CardHeader>
-                                <CardTitle className="capitalize">{menu.menuTitle}</CardTitle>
-                                <CardDescription>
-                                    <p>
-                                        {menu.description}
-                                    </p>
-                                    <h4 className="font-medium text-base xl:text-lg pt-2">Price: {menu.price}$</h4>
-                                </CardDescription>
-                            </CardHeader>
-                            <CardFooter>
-                                <Button
-                                    onClick={() => {
-                                        setSelectedMenu(menu);
-                                        setEditOpen(true);
-                                    }}
-                                    className="w-full px-5 py-5" size="lg">Edit</Button>
-                            </CardFooter>
-                        </Card>
-                    ))}
+                {
+                    restaurant?.menus?.length === 0 ? <div className="text-center py-16 space-y-2">
+                        <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-wider">
+                            Empty!
+                        </h2>
+                        <Button className="px-5 py-5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs md:text-sm xl:text-base" size="lg">
+                            <Link to="/">
+                                Go Home
+                            </Link>
+                        </Button>
+                    </div> : <div className="w-full flex flex-col md:flex-row md:items-center flex-wrap gap-5">
+                        {restaurant?.menus?.map((menu: any) => (
+                            <Card key={menu._id} className="relative w-full max-w-xs min-w-100 pt-0 shadow-md rounded-xl overflow-hidden hover:shadow-lg shadow-neutral-600 dark:shadow-neutral-800 transition-shadow duration-300">
+                                <div className="absolute inset-0 aspect-video bg-black/5 dark:bg-white/5" />
+                                <img
+                                    src={menu.menuImage}
+                                    alt={menu.menuTitle}
+                                    className="relative aspect-video w-full object-cover"
+                                />
+                                <CardHeader>
+                                    <CardTitle className="capitalize">{menu.menuTitle}</CardTitle>
+                                    <CardDescription className="min-h-20">
+                                        <p>
+                                            {menu.description}
+                                        </p>
+                                        <h4 className="font-medium text-base xl:text-lg pt-2">Price: {menu.price}$</h4>
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardFooter>
+                                    <Button
+                                        onClick={() => {
+                                            setSelectedMenu(menu);
+                                            setEditOpen(true);
+                                        }}
+                                        className="w-full  bg-orange-600 hover:bg-orange-700 text-white rounded-xl" size="lg">Edit</Button>
+                                </CardFooter>
+                            </Card>
+                        ))}
 
-                </div>
+                    </div>
+                }
+
             </div>
             <EditMenu selectedMenu={selectedMenu} editOpen={editOpen} setEditOpen={setEditOpen} />
         </div>

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-// import mongoose from "mongoose"; 
+import mongoose from "mongoose";
 import { Restaurant } from "../models/restaurant.model";
 import { IUserDocument } from "../models/user.model";
 import { asyncHandler } from "../utils/asyncHandler"
@@ -139,22 +139,19 @@ const updateRestaurant = asyncHandler(async (req: AuthenticatedRequest, res: Res
 });
 
 const getRestaurantOrder = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.user?._id as any;
+    const userId = req.user?._id;
 
-    // 1. First find the user's restaurant
+    // 1. First find this user's restaurant.
     const restaurant = await Restaurant.findOne({ user: userId });
 
     if (!restaurant) {
-        throw new ApiError(404, "Restaurant not found!");
+        throw new ApiError(404, "Restaurant not found for this admin!");
     }
 
-    // 2. Use `as any` to fix the error or pass the ID directly
-    const orders = await Order.find({ restaurant: restaurant._id as any })
-        .populate("restaurant")
-        .populate("user");
-
+    // 2. Find the orders
+    const orders = await Order.find().populate("restaurant").populate("user");
     return res.status(200).json(
-        new ApiResponse(200, orders, "Orders fetched successfully!")
+        new ApiResponse(200, orders, "Admin orders fetched successfully!")
     );
 });
 
@@ -236,6 +233,13 @@ const getSingleRestaurant = asyncHandler(async (req: Request, res: Response) => 
 
 })
 
+// Restaurant Controller
+const getAllRestaurants = asyncHandler(async (req, res) => {
+    const restaurants = await Restaurant.find();
+    res.status(200).json({ success: true, data: restaurants });
+});
+
+
 // TODO: 
 /** Next Challenge: Pagination
     If you have 100+ restaurants in your database, sending all the data at once will slow down performance. Do you want me to show you the pagination logic by adding limit and skip here?
@@ -248,5 +252,7 @@ export {
     getRestaurantOrder,
     updateOrderStatus,
     searchRestaurants,
-    getSingleRestaurant
+    getSingleRestaurant,
+    getAllRestaurants,
+
 }

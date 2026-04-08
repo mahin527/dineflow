@@ -13,8 +13,9 @@ export type CheckoutSessionReq = {
         address: string;
         city: string;
         country: string;
-    },
-    restaurantId: string
+    }
+    restaurantId: string;
+
 }
 
 export interface Orders extends CheckoutSessionReq {

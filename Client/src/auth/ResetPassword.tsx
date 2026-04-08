@@ -83,11 +83,11 @@ function ResetPassword() {
 
                     <div className="w-full">
                         {loading ? (
-                            <Button disabled className="w-full py-5 rounded-xl text-xs md:text-sm xl:text-base">
+                            <Button disabled className="bg-orange-600 w-full py-5 rounded-xl text-xs md:text-sm xl:text-base">
                                 <Loader2 className="animate-spin mr-2" /> Please wait...
                             </Button>
                         ) : (
-                            <Button type="submit" className="w-full py-5 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
+                            <Button type="submit" className="w-full py-5 text-orange-600 hover:text-orange-700 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
                                 Reset Password
                             </Button>
                         )}

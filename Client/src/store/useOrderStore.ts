@@ -13,28 +13,29 @@ export const useOrderStore = create<OrderState>()(
             loading: false,
             orders: [],
 
-            createCheckoutSession: async (checkoutSession: CheckoutSessionReq) => {
+            createCheckoutSession: async (checkoutData: CheckoutSessionReq) => {
                 try {
                     set({ loading: true });
-                    const response = await axios.post(`${API_END_POINT}/checkout/create-checkout-session/`, checkoutSession);
-                    if (response.data.success) {
-                        // According to ApiResponse of the backend: response.data.data.sessionUrl
-                        const sessionUrl = response.data.data.sessionUrl;
-                        window.location.href = sessionUrl;
-                        console.log(response.data);
+                    const response = await axios.post(`${API_END_POINT}/checkout/create-checkout-session`, checkoutData);
 
-                        set({
-                            loading: false
-                        });
+                    // সেফটি চেক: ডাটা ঠিকমতো আসছে কি না
+                    if (response.data.success && response.data.session) {
+                        const stripeUrl = response.data.session.url; // এখানে 'url' হবে
+
+                        if (stripeUrl) {
+                            window.location.href = stripeUrl; // সরাসরি স্ট্রাইপ পেমেন্ট পেজে নিয়ে যাবে
+                        } else {
+                            console.error("Stripe session URL is missing!");
+                        }
                     }
                 } catch (error: any) {
-                    set({ loading: false });
-                    const errorMessage = error.response?.data?.message;
-                    toast.error(errorMessage);
                     console.error("Create checkout session error:", error);
-                    throw error;
+                    toast.error(error.response?.data?.message || "Something went wrong");
+                } finally {
+                    set({ loading: false });
                 }
             },
+
             getOrderDetails: async () => {
                 try {
                     set({ loading: true });

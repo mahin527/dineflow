@@ -66,10 +66,10 @@ function SearchPage() {
                                                 className="relative aspect-video w-full object-cover"
                                             />
                                             <CardAction className="absolute py-2 px-2">
-                                                <Badge>Featured</Badge>
+                                                <Badge className="bg-orange-600 hover:bg-orange-700 text-white rounded-xl">Featured</Badge>
                                             </CardAction>
                                             <CardHeader>
-                                                <CardTitle>{restaurant.restaurantName}</CardTitle>
+                                                <CardTitle>{restaurant.restaurantName.toUpperCase()}</CardTitle>
                                                 <CardDescription>
                                                     <div className="flex gap-1 items-center">
                                                         <MapPin size={16} />
@@ -79,12 +79,12 @@ function SearchPage() {
                                             </CardHeader>
                                             <CardAction className="flex flex-wrap gap-2 px-3">
                                                 {restaurant.cuisines?.map((cuisine: string, idx: number) => (
-                                                    <Badge key={idx} variant="outline" className="capitalize">{cuisine}</Badge>
+                                                    <Badge key={idx} variant="outline" className="capitalize text-orange-600 border-orange-600">{cuisine}</Badge>
                                                 ))}
                                             </CardAction>
                                             <CardFooter>
                                                 <Link to={`/restaurant/${restaurant._id}`} className="w-full">
-                                                    <Button className="w-full px-5 py-5" size="lg">View Menu</Button>
+                                                    <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white rounded-xl" size="lg">View Menu</Button>
                                                 </Link>
                                             </CardFooter>
                                         </Card>
@@ -97,7 +97,7 @@ function SearchPage() {
                             <div className="text-center py-10 pr-0 lg:pr-10 space-y-2">
                                 <h3 className="text-xl font-semibold">No restaurants found!</h3>
                                 <p className="text-muted-foreground">Try searching with a different name or city.</p>
-                                <Button className="px-5 py-5 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
+                                <Button className="px-5 py-5  bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs md:text-sm xl:text-base" size="lg">
                                     <Link to="/">
                                         Go Home
                                     </Link>

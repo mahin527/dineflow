@@ -62,7 +62,8 @@ export const useRestaurantStore = create<RestaurantState>()(
         searchedRestaurant: null,
         singleRestaurant: null,
         restaurantOrders: [],
-
+        allRestaurants: [],
+        
         createRestaurant: async (formData) => {
             try {
                 set({ loading: true });
@@ -254,6 +255,23 @@ export const useRestaurantStore = create<RestaurantState>()(
                 toast.error(errorMessage);
                 console.error("Order status update failed:", error);
                 throw error;
+            }
+        },
+        getAllRestaurants: async () => {
+            try {
+                set({ loading: true });
+                const response = await axios.get(`${API_END_POINT}/all-restaurants`);
+
+                if (response.data.success) {
+                    set({
+                        loading: false,
+                        allRestaurants: response.data.data,
+                    });
+                }
+
+            } catch (error: any) {
+                set({ loading: false });
+                console.error(error);
             }
         },
     }), {

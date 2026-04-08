@@ -31,7 +31,7 @@ function RestaurantDetails() {
                         {
                             singleRestaurant?.cuisines?.map((cuisin: string) => (
                                 <div key={cuisin} className="relative inline-flex items-center max-w-full">
-                                    <Badge className="rounded-md hover:cursor-pointer whitespace-nowrap pr-5">{cuisin}</Badge>
+                                    <Badge variant="outline" className="rounded-xl whitespace-nowrap text-orange-600 border-orange-600">{cuisin}</Badge>
                                 </div>
                             ))
                         }
@@ -50,7 +50,7 @@ function RestaurantDetails() {
                     </div>
                 </div>
             </div>
-            <AvailableMenu menus={singleRestaurant?.menus || []} />
+            <AvailableMenu menus={singleRestaurant?.menus || []} restaurantId={singleRestaurant?._id || ""} />
         </div>
     )
 }

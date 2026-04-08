@@ -2,9 +2,9 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { Request, Response } from "express";
-import { Restaurant } from "../models/restaurant.model";
 import { Order } from "../models/order.model";
 import Stripe from "stripe";
+import { Menu } from "../models/menu.model"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -13,61 +13,129 @@ interface AuthenticatedRequest extends Request {
     user?: any;
 }
 
-const createCheckoutSession = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+// const createCheckoutSession = asyncHandler(async (req: any, res: Response) => {
 
+//     
+//     if (!dbMenus || dbMenus.length === 0) {
+//         throw new ApiError(404, "Menus not found in database!");
+//     }
+
+//     const lineItems = cartItems.map((cartItem: any) => {
+//         //Use dbMenus here and make sure it is an array.
+//         const menuItem = dbMenus.find(
+//             (item: any) => item._id.toString() === cartItem.menuId.toString()
+//         );
+
+//         if (!menuItem) {
+//             throw new ApiError(404, `Item with ID ${cartItem.menuId} not found`);
+//         }
+
+//         return {
+//             price_data: {
+//                 currency: "usd",
+//                 product_data: {
+//                     name: menuItem.menuTitle,
+//                     images: [menuItem.menuImage],
+//                 },
+//                 unit_amount: Math.round(menuItem.price * 100),
+//             },
+//             quantity: cartItem.quantity,
+//         };
+//     });
+
+//     
+//     const session = await stripe.checkout.sessions.create({
+//         payment_method_types: ['card'],
+//         shipping_address_collection: { allowed_countries: ['GB', 'US', 'CA'] },
+//         line_items: lineItems,
+//         mode: 'payment',
+//         success_url: `${process.env.FRONTEND_URL}orders/status`,
+//         cancel_url: `${process.env.FRONTEND_URL}cart`,
+//         metadata: {
+//             orderId: "some_id", //TODO: Enter your order ID here
+//             restaurantId: restaurantId
+//         }
+//     });
+
+//     return res.status(200).json({
+//         success: true,
+//         session: {
+//             url: session.url // The actual Stripe session URL goes here
+//         }
+//     });
+// });
+
+
+const createCheckoutSession = asyncHandler(async (req: any, res: Response) => {
     const { cartItems, deliveryDetails, restaurantId } = req.body;
 
-    // 1. Populate restaurants and menus
-    const restaurant = await Restaurant.findById(restaurantId).populate("menus");
-
-    if (!restaurant) {
-        throw new ApiError(404, "Restaurant not found!");
+    // 1. Check if the data is coming in properly.
+    if (!cartItems || cartItems.length === 0) {
+        throw new ApiError(400, "No items in cart");
     }
 
-    // 2. Create order object (do not save first, will update when payment is successful)
+    // 2. Fetch the menus from the database
+    const menuIds = cartItems.map((item: any) => item.menuId);
+    const dbMenus = await Menu.find({ _id: { $in: menuIds } });
+
+    // 3. Safety Check: If nothing is found from the database, stop here.
+    if (!dbMenus || dbMenus.length === 0) {
+        throw new ApiError(404, "Menus not found in database!");
+    }
+
+    // 4. Creating orders in the database
     const order = new Order({
-        restaurant: restaurant._id,
-        user: req.user?._id,
+        user: req.user?._id, // Make sure req.user is coming from authMiddleware
+        restaurant: restaurantId,
         deliveryDetails,
-        cartItems: cartItems.map((item: any) => ({
-            menuId: item.menuId,
-            menuTitle: item.menuTitle,
-            menuImage: item.menuImage,
-            price: item.price,
-            quantity: item.quantity
-        })),
+        cartItems: cartItems, // Keep the format correct according to your model.
         status: "pending",
-        total: cartItems.reduce((acc: any, item: any) => acc + (item.price * item.quantity), 0) // Calculate the total too
+        total: 0
+    });
+    await order.save();
+
+    const lineItems = cartItems.map((cartItem: any) => {
+        const menuItem = dbMenus.find(
+            (item: any) => item._id.toString() === cartItem.menuId.toString()
+        );
+
+        if (!menuItem) {
+            throw new ApiError(404, `Item with ID ${cartItem.menuId} not found`);
+        }
+
+        return {
+            price_data: {
+                currency: "usd",
+                product_data: {
+                    name: menuItem.menuTitle,
+                    images: [menuItem.menuImage],
+                },
+                unit_amount: Math.round(menuItem.price * 100),
+            },
+            quantity: cartItem.quantity,
+        };
     });
 
-    // ৩. Line Items creating 
-    const lineItems = createLineItems(cartItems, restaurant.menus);
-
-    // ৪. Stripe Session creating
+    // 5. Create a Stripe session
     const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card"],
-        shipping_address_collection: {
-            allowed_countries: ["US", "BD", "GB"]
-        },
-        line_items: lineItems, // Property name line_items (according to Stripe documentation)
-        mode: "payment",
+        payment_method_types: ['card'],
+        shipping_address_collection: { allowed_countries: ['GB', 'US', 'CA'] },
+        line_items: lineItems,
+        mode: 'payment',
         success_url: `${process.env.FRONTEND_URL}orders/status`,
         cancel_url: `${process.env.FRONTEND_URL}cart`,
         metadata: {
-            orderId: order._id.toString(),
+            orderId: order._id.toString(), // The actual order ID must be sent here!
             restaurantId: restaurantId
         }
     });
 
-    if (!session.url) {
-        throw new ApiError(500, "Error while creating stripe session!");
-    }
-
-    await order.save();
-
-    return res.status(201).json(
-        new ApiResponse(201, { sessionUrl: session.url }, "Checkout session created!")
-    );
+    return res.status(200).json({
+        success: true,
+        session: {
+            url: session.url
+        }
+    });
 });
 
 const stripeWebhook = asyncHandler(async (req: Request, res: Response) => {
@@ -121,28 +189,39 @@ const stripeWebhook = asyncHandler(async (req: Request, res: Response) => {
 
 const createLineItems = (cartItems: any[], menuItems: any[]) => {
     return cartItems.map((cartItem) => {
-        // Finding menu items
-        const menuItem = menuItems.find((item: any) => item._id.toString() === cartItem.menuId);
+        // ১. cartItem.menuId এবং menuItems এর ভেতরের item._id ম্যাচ করাও
+        // safe check এর জন্য optional chaining এবং toString() ব্যবহার করো
+        const menuItem = menuItems.find((item: any) =>
+            item._id.toString() === cartItem.menuId.toString()
+        );
+
+        console.log("Restaurant Menus IDs:", menuItems.map(m => m._id.toString()));
+        console.log("Cart Item ID:", cartItem.menuId);
+
         if (!menuItem) {
-            throw new ApiError(404, `Menu item ${cartItem.menuId} not found!`);
+            // এরর মেসেজে আইডিটা প্রিন্ট করলে তুমি শিওর হতে পারবে কোন আইডিটা ডাটাবেসে নেই
+            throw new ApiError(404, `Menu item with ID ${cartItem.menuId} not found in this restaurant!`);
         }
 
         return {
             price_data: {
                 currency: "usd",
                 product_data: {
-                    name: menuItem.menuTitle, // my menu model has menuTitle
-                    images: [menuItem.menuImage] // my menu model has menuImage 
+                    name: menuItem.menuTitle,
+                    images: [menuItem.menuImage]
                 },
-                unit_amount: menuItem.price * 100 // Stripe calculates in cents
+                unit_amount: Math.round(menuItem.price * 100) // ফ্লোটিং পয়েন্ট এরর এড়াতে Math.round ব্যবহার করো
             },
             quantity: cartItem.quantity
         };
     });
 };
 
+// order.controller.ts
 const getOrders = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    console.log("Logged in User ID:", req.user?._id); // এখানে দেখো আইডি ঠিক আছে কি না
     const orders = await Order.find({ user: req.user?._id }).populate("restaurant");
+    console.log("Found Orders:", orders.length); // দেখো কয়টা অর্ডার পেল
 
     return res.status(200).json(
         new ApiResponse(200, orders, "Orders fetched successfully!")

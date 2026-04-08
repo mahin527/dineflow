@@ -4,7 +4,8 @@ import { isAuthenticated } from "../middlewares/isAuthenticated";
 import {
     addMenu,
     updateMenu,
-    deleteMenu
+    deleteMenu,
+    getAllMenus
 } from "../controllers/menu.controller"
 
 const router = Router();
@@ -25,5 +26,8 @@ router.route("/update/:menuId").patch(
 
 // deleteMenu
 router.route("/:menuId").delete(isAuthenticated, deleteMenu);
+
+// getAllMenus
+router.route("/all-menus").get(isAuthenticated, getAllMenus);
 
 export default router

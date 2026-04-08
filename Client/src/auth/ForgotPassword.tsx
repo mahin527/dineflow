@@ -62,11 +62,11 @@ function ForgotPassword() {
 
                     <div className="w-full">
                         {loading ? (
-                            <Button disabled className="w-full py-5 rounded-xl text-xs md:text-sm xl:text-base">
+                            <Button disabled className="bg-orange-600 w-full py-5 rounded-xl text-xs md:text-sm xl:text-base">
                                 <Loader2 className="animate-spin mr-2" /> Please wait...
                             </Button>
                         ) : (
-                            <Button type="submit" className="w-full py-5 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
+                            <Button type="submit" className="w-full py-5 rounded-xl text-xs md:text-sm xl:text-base bg-orange-600 hover:bg-orange-700 text-white" size="lg">
                                 Send Reset Link
                             </Button>
                         )}
@@ -74,7 +74,7 @@ function ForgotPassword() {
 
                     <div className="flex items-center justify-center gap-2 pt-2">
                         <p className="text-xs lg:text-sm text-muted-foreground">Remember password?</p>
-                        <Link to="/signin" className="font-semibold text-sm hover:underline">
+                        <Link to="/signin" className="font-semibold text-sm hover:underline text-orange-600 hover:text-orange-700">
                             Sign in
                         </Link>
                     </div>

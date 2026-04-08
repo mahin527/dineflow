@@ -49,4 +49,6 @@ export interface RestaurantState {
     getSingleRestaurant: (restaurantId: string) => Promise<void>;
     getRestaurantOrders: () => Promise<void>;
     updateOrderStatus: (orderId: string, status: string) => Promise<void>;
+    allRestaurants: any[];
+    getAllRestaurants: () => Promise<void>;
 }

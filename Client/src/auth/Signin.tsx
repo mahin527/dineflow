@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { InputWithIcon } from "@/components/ui/input-with-icon"
 import { LockKeyhole, Mail, Eye, EyeOff, Loader2 } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import Logo from "@/components/Logo"
 import { useForm } from "@/hooks/useForm"
@@ -48,8 +48,19 @@ function Signin() {
         } catch (error) {
             console.error("Signin failed");
         }
-
     }
+
+    useEffect(() => {
+        // পেজ লোড হওয়ার সাথে সাথে ক্রেডেনশিয়াল দেখাবে
+        toast.info("Test Admin Credentials", {
+            description: "Email: oliver.smith@proton.com | Password: oliver",
+            duration: 10000, // ১০ সেকেন্ড পর্যন্ত থাকবে
+            action: {
+                label: "Copy Email",
+                onClick: () => navigator.clipboard.writeText("oliver.smith@proton.com")
+            },
+        });
+    }, []);
 
     return (
 
@@ -87,18 +98,18 @@ function Signin() {
                     />
 
                     <div className="text-right text-xs lg:text-sm">
-                        <Link to="/forgot-password" className="text-muted-foreground hover:text-foreground hover:underline transition-colors">
+                        <Link to="/forgot-password" className="text-orange-600 hover:text-orange-700 hover:underline transition-colors">
                             Forget password?
                         </Link>
                     </div>
 
                     <div className="w-full">
                         {loading ? (
-                            <Button disabled className="w-full py-5 rounded-xl text-xs md:text-sm xl:text-base">
+                            <Button disabled className="bg-orange-600 w-full py-5 rounded-xl text-xs md:text-sm xl:text-base">
                                 <Loader2 className="animate-spin mr-2" /> Please wait...
                             </Button>
                         ) : (
-                            <Button type="submit" className="w-full py-5 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
+                            <Button type="submit" className="w-full py-5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs md:text-sm xl:text-base" size="lg">
                                 Sign in
                             </Button>
                         )}
@@ -106,7 +117,7 @@ function Signin() {
 
                     <div className="flex items-center justify-center gap-2 pt-2">
                         <p className="text-xs lg:text-sm text-muted-foreground">Don't have an account?</p>
-                        <Link to="/signup" className="font-semibold text-sm hover:underline">
+                        <Link to="/signup" className="font-semibold text-sm hover:underline text-orange-600 hover:text-orange-700">
                             Sign up
                         </Link>
                     </div>

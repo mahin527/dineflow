@@ -8,6 +8,9 @@ import { ModeToggle } from './ModeToggle'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { useUserStore } from '@/store/useUserStore'
 import { useCartStore } from '@/store/useCartStore'
+import { useRestaurantStore } from '@/store/useRestaurantStore'
+import { useMenuStore } from '@/store/useMenuStore'
+import { useOrderStore } from '@/store/useOrderStore'
 
 
 function Navbar() {
@@ -29,8 +32,18 @@ function Navbar() {
     const navigate = useNavigate();
     const { user, loading, signout } = useUserStore()
     const logoutHandler = async () => {
-        await signout();
-        navigate("/signin");
+        try {
+            await signout();
+            useUserStore.persist.clearStorage();
+            useCartStore.persist.clearStorage();
+            useRestaurantStore.persist.clearStorage();
+            useMenuStore.persist.clearStorage();
+            useOrderStore.persist.clearStorage();
+            navigate("/signin");
+        } catch (error) {
+            console.log(error);
+
+        }
     };
 
     const { cart } = useCartStore()
@@ -40,19 +53,19 @@ function Navbar() {
             <div className={`${navContetWrapperClasses}`}>
                 <Logo />
                 <ul className={`${menuLinkClasses} ${mobileMenu ? 'right-0' : '-right-full'}`}>
-                    <li>
+                    <li className='text-orange-500 hover:text-orange-600'>
                         <Link to="/">
                             Home
                         </Link>
                     </li>
-                    <li>
+                    <li className='text-orange-500 hover:text-orange-600'>
                         <Link to="/orders/status">
                             Orders
                         </Link>
                     </li>
                     <li>
                         <ul className="flex flex-col lg:flex-row items-center justify-center gap-2 md:gap-3 xl:gap-4">
-                            <li>
+                            <li className='text-orange-500 hover:text-orange-600'>
                                 {
                                     user?.isAdmin && (
                                         <Menubar>
@@ -62,17 +75,17 @@ function Navbar() {
                                                 </MenubarTrigger>
                                                 <MenubarContent>
                                                     <Link to="/admin/restaurant">
-                                                        <MenubarItem>
+                                                        <MenubarItem className='text-orange-500 hover:text-orange-600'>
                                                             Add Restaurant
                                                         </MenubarItem>
                                                     </Link>
                                                     <Link to="/admin/menu">
-                                                        <MenubarItem>
+                                                        <MenubarItem className='text-orange-500 hover:text-orange-600'>
                                                             Add Menu
                                                         </MenubarItem>
                                                     </Link>
                                                     <Link to="/admin/orders">
-                                                        <MenubarItem>
+                                                        <MenubarItem className='text-orange-500 hover:text-orange-600'>
                                                             Orders
                                                         </MenubarItem>
                                                     </Link>
@@ -88,10 +101,10 @@ function Navbar() {
                                 </div>
                                 <div>
                                     <Link to="/cart" className='relative cursor-pointer'>
-                                        <ShoppingCart />
+                                        <ShoppingCart className='text-orange-500 hover:text-orange-600' />
                                         {
                                             cart?.length > 0 && (
-                                                <Button size={"icon"} className='absolute dark:bg-neutral-500 bg-neutral-700 text-white -inset-y-3 left-2 p-2 w-4 h-4 text-xs rounded-lg'>
+                                                <Button size={"icon"} className='absolute bg-orange-500 -inset-y-3 left-2 p-2 w-4 h-4 text-xs rounded-lg'>
                                                     {cart?.length}
                                                 </Button>
                                             )
@@ -103,7 +116,7 @@ function Navbar() {
                             <li className="flex items-center justify-center gap-3 md:gap-4 py-3 md:py-0">
                                 <Link to="/profile">
                                     <Avatar size='lg'>
-                                        <AvatarImage src={user?.profilePicture} alt={user?.fullname}  />
+                                        <AvatarImage src={user?.profilePicture} alt={user?.fullname} />
                                         <AvatarFallback>
                                             {user?.fullname?.charAt(0).toUpperCase() || "CN"}
                                         </AvatarFallback>
@@ -111,11 +124,11 @@ function Navbar() {
                                 </Link>
                                 <div>
                                     {loading ? (
-                                        <Button disabled className="w-full py-5 rounded-xl text-xs md:text-sm xl:text-base">
+                                        <Button disabled className="bg-orange-600 w-full py-5 rounded-xl text-xs md:text-sm xl:text-base">
                                             <Loader2 className="animate-spin mr-2" /> Please wait...
                                         </Button>
                                     ) : (
-                                        <Button onClick={logoutHandler} type="submit" className="w-full py-5 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
+                                        <Button onClick={logoutHandler} type="submit" className="w-full py-5  bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs md:text-sm xl:text-base" size="lg">
                                             Logout
                                         </Button>
                                     )}

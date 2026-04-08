@@ -10,7 +10,7 @@ interface User {
     username: string;
     fullname: string;
     email: string;
-    contact: number;
+    contact: string;
     address: string;
     city: string;
     country: string;
@@ -154,7 +154,8 @@ export const useUserStore = create<UserState>()(
                     set({
                         loading: false,
                         user: null,
-                        isAuthenticated: false
+                        isAuthenticated: false,
+                        // localStorage.clear()
                     });
                 }
             } catch (error: any) {

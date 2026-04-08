@@ -24,7 +24,7 @@ const sendVerificationEmail = async (email: string, verificationToken: string) =
         )
     } catch (error) {
         console.log(error);
-        throw new ApiError(500, "Failed to send email verification!")
+        throw new ApiError(500, "User created, but failed to send email verification code!")
     }
 }
 

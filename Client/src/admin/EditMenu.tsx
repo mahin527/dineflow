@@ -157,14 +157,14 @@ function EditMenu({ selectedMenu, editOpen, setEditOpen }: { selectedMenu: any, 
                         </FieldGroup>
                         <DialogFooter>
                             <DialogClose asChild>
-                                <Button variant="outline">Cancel</Button>
+                                <Button variant="outline" className="text-orange-600 hover:text-orange-700">Cancel</Button>
                             </DialogClose>
                             {loading ? (
-                                <Button disabled className="rounded-xl text-xs md:text-sm xl:text-base">
+                                <Button disabled className="bg-orange-600 rounded-xl text-xs md:text-sm xl:text-base">
                                     <Loader2 className="animate-spin mr-2" /> Please wait...
                                 </Button>
                             ) : (
-                                <Button type="submit" className="rounded-xl text-xs md:text-sm xl:text-base">
+                                <Button type="submit" className="bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs md:text-sm xl:text-base">
                                     Update Menu
                                 </Button>
                             )}

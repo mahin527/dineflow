@@ -14,7 +14,8 @@ interface MenuState {
     createMenu: (formData: FormData) => Promise<void>;
     updateMenu: (menuId: string, formData: FormData) => Promise<void>;
     deleteMenu: (menuId: string) => Promise<void>;
-
+    allMenus: any[];
+    getAllMenus: () => Promise<void>;
 }
 
 export const useMenuStore = create<MenuState>()(
@@ -22,6 +23,7 @@ export const useMenuStore = create<MenuState>()(
         loading: false,
         menu: null,
         isAuthenticated: false,
+        allMenus: [],
 
         createMenu: async (formData) => {
             try {
@@ -97,6 +99,24 @@ export const useMenuStore = create<MenuState>()(
                 toast.error(errorMessage);
                 console.error("Menu delete Error:", error);
                 throw error;
+            }
+        },
+
+        getAllMenus: async () => {
+            try {
+                set({ loading: true });
+                const response = await axios.get(`${API_END_POINT}/all-menus`);
+
+                if (response.data.success) {
+                    set({
+                        loading: false,
+                        allMenus: response.data.data,
+                    });
+                }
+
+            } catch (error: any) {
+                set({ loading: false });
+                console.error(error);
             }
         },
 

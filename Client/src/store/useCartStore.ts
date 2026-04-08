@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { CartState, CartItem } from "@/types/cart.types"
-import { toast } from "sonner";
+import type { CartState } from "@/types/cart.types"
+import type { MenuItem } from '@/types/restaurant.types';
 
 export const useCartStore = create<CartState>()(
     persist(
@@ -9,20 +9,23 @@ export const useCartStore = create<CartState>()(
             cart: [],
 
             // 1. Add items to cart
-            addToCart: (item: CartItem) => set((state) => {
-                const existingItem = state.cart.find((cartItem) => cartItem._id === item._id);
-                if (existingItem) {
-                    // If the item already exists, only the quantity will increase.
+            addToCart: (menuItem: MenuItem, restaurantId: string) => {
+                set((state) => {
+                    const existingItem = state.cart.find((item) => item._id === menuItem._id);
+                    if (existingItem) {
+                        return {
+                            cart: state.cart.map((item) =>
+                                item._id === menuItem._id
+                                    ? { ...item, quantity: item.quantity + 1 }
+                                    : item
+                            ),
+                        };
+                    }
                     return {
-                        cart: state.cart.map((cartItem) =>
-                            cartItem._id === item._id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
-                        ),
+                        cart: [...state.cart, { ...menuItem, quantity: 1, restaurantId }],
                     };
-                }
-                toast.success("Item added to cart!");
-                // If there is a new item, it will be pushed into the array.
-                return { cart: [...state.cart, { ...item, quantity: 1 }] };
-            }),
+                });
+            },
 
             // 2. Removing items from cart
             removeFromCart: (menuId) => set((state) => ({

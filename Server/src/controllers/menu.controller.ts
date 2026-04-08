@@ -153,4 +153,13 @@ const deleteMenu = asyncHandler(async (req: AuthenticatedRequest, res: Response)
     );
 });
 
-export { addMenu, updateMenu, deleteMenu }
+
+const getAllMenus = asyncHandler(async (req, res) => {
+    const menus = await Menu.find();
+    res.status(200).json({
+        success: true,
+        data: menus 
+    });
+});
+
+export { addMenu, updateMenu, deleteMenu, getAllMenus }

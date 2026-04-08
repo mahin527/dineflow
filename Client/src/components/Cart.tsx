@@ -78,12 +78,12 @@ function Cart() {
                                     <TableCell></TableCell>
                                     <TableCell></TableCell>
                                     <TableCell className="text-right pr-5 font-bold text-base">Total: </TableCell>
-                                    <TableCell className="font-bold text-base">{totalAmount}</TableCell>
+                                    <TableCell className="font-bold text-base">{totalAmount.toFixed(2)}</TableCell>
                                 </TableRow>
                             </TableFooter>
                         </Table>
                         <div className="flex items-center justify-end gap-5 flex-wrap py-6">
-                            <Button onClick={() => setOpen(true)} className="py-5 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
+                            <Button onClick={() => setOpen(true)} className="py-5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs md:text-sm xl:text-base" size="lg">
                                 Proceed to Checkout
                             </Button>
                             <Button
@@ -100,7 +100,7 @@ function Cart() {
                     <div className="text-center py-10 pr-0 lg:pr-10 space-y-2">
                         <h3 className="text-xl font-semibold">Your cart is empty!</h3>
                         <p className="text-muted-foreground">Please add to cart and enjoy your meal.</p>
-                        <Button className="px-5 py-5 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
+                        <Button className="px-5 py-5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs md:text-sm xl:text-base" size="lg">
                             <Link to="/">
                                 Go Home
                             </Link>

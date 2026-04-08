@@ -38,7 +38,7 @@ function SearchInputBlock({ initialValue = "" }: SearchInputProps) {
                 />
             </div>
             <div>
-                <Button type="submit" onClick={searchHandler} className="w-full px-5 py-5 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
+                <Button type="submit" onClick={searchHandler} className="w-full px-5 py-5  bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs md:text-sm xl:text-base" size="lg">
                     Search
                 </Button>
             </div>

@@ -28,7 +28,10 @@ export interface IOrderDocument extends IOrder, Document {
 const orderSchema = new mongoose.Schema<IOrderDocument>(
     {
         user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-        restaurant: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant", required: true },
+        restaurant: {
+            type: mongoose.Schema.Types.ObjectId, ref: "Restaurant",
+            required: true
+        },
         deliveryDetails: {
             email: { type: String, required: true },
             fullname: { type: String, required: true },

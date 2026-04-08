@@ -11,16 +11,24 @@ function FilterPage() {
 
     const filterOptions: IFilterOptionsType[] = [
         {
+            id: 'italian',
+            label: 'Italian'
+        },
+        {
+            id: 'asian',
+            label: 'Asian'
+        },
+        {
+            id: 'thai',
+            label: 'Thai'
+        },
+        {
+            id: 'pizza',
+            label: 'Pizza'
+        },
+        {
             id: 'burger',
             label: 'Burger'
-        },
-        {
-            id: 'biryani',
-            label: 'Biryani'
-        },
-        {
-            id: 'lobster',
-            label: 'lobster'
         }
     ]
 
@@ -35,7 +43,7 @@ function FilterPage() {
                 <h2 className="font-bold">
                     Filter by cuisins
                 </h2>
-                <Button variant="link" onClick={resetAppliedFilter}>Reset</Button>
+                <Button className="text-orange-600 hover:text-orange-700" variant="link" onClick={resetAppliedFilter}>Reset</Button>
             </div>
             {
                 filterOptions.map((option) => (

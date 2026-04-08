@@ -192,11 +192,11 @@ function Profile() {
 
                     <div className="text-center">
                         {isLoading ? (
-                            <Button disabled className="px-5 py-5 rounded-xl text-xs md:text-sm xl:text-base">
+                            <Button disabled className="bg-orange-600 px-5 py-5 rounded-xl text-xs md:text-sm xl:text-base">
                                 <Loader2 className="animate-spin mr-2" /> Please wait...
                             </Button>
                         ) : (
-                            <Button type="submit" className="px-5 py-5 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
+                            <Button type="submit" className="px-5 py-5  bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs md:text-sm xl:text-base" size="lg">
                                 Update Data
                             </Button>
                         )}

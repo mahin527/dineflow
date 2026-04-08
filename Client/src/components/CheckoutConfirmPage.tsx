@@ -1,4 +1,4 @@
-import { useState, type Dispatch, type SetStateAction } from "react"
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -38,44 +38,36 @@ function CheckoutConfirmPage({ open, setOpen }: { open: boolean, setOpen: Dispat
     }
 
     const { cart } = useCartStore()
-    const { restaurant } = useRestaurantStore()
+    const { restaurant, getRestaurant } = useRestaurantStore()
+    useEffect(() => {
+        if (!restaurant) {
+            getRestaurant()
+            console.log(restaurant);
+        }
+    }, [])
     const { createCheckoutSession, loading } = useOrderStore()
     const checkoutHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+        e.preventDefault();
 
-        if (!restaurant?._id) {
-            toast.error("Restaurant information is missing!");
-            return;
-        }
+        if (cart.length === 0) return toast.error("Cart is empty");
 
-        if (cart.length === 0) {
-            toast.error("Your cart is empty!");
-            return;
-        }
-        try {
-            const checkoutData: CheckoutSessionReq = {
-                cartItems: cart.map((cartItem) => ({
-                    menuId: cartItem._id,
-                    menuTitle: cartItem.menuTitle,
-                    menuImage: cartItem.menuImage,
-                    price: cartItem.price,
-                    quantity: cartItem.quantity
-                })),
-                deliveryDetails: {
-                    ...input,
-                    contact: String(input.contact)
-                },
-                restaurantId: restaurant?._id as string
-            }
-            await createCheckoutSession(checkoutData)
-            console.log(checkoutData);
-            
-        } catch (error) {
-            console.log(error);
+        // কার্টের প্রথম আইটেম থেকে রেস্টুরেন্ট আইডি নাও (সবচেয়ে সেফ)
+        const restaurantId = cart[0].restaurantId;
 
-        }
-    }
+        const checkoutData: CheckoutSessionReq = {
+            cartItems: cart.map((item) => ({
+                menuId: item._id,
+                menuTitle: item.menuTitle,
+                menuImage: item.menuImage,
+                price: item.price,
+                quantity: item.quantity
+            })),
+            deliveryDetails: input,
+            restaurantId: restaurantId 
+        };
 
+        await createCheckoutSession(checkoutData);
+    };
     return (
         <div>
             <Dialog open={open} onOpenChange={setOpen}>
@@ -172,11 +164,11 @@ function CheckoutConfirmPage({ open, setOpen }: { open: boolean, setOpen: Dispat
                                 <Button variant="outline">Cancel</Button>
                             </DialogClose>
                             {loading ? (
-                                <Button disabled className="rounded-xl text-xs md:text-sm xl:text-base">
+                                <Button disabled className="bg-orange-600 rounded-xl text-xs md:text-sm xl:text-base">
                                     <Loader2 className="animate-spin mr-2" /> Please wait...
                                 </Button>
                             ) : (
-                                <Button type="submit" className="rounded-xl text-xs md:text-sm xl:text-base">
+                                <Button type="submit" className=" bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs md:text-sm xl:text-base">
                                     Continue to Payment
                                 </Button>
                             )}
