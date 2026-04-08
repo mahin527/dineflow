@@ -142,7 +142,9 @@ const getRestaurantOrder = asyncHandler(async (req: AuthenticatedRequest, res: R
     const userId = req.user?._id;
 
     // 1. First find this user's restaurant.
-    const restaurant = await Restaurant.findOne({ user: userId });
+    const restaurant = await Restaurant.findOne({
+        user: userId
+    } as any);
 
     if (!restaurant) {
         throw new ApiError(404, "Restaurant not found for this admin!");

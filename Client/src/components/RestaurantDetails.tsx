@@ -4,6 +4,7 @@ import AvailableMenu from "./AvailableMenu"
 import { useRestaurantStore } from "@/store/useRestaurantStore"
 import { useEffect } from "react"
 import { useParams } from "react-router-dom"
+import type { CartItem } from "@/types/cart.types"
 
 function RestaurantDetails() {
     const params = useParams()
@@ -50,7 +51,7 @@ function RestaurantDetails() {
                     </div>
                 </div>
             </div>
-            <AvailableMenu menus={singleRestaurant?.menus || []} restaurantId={singleRestaurant?._id || ""} />
+            <AvailableMenu menus={singleRestaurant?.menus as CartItem[] || []} restaurantId={singleRestaurant?._id || ""} />
         </div>
     )
 }
