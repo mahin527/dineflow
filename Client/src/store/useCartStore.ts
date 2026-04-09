@@ -12,7 +12,7 @@ export const useCartStore = create<CartState>()(
             // 1. Add items to cart
             addToCart: (menuItem: MenuItem, restaurantId: string) => {
                 set((state) => {
-                    // // Check if there are any other restaurant items in the cart
+                    // Check if there are any other restaurant items in the cart
                     const isDifferentRestaurant = state.cart.length > 0 && state.cart[0].restaurantId !== restaurantId;
 
                     if (isDifferentRestaurant) {
@@ -35,6 +35,8 @@ export const useCartStore = create<CartState>()(
                     }
 
                     toast.success('Item is successfully added to the cart!');
+                    console.log("restaurantId: ", restaurantId);
+
                     return {
                         cart: [...state.cart, { ...menuItem, quantity: 1, restaurantId }],
                     };

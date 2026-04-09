@@ -52,8 +52,6 @@ function CheckoutConfirmPage({ open, setOpen }: { open: boolean, setOpen: Dispat
         if (cart.length === 0) return toast.error("Cart is empty");
 
         const restaurantId = cart[0]?.restaurantId;
-
-        console.log(restaurantId);
         
         const checkoutData: CheckoutSessionReq = {
             cartItems: cart.map((item) => ({
