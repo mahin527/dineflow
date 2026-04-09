@@ -106,7 +106,7 @@ export const useUserStore = create<UserState>()(
                         loading: false,
                         // user: response.data.data,
                         user: updatedUser, // Set updated users
-                        isAuthenticated: true
+                        // isAuthenticated: true
                     });
                 }
             } catch (error: any) {

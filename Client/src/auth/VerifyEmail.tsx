@@ -62,6 +62,7 @@ function VerifyEmail() {
         } catch (error: any) {
             // The store is already toasting, you can just log in here.
             console.error("Verification failed");
+            navigate("/signin")
         }
     };
 
