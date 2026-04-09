@@ -5,29 +5,41 @@ import { useForm } from "@/hooks/useForm"
 import { Link } from "react-router-dom"
 import Logo from "@/components/Logo"
 import { forgetPasswordSchema } from "@/schema/userSchema";
-import { useState } from "react"
 import { ModeToggle } from '../components/ModeToggle'
+import { useUserStore } from "@/store/useUserStore"
+import { toast } from "sonner";
 
 function ForgotPassword() {
-    const loading: boolean = false;
+    const { loading, forgetPassword } = useUserStore()
 
     const { input, handleInputChange } = useForm({
         email: ""
     });
-
-    const [errors, setErrors] = useState<any>({})
 
     const forgetPasswordSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
         const result = forgetPasswordSchema.safeParse(input);
 
+
         if (!result.success) {
-            setErrors(result.error.format());
+            const fieldErrors = result.error.flatten().fieldErrors;
+
+            const firstErrorKey = Object.keys(fieldErrors)[0] as keyof typeof fieldErrors;
+            const errorMessage = fieldErrors[firstErrorKey]?.[0];
+
+            if (errorMessage) {
+                toast.error(errorMessage);
+            }
             return;
         }
+        try {
+            forgetPassword(input.email)
+        } catch (error) {
+            console.log(error);
 
-        setErrors({});
+        }
+
         console.log("Valid Data:", result.data);
 
     }
@@ -56,12 +68,6 @@ function ForgotPassword() {
                         onChange={handleInputChange}
                         required
                     />
-
-                    {errors.email?._errors?.[0] && (
-                        <p className="text-red-500 text-xs md:text-sm">
-                            {errors.email._errors[0]}
-                        </p>
-                    )}
 
                     <div className="w-full">
                         {loading ? (

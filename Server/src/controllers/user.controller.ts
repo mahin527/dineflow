@@ -333,6 +333,8 @@ const updateProfile = asyncHandler(async (req: Request, res: Response) => {
         .json(new ApiResponse(200, updatedUser, "Profile updated successfully"));
 });
 
+// TODO: delete user
+
 export { signup, signin, verifyEmail, signout, forgetPassword, resetPassword, checkAuth, updateProfile }
 
 
