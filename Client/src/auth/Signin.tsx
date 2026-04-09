@@ -9,6 +9,7 @@ import { userSigninSchema } from "@/schema/userSchema";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useUserStore } from "@/store/useUserStore"
+import { ModeToggle } from '../components/ModeToggle'
 
 
 function Signin() {
@@ -65,8 +66,11 @@ function Signin() {
     return (
 
         <div className="@container mx-auto px-6">
-            <div className="py-10 md:py-6">
+            <div className="py-10 md:py-6 flex items-center justify-between">
                 <Logo />
+                <div>
+                    <ModeToggle />
+                </div>
             </div>
             <form onSubmit={loginSubmitHandler} className="flex items-center justify-center pb-10" >
                 <div className="border border-neutral-200 dark:border-neutral-600 px-10 py-10 space-y-4 min-w-70 md:min-w-100 xl:min-w-120 rounded-xl">

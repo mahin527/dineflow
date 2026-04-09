@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 import Logo from "@/components/Logo"
 import { forgetPasswordSchema } from "@/schema/userSchema";
 import { useState } from "react"
-
+import { ModeToggle } from '../components/ModeToggle'
 
 function ForgotPassword() {
     const loading: boolean = false;
@@ -34,8 +34,11 @@ function ForgotPassword() {
 
     return (
         <div className="@container mx-auto px-6">
-            <div className="py-10 md:py-6">
+            <div className="py-10 md:py-6 flex items-center justify-between">
                 <Logo />
+                <div>
+                    <ModeToggle />
+                </div>
             </div>
             <form onSubmit={forgetPasswordSubmitHandler} className="flex items-center justify-center pb-10" >
                 <div className="border border-neutral-200 dark:border-neutral-600 px-10 py-10 space-y-4 min-w-70 md:min-w-100 xl:min-w-120 rounded-xl">
