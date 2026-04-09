@@ -13,59 +13,6 @@ interface AuthenticatedRequest extends Request {
     user?: any;
 }
 
-// const createCheckoutSession = asyncHandler(async (req: any, res: Response) => {
-
-//     
-//     if (!dbMenus || dbMenus.length === 0) {
-//         throw new ApiError(404, "Menus not found in database!");
-//     }
-
-//     const lineItems = cartItems.map((cartItem: any) => {
-//         //Use dbMenus here and make sure it is an array.
-//         const menuItem = dbMenus.find(
-//             (item: any) => item._id.toString() === cartItem.menuId.toString()
-//         );
-
-//         if (!menuItem) {
-//             throw new ApiError(404, `Item with ID ${cartItem.menuId} not found`);
-//         }
-
-//         return {
-//             price_data: {
-//                 currency: "usd",
-//                 product_data: {
-//                     name: menuItem.menuTitle,
-//                     images: [menuItem.menuImage],
-//                 },
-//                 unit_amount: Math.round(menuItem.price * 100),
-//             },
-//             quantity: cartItem.quantity,
-//         };
-//     });
-
-//     
-//     const session = await stripe.checkout.sessions.create({
-//         payment_method_types: ['card'],
-//         shipping_address_collection: { allowed_countries: ['GB', 'US', 'CA'] },
-//         line_items: lineItems,
-//         mode: 'payment',
-//         success_url: `${process.env.FRONTEND_URL}orders/status`,
-//         cancel_url: `${process.env.FRONTEND_URL}cart`,
-//         metadata: {
-//             orderId: "some_id", //TODO: Enter your order ID here
-//             restaurantId: restaurantId
-//         }
-//     });
-
-//     return res.status(200).json({
-//         success: true,
-//         session: {
-//             url: session.url // The actual Stripe session URL goes here
-//         }
-//     });
-// });
-
-
 const createCheckoutSession = asyncHandler(async (req: any, res: Response) => {
     const { cartItems, deliveryDetails, restaurantId } = req.body;
 
@@ -189,8 +136,8 @@ const stripeWebhook = asyncHandler(async (req: Request, res: Response) => {
 
 const createLineItems = (cartItems: any[], menuItems: any[]) => {
     return cartItems.map((cartItem) => {
-        // ১. cartItem.menuId এবং menuItems এর ভেতরের item._id ম্যাচ করাও
-        // safe check এর জন্য optional chaining এবং toString() ব্যবহার করো
+        // 1. Match the `item._id` inside cartItem.menuId and menuItems
+        // Use optional chaining and toString() for safe check
         const menuItem = menuItems.find((item: any) =>
             item._id.toString() === cartItem.menuId.toString()
         );
@@ -199,8 +146,7 @@ const createLineItems = (cartItems: any[], menuItems: any[]) => {
         console.log("Cart Item ID:", cartItem.menuId);
 
         if (!menuItem) {
-            // এরর মেসেজে আইডিটা প্রিন্ট করলে তুমি শিওর হতে পারবে কোন আইডিটা ডাটাবেসে নেই
-            throw new ApiError(404, `Menu item with ID ${cartItem.menuId} not found in this restaurant!`);
+            // If you print the ID in the error message, you can be sure that the ID is not in the database.            throw new ApiError(404, `Menu item with ID ${cartItem.menuId} not found in this restaurant!`);
         }
 
         return {
@@ -210,7 +156,7 @@ const createLineItems = (cartItems: any[], menuItems: any[]) => {
                     name: menuItem.menuTitle,
                     images: [menuItem.menuImage]
                 },
-                unit_amount: Math.round(menuItem.price * 100) // ফ্লোটিং পয়েন্ট এরর এড়াতে Math.round ব্যবহার করো
+                unit_amount: Math.round(menuItem.price * 100) // Use `Math.round` to avoid floating point errors
             },
             quantity: cartItem.quantity
         };
@@ -219,9 +165,7 @@ const createLineItems = (cartItems: any[], menuItems: any[]) => {
 
 // order.controller.ts
 const getOrders = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    console.log("Logged in User ID:", req.user?._id); // এখানে দেখো আইডি ঠিক আছে কি না
     const orders = await Order.find({ user: req.user?._id }).populate("restaurant");
-    console.log("Found Orders:", orders.length); // দেখো কয়টা অর্ডার পেল
 
     return res.status(200).json(
         new ApiResponse(200, orders, "Orders fetched successfully!")

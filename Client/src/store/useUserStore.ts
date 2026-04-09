@@ -205,7 +205,7 @@ export const useUserStore = create<UserState>()(
                     set({
                         loading: false,
                         user: response.data.data,
-                        isAuthenticated: true
+                        // isAuthenticated: true
                     });
                 }
             } catch (error: any) {

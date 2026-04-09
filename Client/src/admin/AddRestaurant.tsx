@@ -93,23 +93,6 @@ function Restaurant() {
         }
     }, [restaurant]);
 
-    // useEffect(() => {
-    //     const fetchRestaurant = async () => {
-    //         await getRestaurant()
-    //         setInput({
-    //             restaurantName: restaurant?.restaurantName || "",
-    //             city: restaurant?.city || "",
-    //             country: restaurant?.country || "",
-    //             deliveryTime: restaurant?.deliveryTime?.toString() || "",
-    //             cuisines: restaurant?.cuisines?.join(", ") || "",
-    //             restaurantPicture: undefined
-    //         })
-    //     }
-
-    //     fetchRestaurant()
-    // }, [])
-
-
     return (
         <div className="@container mx-auto px-6">
             <div className="py-6">

@@ -44,10 +44,6 @@ function ResetPassword() {
             console.log(error);
 
         }
-
-        console.log(input.newPassword);
-        console.log(token);
-
     }
 
     return (

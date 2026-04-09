@@ -15,20 +15,18 @@ import { Badge } from "./ui/badge"
 
 
 function OrderStatus() {
-    const { orders, getOrderDetails, loading } = useOrderStore(); // যদি স্টোরে loading স্টেট থাকে
+    const { orders, getOrderDetails, loading } = useOrderStore(); 
 
     useEffect(() => {
         getOrderDetails();
     }, []);
 
-    // ডাটা লোড হওয়া পর্যন্ত ওয়েট করো
     if (loading) {
-        return <div className="text-center py-20">Loading your orders...</div>;
+        return <div className="text-center py-20 font-bold text-base lg:text-xl xl:text-2xl">Please wait...</div>;
     }
     return (
         <div className="@container mx-auto px-5 py-10">
 
-            {/* এখন কন্ডিশন চেক করো */}
             {orders && orders.length > 0 ? (
                 <div className="shadow-md ...">
                     <div className="w-full">
@@ -87,30 +85,6 @@ function OrderStatus() {
                 </div>
             )}
 
-
-            {/* {
-                orders.length === 0
-                    ?
-
-                    :
-                    <div className="shadow-md shadow-neutral-600 dark:shadow-neutral-800 p-8 rounded-lg">
-                        <div className="text-center pb-6">
-                            <h2 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold tracking-wider">
-                                Order summery
-                            </h2>
-                        </div>
-                        <div className="py-6 border-y w-full">
-                           
-                        </div>
-                        <div className="text-center py-4">
-                            <Link to="/">
-                                <Button className="px-5 py-5 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
-                                    Continue shopping
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
-            } */}
         </div>
     )
 }

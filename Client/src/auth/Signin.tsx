@@ -52,10 +52,9 @@ function Signin() {
     }
 
     useEffect(() => {
-        // পেজ লোড হওয়ার সাথে সাথে ক্রেডেনশিয়াল দেখাবে
         toast.info("Test Admin Credentials", {
             description: "Email: oliver.smith@proton.com | Password: oliver",
-            duration: 10000, // ১০ সেকেন্ড পর্যন্ত থাকবে
+            duration: 10000, // 10 seconds
             action: {
                 label: "Copy Email",
                 onClick: () => navigator.clipboard.writeText("oliver.smith@proton.com")
