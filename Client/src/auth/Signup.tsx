@@ -53,7 +53,6 @@ function Signup() {
         } catch (error) {
             console.error(error);
             navigate("/signin");
-            // console.error("Signup failed, stay on page.");
         }
     };
 
