@@ -49,7 +49,7 @@ security risk
 persist only needed fields or remove
 */
 
-const API_END_POINT = `https://dineflow-kf4k.onrender.com/api/v1/restaurant`;
+const API_END_POINT = `https://dineflow-server.onrender.com/api/v1/restaurant`;
 axios.defaults.withCredentials = true;
 
 

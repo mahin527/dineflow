@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useRestaurantStore } from './useRestaurantStore';
 
-const API_END_POINT = `https://dineflow-kf4k.onrender.com/api/v1/menu`;
+const API_END_POINT = `https://dineflow-server.onrender.com/api/v1/menu`;
 axios.defaults.withCredentials = true;
 
 interface MenuState {
