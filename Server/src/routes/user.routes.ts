@@ -30,7 +30,7 @@ router.route("/verify-email").post(verifyEmail)
 router.route("/forget-password").post(forgetPassword)
 
 // resetPassword
-router.route("/reset-password/:token").post(resetPassword)
+router.route("reset-password/:token").post(resetPassword)
 
 // checkAuth
 router.route("/check-auth").get(isAuthenticated, checkAuth)
