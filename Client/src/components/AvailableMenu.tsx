@@ -13,9 +13,9 @@ import { useCartStore } from "@/store/useCartStore"
 import type { CartItem } from "@/types/cart.types"
 
 
-function AvailableMenu({ menus, restaurantId }: { menus: CartItem[], restaurantId:string }) {
+function AvailableMenu({ menus, restaurantId }: { menus: CartItem[], restaurantId: string }) {
     const { addToCart } = useCartStore()
-    
+
     return (
         <div className="py-2">
             <h2 className="text-xl md:text-2xl xl:text-3xl pb-4 text-center md:text-left">Available Menu</h2>
@@ -54,9 +54,9 @@ function AvailableMenu({ menus, restaurantId }: { menus: CartItem[], restaurantI
                                         </CardDescription>
                                     </CardHeader>
                                     <CardFooter>
-                                        <Link to={`/cart`} className="w-full" >
-                                            <Button onClick={() => addToCart(menu, restaurantId)} className="w-full bg-orange-600 hover:bg-orange-700 text-white rounded-xl" size="lg">Add to Cart</Button>
-                                        </Link>
+                                        {/* <Link to={`/cart`} className="w-full" > */}
+                                        <Button onClick={() => addToCart(menu, restaurantId)} className="w-full bg-orange-600 hover:bg-orange-700 text-white rounded-xl" size="lg">Add to Cart</Button>
+                                        {/* </Link> */}
                                     </CardFooter>
                                 </Card>
                             ))
