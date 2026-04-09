@@ -20,6 +20,12 @@ const createCheckoutSession = asyncHandler(async (req: any, res: Response) => {
     if (!cartItems || cartItems.length === 0) {
         throw new ApiError(400, "No items in cart");
     }
+    if (!deliveryDetails) {
+        throw new ApiError(400, "Delivery details are missing!");
+    }
+    if (!restaurantId) {
+        throw new ApiError(400, "restaurantId is missing!");
+    }
 
     // 2. Fetch the menus from the database
     const menuIds = cartItems.map((item: any) => item.menuId);
