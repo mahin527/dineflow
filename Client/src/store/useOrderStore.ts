@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import type { CheckoutSessionReq, OrderState } from '@/types/order.types';
 
-const API_END_POINT = `http://localhost:8000/api/v1/orders`;
+const API_END_POINT = `https://dineflow-kf4k.onrender.com/api/v1/orders`;
 axios.defaults.withCredentials = true;
 
 export const useOrderStore = create<OrderState>()(

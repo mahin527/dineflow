@@ -36,6 +36,7 @@ import userRouter from './routes/user.routes'
 
 app.use('/api/v1/user', userRouter)
 // Example: http://localhost:8000/api/v1/users/signup
+// => https://dineflow-kf4k.onrender.com/api/v1/users/signup
 
 // Restaurant routes declaration
 import restaurantRouter from './routes/restaurant.routes'
