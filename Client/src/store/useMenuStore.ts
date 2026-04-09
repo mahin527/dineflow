@@ -110,9 +110,12 @@ export const useMenuStore = create<MenuState>()(
                 if (response.data.success) {
                     set({
                         loading: false,
-                        allMenus: response.data.data,
+                        // allMenus: response.data.data,
+                        allMenus: response.data,
                     });
                 }
+                console.log("response.data :",response.data);
+                
 
             } catch (error: any) {
                 set({ loading: false });
