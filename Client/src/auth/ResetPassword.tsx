@@ -12,8 +12,10 @@ import { useParams } from "react-router-dom"
 
 function ResetPassword() {
     const [showNewPassword, setShowNewPassword] = useState(false)
+    const params = useParams()
+    const token = params?.token || ""
 
-    const {loading, resetPassword} = useUserStore();
+    const { loading, resetPassword } = useUserStore();
 
     const { input, handleInputChange } = useForm({
         newPassword: ""
@@ -23,8 +25,6 @@ function ResetPassword() {
         e.preventDefault()
 
         const result = resetPasswordSchema.safeParse(input);
-        const params = useParams()
-        const token  = params?.token || ""
         if (!result.success) {
             const fieldErrors = result.error.flatten().fieldErrors;
 
@@ -38,15 +38,16 @@ function ResetPassword() {
         }
 
         try {
-            resetPassword(token,input.newPassword )
+            resetPassword(token, input.newPassword)
+            toast.success("Password reset successfully!");
         } catch (error) {
             console.log(error);
-            
+
         }
 
         console.log(input.newPassword);
         console.log(token);
-        
+
     }
 
     return (

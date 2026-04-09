@@ -259,7 +259,7 @@ const resetPassword = asyncHandler(async (req: Request, res: Response) => {
     }
 
     return res.status(200).json(
-        new ApiResponse(200, {}, "Password reset successful!")
+        new ApiResponse(200, {}, "Password reset successfully!")
     );
 });
 
