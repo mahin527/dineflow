@@ -18,12 +18,11 @@ export const useOrderStore = create<OrderState>()(
                     set({ loading: true });
                     const response = await axios.post(`${API_END_POINT}/checkout/create-checkout-session`, checkoutData);
 
-                    // সেফটি চেক: ডাটা ঠিকমতো আসছে কি না
                     if (response.data.success && response.data.session) {
-                        const stripeUrl = response.data.session.url; // এখানে 'url' হবে
+                        const stripeUrl = response.data.session.url;
 
                         if (stripeUrl) {
-                            window.location.href = stripeUrl; // সরাসরি স্ট্রাইপ পেমেন্ট পেজে নিয়ে যাবে
+                            window.location.href = stripeUrl;
                         } else {
                             console.error("Stripe session URL is missing!");
                         }

@@ -51,7 +51,6 @@ function CheckoutConfirmPage({ open, setOpen }: { open: boolean, setOpen: Dispat
 
         if (cart.length === 0) return toast.error("Cart is empty");
 
-        // কার্টের প্রথম আইটেম থেকে রেস্টুরেন্ট আইডি নাও (সবচেয়ে সেফ)
         const restaurantId = cart[0].restaurantId;
 
         const checkoutData: CheckoutSessionReq = {
