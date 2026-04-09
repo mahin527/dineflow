@@ -15,7 +15,7 @@ import { Badge } from "./ui/badge"
 
 
 function OrderStatus() {
-    const { orders, getOrderDetails, loading } = useOrderStore(); 
+    const { orders, getOrderDetails, loading } = useOrderStore();
 
     useEffect(() => {
         getOrderDetails();
@@ -75,7 +75,7 @@ function OrderStatus() {
             ) : (
                 <div className="text-center py-16 space-y-2">
                     <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-wider">
-                        Order not found!
+                        No orders found!
                     </h2>
                     <Button className="px-5 py-5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs md:text-sm xl:text-base" size="lg">
                         <Link to="/">
