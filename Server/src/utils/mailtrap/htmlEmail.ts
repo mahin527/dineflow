@@ -78,7 +78,7 @@ export const generateEmailVerification = `
     `;
 
 export const generateWelcomeEmailHtml = (name: string) => {
-    return `
+  return `
           <html>
             <head>
               <style>
@@ -134,7 +134,7 @@ export const generateWelcomeEmailHtml = (name: string) => {
 };
 
 export const generatePasswordResetEmailHtml = (resetURL: string) => {
-    return `
+  return `
       <html>
         <head>
           <style>
@@ -167,14 +167,14 @@ export const generatePasswordResetEmailHtml = (resetURL: string) => {
               color: #777;
             }
             .button {
-              display: inline-block;
-              padding: 10px 20px;
-              margin: 20px 0;
-              font-size: 16px;
-              color: white;
-              background-color: #ffffff;
-              text-decoration: none;
-              border-radius: 5px;
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            font-size: 16px;
+            color: white !important;
+            background-color: #f9a41b; 
+            text-decoration: none;
+            border-radius: 5px;
             }
           </style>
         </head>
@@ -200,7 +200,7 @@ export const generatePasswordResetEmailHtml = (resetURL: string) => {
 };
 
 export const generateResetSuccessEmailHtml = () => {
-    return `
+  return `
       <html>
         <head>
           <style>

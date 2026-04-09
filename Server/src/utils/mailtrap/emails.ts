@@ -39,7 +39,7 @@ const sendWelcomeEmail = async (email: string, name: string) => {
                 from: sender,
                 to: recipients,
                 subject: "Welcome to 🍴Dineflow 🍽️",
-                text: htmlContent,
+                html: htmlContent,
                 category: "welcome mail",
                 template_variables: {
                     companyName: "🍴Dineflow 🍽️",
@@ -64,7 +64,7 @@ const sendPasswordResetEmail = async (email: string, resetUrl: string) => {
                 from: sender,
                 to: recipients,
                 subject: "Reset your password",
-                text: htmlContent,
+                html: htmlContent,
                 category: "Reset password",
             }
         )
@@ -85,7 +85,7 @@ const sendResetPasswordSuccessEmail = async (email: string) => {
                 from: sender,
                 to: recipients,
                 subject: "Password reset successfully",
-                text: htmlContent,
+                html: htmlContent,
                 category: "Reset password success mail",
             }
         )

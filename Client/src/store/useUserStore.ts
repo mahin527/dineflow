@@ -180,7 +180,6 @@ export const useUserStore = create<UserState>()(
                     set({
                         loading: false,
                         user: response.data.data,
-                        isAuthenticated: true
                     });
                 }
             } catch (error: any) {
