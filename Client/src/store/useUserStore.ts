@@ -195,7 +195,7 @@ export const useUserStore = create<UserState>()(
         resetPassword: async (token, newPassword) => {
             try {
                 set({ loading: true });
-                const response = await axios.post(`${API_END_POINT}/reset-password/${token}`,
+                const response = await axios.post(`${API_END_POINT}reset-password/${token}`,
                     { newPassword }, {
                     headers: { "Content-Type": "application/json" }
                 });
