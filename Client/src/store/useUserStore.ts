@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "sonner";
 
 const API_END_POINT = `https://dineflow-server.onrender.com/api/v1/user`;
+
 axios.defaults.withCredentials = true;
 
 interface User {

@@ -42,7 +42,6 @@ function CheckoutConfirmPage({ open, setOpen }: { open: boolean, setOpen: Dispat
     useEffect(() => {
         if (!restaurant) {
             getRestaurant()
-            console.log(restaurant);
         }
     }, [])
     const { createCheckoutSession, loading } = useOrderStore()

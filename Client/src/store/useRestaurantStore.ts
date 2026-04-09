@@ -119,7 +119,6 @@ export const useRestaurantStore = create<RestaurantState>()(
                     set({
                         singleRestaurant: response.data.data,
                     });
-                    // console.log(response.data.data);
                 }
             } catch (error: any) {
                 const errorMessage = error.response?.data?.message || "Restaurant fetch failed!";
@@ -226,7 +225,6 @@ export const useRestaurantStore = create<RestaurantState>()(
                     set({
                         restaurantOrders: response.data.data,
                     });
-                    // console.log("restaurantOrders", response.data.data);
                 }
             } catch (error) {
                 throw error;
