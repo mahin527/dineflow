@@ -11,9 +11,9 @@ function Home() {
                 <AllRestaurants />
             </section>
 
-            <section className="py-10">
+            {/* <section className="py-10">
                 <AllMenus />
-            </section>
+            </section> */}
         </div>
     );
 }
