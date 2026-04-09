@@ -197,8 +197,11 @@ const forgetPassword = asyncHandler(async (req: Request, res: Response) => {
     await user.save({ validateBeforeSave: false });
 
     // Generate frontend URL (preferably taken from env)
-    const resetUrl = `${process.env.FRONTEND_URL}reset-password/${resetToken}`;
+    const frontendUrl = process.env.FRONTEND_URL?.endsWith('/')
+        ? process.env.FRONTEND_URL.slice(0, -1)
+        : process.env.FRONTEND_URL;
 
+    const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
     try {
         // use mailtrap helper 
         await sendPasswordResetEmail(user.email, resetUrl);
@@ -218,7 +221,7 @@ const forgetPassword = asyncHandler(async (req: Request, res: Response) => {
 
 const resetPassword = asyncHandler(async (req: Request, res: Response) => {
     const { token } = req.params;
-    
+
     if (!token || typeof token !== "string") {
         throw new ApiError(400, "Reset token is required!");
     }
