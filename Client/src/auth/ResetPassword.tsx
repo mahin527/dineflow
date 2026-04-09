@@ -6,32 +6,47 @@ import { LockKeyhole, Eye, EyeOff, Loader2 } from "lucide-react"
 import { useState } from "react"
 import { resetPasswordSchema } from "@/schema/userSchema";
 import { ModeToggle } from '../components/ModeToggle'
+import { toast } from "sonner";
+import { useUserStore } from "@/store/useUserStore";
+import { useParams } from "react-router-dom"
 
 function ResetPassword() {
     const [showNewPassword, setShowNewPassword] = useState(false)
-    const [showOldPassword, setShowOldPassword] = useState(false)
 
-    const loading: boolean = false;
+    const {loading, resetPassword} = useUserStore();
 
     const { input, handleInputChange } = useForm({
-        oldPassword: "",
         newPassword: ""
     });
-
-    const [errors, setErrors] = useState<any>({})
 
     const resetPasswordSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
         const result = resetPasswordSchema.safeParse(input);
-
+        const params = useParams()
+        const token  = params?.token || ""
         if (!result.success) {
-            setErrors(result.error.format());
+            const fieldErrors = result.error.flatten().fieldErrors;
+
+            const firstErrorKey = Object.keys(fieldErrors)[0] as keyof typeof fieldErrors;
+            const errorMessage = fieldErrors[firstErrorKey]?.[0];
+
+            if (errorMessage) {
+                toast.error(errorMessage);
+            }
             return;
         }
 
-        setErrors({});
-        console.log("Valid Data:", result.data);
+        try {
+            resetPassword(token,input.newPassword )
+        } catch (error) {
+            console.log(error);
+            
+        }
+
+        console.log(input.newPassword);
+        console.log(token);
+        
     }
 
     return (
@@ -51,24 +66,6 @@ function ResetPassword() {
                     </div>
 
                     <InputWithIcon
-                        name="oldPassword"
-                        leftIcon={LockKeyhole}
-                        rightIcon={showOldPassword ? Eye : EyeOff}
-                        onRightIconClick={() => setShowOldPassword(!showOldPassword)}
-                        type={showOldPassword ? "text" : "password"}
-                        placeholder="Old password"
-                        value={input.oldPassword}
-                        onChange={handleInputChange}
-                        required
-                    />
-
-                    {errors.oldPassword?._errors?.[0] && (
-                        <p className="text-red-500 text-xs md:text-sm">
-                            {errors.oldPassword._errors[0]}
-                        </p>
-                    )}
-
-                    <InputWithIcon
                         name="newPassword"
                         leftIcon={LockKeyhole}
                         rightIcon={showNewPassword ? Eye : EyeOff}
@@ -79,11 +76,6 @@ function ResetPassword() {
                         onChange={handleInputChange}
                         required
                     />
-                    {errors.newPassword?._errors?.[0] && (
-                        <p className="text-red-500 text-xs md:text-sm">
-                            {errors.newPassword._errors[0]}
-                        </p>
-                    )}
 
                     <div className="w-full">
                         {loading ? (
@@ -91,7 +83,7 @@ function ResetPassword() {
                                 <Loader2 className="animate-spin mr-2" /> Please wait...
                             </Button>
                         ) : (
-                            <Button type="submit" className="w-full py-5 text-orange-600 hover:text-orange-700 rounded-xl text-xs md:text-sm xl:text-base" size="lg">
+                            <Button type="submit" className="w-full py-5 bg-orange-600 bg:text-orange-700 text-white rounded-xl text-xs md:text-sm xl:text-base" size="lg">
                                 Reset Password
                             </Button>
                         )}

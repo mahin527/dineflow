@@ -197,7 +197,7 @@ const forgetPassword = asyncHandler(async (req: Request, res: Response) => {
     await user.save({ validateBeforeSave: false });
 
     // Generate frontend URL (preferably taken from env)
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL}reset-password/${resetToken}`;
 
     try {
         // use mailtrap helper 

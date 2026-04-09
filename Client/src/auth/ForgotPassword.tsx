@@ -8,9 +8,11 @@ import { forgetPasswordSchema } from "@/schema/userSchema";
 import { ModeToggle } from '../components/ModeToggle'
 import { useUserStore } from "@/store/useUserStore"
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 function ForgotPassword() {
     const { loading, forgetPassword } = useUserStore()
+    const navigate = useNavigate();
 
     const { input, handleInputChange } = useForm({
         email: ""
@@ -20,7 +22,6 @@ function ForgotPassword() {
         e.preventDefault()
 
         const result = forgetPasswordSchema.safeParse(input);
-
 
         if (!result.success) {
             const fieldErrors = result.error.flatten().fieldErrors;
@@ -33,15 +34,14 @@ function ForgotPassword() {
             }
             return;
         }
+
         try {
             forgetPassword(input.email)
+            navigate("/signin");
         } catch (error) {
             console.log(error);
-
+            navigate("/signin");
         }
-
-        console.log("Valid Data:", result.data);
-
     }
 
     return (
