@@ -18,7 +18,7 @@ function AvailableMenu({ menus, restaurantId }: { menus: CartItem[], restaurantI
     
     return (
         <div className="py-2">
-            <h2 className="text-xl md:text-2xl xl:text-3xl pb-2 text-center md:text-left">Available Menu</h2>
+            <h2 className="text-xl md:text-2xl xl:text-3xl pb-4 text-center md:text-left">Available Menu</h2>
             {
                 menus?.length === 0
                     ? <div className="text-center py-16 space-y-2">

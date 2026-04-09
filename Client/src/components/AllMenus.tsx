@@ -38,6 +38,7 @@ const AllMenus = () => {
                                         >
                                             Add to Cart
                                         </Button>
+                                        <button onClick={()=> console.log("AllMenus.tsx: ", menu)}>menuData</button>
                                     </CardFooter>
                                 </Card>
                             ))}
