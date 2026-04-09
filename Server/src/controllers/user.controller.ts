@@ -106,7 +106,7 @@ const signin = asyncHandler(async (req: Request, res: Response) => {
     const options = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict" as const, // extra security
+        sameSite: "none" as const, // extra security
     };
 
     // Exclude sensitive fields before sending response
@@ -160,9 +160,9 @@ const signout = asyncHandler(async (_: Request, res: Response) => {
     // Cookie option that was used during signin (preferably the same)
     const options = {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        // secure: true,
-        sameSite: "strict" as const // For CSRF protection
+        // secure: process.env.NODE_ENV === "production",
+        secure: true,
+        sameSite: "none" as const // For CSRF protection
     };
 
     return res
