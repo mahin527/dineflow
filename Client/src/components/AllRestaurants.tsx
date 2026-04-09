@@ -14,7 +14,7 @@ const AllRestaurants = () => {
         getAllRestaurants();
     }, []);
 
-    if (loading) return <div className="text-center py-20">Loading Restaurants...</div>;
+    if (loading) return <div className="text-center py-20 font-bold text-base lg:text-xl xl:text-2xl">Loading Restaurants...</div>;
 
     return (
         <>

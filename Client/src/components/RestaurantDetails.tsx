@@ -9,11 +9,13 @@ import type { CartItem } from "@/types/cart.types"
 function RestaurantDetails() {
     const params = useParams()
     const restaurantId = params?.restaurantId || ""
-    const { singleRestaurant, getSingleRestaurant } = useRestaurantStore()
+    const { singleRestaurant, getSingleRestaurant, loading } = useRestaurantStore()
 
     useEffect(() => {
         getSingleRestaurant(restaurantId)
     }, [restaurantId])
+
+    if (loading) return <div className="text-center py-20 font-bold text-base lg:text-xl xl:text-2xl">Please wait...</div>;
 
     return (
         <div className="@container mx-auto px-6 py-3">
