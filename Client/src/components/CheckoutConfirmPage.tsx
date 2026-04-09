@@ -37,7 +37,8 @@ function CheckoutConfirmPage({ open, setOpen }: { open: boolean, setOpen: Dispat
         setInput({ ...input, [name]: value })
     }
 
-    const { cart, clearCart } = useCartStore()
+    // const { cart, clearCart } = useCartStore()
+    const { cart } = useCartStore()
     const { restaurant, getRestaurant } = useRestaurantStore()
     useEffect(() => {
         if (!restaurant) {
@@ -66,7 +67,7 @@ function CheckoutConfirmPage({ open, setOpen }: { open: boolean, setOpen: Dispat
 
         try {
             await createCheckoutSession(checkoutData);
-            clearCart()
+            // clearCart()
         } catch (error) {
             console.log(error);
         }
