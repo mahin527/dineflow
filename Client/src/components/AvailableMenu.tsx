@@ -14,8 +14,7 @@ import type { CartItem } from "@/types/cart.types"
 
 
 function AvailableMenu({ menus, restaurantId }: { menus: CartItem[], restaurantId:string }) {
-    const { cart, addToCart } = useCartStore()
-    console.log(cart);
+    const { addToCart } = useCartStore()
     
     return (
         <div className="py-2">

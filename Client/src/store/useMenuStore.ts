@@ -46,7 +46,7 @@ export const useMenuStore = create<MenuState>()(
                 set({ loading: false });
                 const errorMessage = error.response?.data?.message || "The menu creation failed!";
                 toast.error(errorMessage);
-                console.error("Restaurant creation Error:", error);
+                console.log("Restaurant creation Error:", error);
                 throw error;
             }
         },
@@ -73,7 +73,7 @@ export const useMenuStore = create<MenuState>()(
                 set({ loading: false });
                 const errorMessage = error.response?.data?.message || "Menu update failed!";
                 toast.error(errorMessage);
-                console.error("Menu update Error:", error);
+                console.log("Menu update Error:", error);
                 throw error;
             }
         },
@@ -97,7 +97,7 @@ export const useMenuStore = create<MenuState>()(
                 set({ loading: false });
                 const errorMessage = error.response?.data?.message;
                 toast.error(errorMessage);
-                console.error("Menu delete Error:", error);
+                console.log("Menu delete Error:", error);
                 throw error;
             }
         },
@@ -116,7 +116,7 @@ export const useMenuStore = create<MenuState>()(
 
             } catch (error: any) {
                 set({ loading: false });
-                console.error(error);
+                console.log(error);
             }
         },
 
