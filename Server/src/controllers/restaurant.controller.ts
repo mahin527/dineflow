@@ -1,12 +1,12 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import mongoose from "mongoose";
-import { Restaurant } from "../models/restaurant.model";
-import { IUserDocument } from "../models/user.model";
-import { asyncHandler } from "../utils/asyncHandler"
-import { ApiError } from "../utils/ApiError"
-import { ApiResponse } from "../utils/ApiResponse"
-import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary/cloudinary"
-import { Order } from "../models/order.model";
+import { Restaurant } from "../models/restaurant.model.js";
+import type { IUserDocument } from "../models/user.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js"
+import { ApiError } from "../utils/ApiError.js"
+import { ApiResponse } from "../utils/ApiResponse.js"
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary/cloudinary.js"
+import { Order } from "../models/order.model.js";
 
 // Direct import to fix Multer type errors
 // import { Multer } from "multer";

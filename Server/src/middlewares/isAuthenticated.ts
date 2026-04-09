@@ -1,17 +1,11 @@
-import { Request, Response, NextFunction } from "express"
-import jwt, { JwtPayload } from "jsonwebtoken"
-import { User } from "../models/user.model"
-import { asyncHandler } from "../utils/asyncHandler"
-import { ApiError } from "../utils/ApiError"
-import { IUserDocument } from "../models/user.model";
-import multer from 'multer';
+import type { Request, Response, NextFunction } from "express"
+import jwt, { type JwtPayload } from "jsonwebtoken"
+import { User } from "../models/user.model.js"
+import { asyncHandler } from "../utils/asyncHandler.js"
+import { ApiError } from "../utils/ApiError.js"
+import type { IUserDocument } from "../models/user.model.js";
 
-interface AuthenticatedRequest extends Request {
-    user?: IUserDocument;
-    file?: Express.Multer.File;
-}
-
-const isAuthenticated = asyncHandler(async (req: AuthenticatedRequest, _: Response, next: NextFunction) => {
+const isAuthenticated = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     // Deriving tokens directly from cookies
     const token = req.cookies?.token || req.header("Authorization")?.replace("Bearer ", "");
 

@@ -1,7 +1,7 @@
 import mongoose, { Document } from "mongoose";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
-import { env } from "../config/env";
+import { env } from "../config/env.js";
 
 export interface IUser {
     username: string,
@@ -17,10 +17,10 @@ export interface IUser {
     isAdmin: boolean,
     lastLogin?: Date,
     isVerified?: boolean
-    resetPasswordToken?: string
-    resetPasswordTokenExpiresAt?: Date,
-    verificationToken?: string,
-    verificationTokenExpiresAt?: Date,
+    resetPasswordToken?: string | undefined;
+    resetPasswordTokenExpiresAt?: Date | undefined;
+    verificationToken?: string | undefined;
+    verificationTokenExpiresAt?: Date | undefined;
 }
 
 export interface IUserDocument extends IUser, Document {
@@ -96,16 +96,20 @@ const userSchema = new mongoose.Schema<IUserDocument>(
             default: false
         },
         resetPasswordToken: {
-            type: String
+            type: String,
+            default: undefined
         },
         resetPasswordTokenExpiresAt: {
-            type: Date
+            type: Date,
+            default: undefined
         },
         verificationToken: {
-            type: String
+            type: String,
+            default: undefined
         },
         verificationTokenExpiresAt: {
-            type: Date
+            type: Date,
+            default: undefined
         }
     },
     {
@@ -123,6 +127,7 @@ userSchema.methods.isPasswordCorrect = async function (password: string): Promis
     return await bcrypt.compare(password, this.password)
 }
 
+
 userSchema.methods.generateToken = function (): string {
     return jwt.sign(
         {
@@ -131,9 +136,9 @@ userSchema.methods.generateToken = function (): string {
             username: this.username,
             fullname: this.fullname,
         },
-        env.SECRET_TOKEN,
+        env.SECRET_TOKEN!,
         {
-            expiresIn: env.SECRET_TOKEN_EXPIRY,
+            expiresIn: env.SECRET_TOKEN_EXPIRY!,
         }
     );
 };

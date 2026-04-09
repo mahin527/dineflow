@@ -1,21 +1,21 @@
-import { Request, Response } from "express";
-import { IUserDocument } from "../models/user.model";
-import { asyncHandler } from "../utils/asyncHandler"
-import { ApiError } from "../utils/ApiError"
-import { ApiResponse } from "../utils/ApiResponse"
-import { User } from "../models/user.model"
+import type { Request, Response } from "express";
+import type { IUserDocument } from "../models/user.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js"
+import { ApiError } from "../utils/ApiError.js"
+import { ApiResponse } from "../utils/ApiResponse.js"
+import { User } from "../models/user.model.js"
 import crypto from "crypto"
-import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary/cloudinary"
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary/cloudinary.js"
 
 import {
     sendWelcomeEmail,
     sendVerificationEmail,
     sendPasswordResetEmail,
     sendResetPasswordSuccessEmail
-} from "../utils/mailtrap/emails"
+} from "../utils/mailtrap/emails.js"
 
- import { Multer } from "multer";
- 
+import type { Multer } from "multer";
+
 interface AuthenticatedRequest extends Request {
     user?: IUserDocument;
     file?: Express.Multer.File;
@@ -218,6 +218,10 @@ const forgetPassword = asyncHandler(async (req: Request, res: Response) => {
 
 const resetPassword = asyncHandler(async (req: Request, res: Response) => {
     const { token } = req.params;
+    
+    if (!token || typeof token !== "string") {
+        throw new ApiError(400, "Reset token is required!");
+    }
     const { newPassword } = req.body;
 
     if (!newPassword) {
@@ -256,7 +260,7 @@ const resetPassword = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
-const checkAuth = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+const checkAuth = asyncHandler(async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
@@ -268,7 +272,7 @@ const checkAuth = asyncHandler(async (req: AuthenticatedRequest, res: Response) 
     );
 });
 
-const updateProfile = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+const updateProfile = asyncHandler(async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {

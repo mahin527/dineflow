@@ -1,6 +1,6 @@
 import 'dotenv/config'; // It is better to put it above all else.
-import { app } from "./app";
-import connectDB from "./db/connectDB";
+import { app } from "./app.js";
+import connectDB from "./db/connectDB.js";
 
 const port = process.env.PORT || 3000;
 

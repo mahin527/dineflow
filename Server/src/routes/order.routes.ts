@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { isAuthenticated } from "../middlewares/isAuthenticated";
+import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import {
     createCheckoutSession,
     getOrders,
     stripeWebhook
-} from "../controllers/order.controller"
+} from "../controllers/order.controller.js"
 import express from 'express'
 
 const router = Router();

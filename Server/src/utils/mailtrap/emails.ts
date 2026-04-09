@@ -1,11 +1,11 @@
-import { client, sender } from "./mailtrap"
-import { ApiError } from "../ApiError"
+import { client, sender } from "./mailtrap.js"
+import { ApiError } from "../ApiError.js"
 import {
     generateEmailVerification,
     generatePasswordResetEmailHtml,
     generateResetSuccessEmailHtml,
     generateWelcomeEmailHtml
-} from "./htmlEmail"
+} from "./htmlEmail.js"
 
 const sendVerificationEmail = async (email: string, verificationToken: string) => {
     const recipients = [

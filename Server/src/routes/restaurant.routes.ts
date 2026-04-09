@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { upload } from "../middlewares/multer.middleware";
-import { isAuthenticated } from "../middlewares/isAuthenticated";
+import { upload } from "../middlewares/multer.middleware.js";
+import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import {
     createRestaurant,
     getRestaurant,
@@ -10,7 +10,7 @@ import {
     searchRestaurants,
     getSingleRestaurant,
     getAllRestaurants
-} from "../controllers/restaurant.controller"
+} from "../controllers/restaurant.controller.js"
 
 const router = Router();
 

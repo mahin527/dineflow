@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { upload } from "../middlewares/multer.middleware";
-import { isAuthenticated } from "../middlewares/isAuthenticated";
+import { upload } from "../middlewares/multer.middleware.js";
+import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import {
     signup,
     signin,
@@ -10,7 +10,7 @@ import {
     resetPassword,
     checkAuth,
     updateProfile
-} from "../controllers/user.controller"
+} from "../controllers/user.controller.js"
 
 const router = Router()
 

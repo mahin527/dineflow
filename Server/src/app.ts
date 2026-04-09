@@ -1,7 +1,7 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-import { errorHandler } from "./middlewares/errorHandler"
+import { errorHandler } from "./middlewares/errorHandler.js"
 
 const app = express()
 
@@ -32,22 +32,22 @@ app.use(express.static('public'))
 app.use(cookieParser())
 
 // User routes declaration
-import userRouter from './routes/user.routes'
+import userRouter from './routes/user.routes.js'
 
 app.use('/api/v1/user', userRouter)
 // Example: http://localhost:8000/api/v1/users/signup
 // => https://dineflow-kf4k.onrender.com/api/v1/users/signup
 
 // Restaurant routes declaration
-import restaurantRouter from './routes/restaurant.routes'
+import restaurantRouter from './routes/restaurant.routes.js'
 app.use("/api/v1/restaurant", restaurantRouter);
 
 // Menu routes declaration
-import menuRouter from './routes/menu.routes'
+import menuRouter from './routes/menu.routes.js'
 app.use("/api/v1/menu", menuRouter);
 
 // Order routes declaration
-import orderRouter from './routes/order.routes'
+import orderRouter from './routes/order.routes.js'
 app.use("/api/v1/orders", orderRouter);
 
 // global error handler (must be last)

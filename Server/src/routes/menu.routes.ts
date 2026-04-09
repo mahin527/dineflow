@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { upload } from "../middlewares/multer.middleware";
-import { isAuthenticated } from "../middlewares/isAuthenticated";
+import { upload } from "../middlewares/multer.middleware.js";
+import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import {
     addMenu,
     updateMenu,
     deleteMenu,
     getAllMenus
-} from "../controllers/menu.controller"
+} from "../controllers/menu.controller.js"
 
 const router = Router();
 

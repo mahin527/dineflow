@@ -1,6 +1,6 @@
 
 import { MailtrapClient } from "mailtrap"
-import { env } from "../../config/env";
+import { env } from "../../config/env.js";
 
 const TOKEN = env.MAILTRAP_API_TOKEN;
 

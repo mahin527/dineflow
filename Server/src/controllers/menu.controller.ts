@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
-import { Menu } from "../models/menu.model";
-import { Restaurant } from "../models/restaurant.model";
-import { asyncHandler } from "../utils/asyncHandler"
-import { ApiError } from "../utils/ApiError"
-import { ApiResponse } from "../utils/ApiResponse"
-import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary/cloudinary"
-import { IUserDocument } from "../models/user.model";
+import type { Request, Response } from "express";
+import { Menu } from "../models/menu.model.js";
+import { Restaurant } from "../models/restaurant.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js"
+import { ApiError } from "../utils/ApiError.js"
+import { ApiResponse } from "../utils/ApiResponse.js"
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary/cloudinary.js"
+import type { IUserDocument } from "../models/user.model.js";
 import mongoose from "mongoose";
 
 interface AuthenticatedRequest extends Request {
