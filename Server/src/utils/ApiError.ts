@@ -4,7 +4,6 @@ class ApiError extends Error {
     public data: unknown | null;        // optional payload, usually null  
     public success: boolean;            // always false for errors
     public errors: string[];            // list of error messages/details
-    public stack?: string | undefined;  // optional stack trace
 
     constructor(
         statusCode: number,
