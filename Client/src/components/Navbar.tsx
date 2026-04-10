@@ -158,7 +158,7 @@ function Navbar() {
                     </li>
                 </ul>
 
-                <MenuIcon className='w-5 sm:w-6 md:w-8 lg:hidden cursor-pointer'
+                <MenuIcon className='z-20 w-5 sm:w-6 md:w-8 lg:hidden cursor-pointer'
                     onClick={toggleMenu} />
             </div>
         </nav>
