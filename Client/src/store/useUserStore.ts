@@ -137,7 +137,6 @@ export const useUserStore = create<UserState>()(
                     user: null,
                     isAuthenticated: false,
                     isCheckingAuth: false,
-                    // loading: false
                 });
                 console.log("User not authenticated (Expected on first visit)");
             }
@@ -241,6 +240,10 @@ export const useUserStore = create<UserState>()(
     }), {
         name: 'user-storage',
         storage: createJSONStorage(() => localStorage),
+        // Add the following line to prevent loading/checking from saving
+        partialize: (state) => ({
+            user: state.user,
+            isAuthenticated: state.isAuthenticated
+        }),
     })
 );
-
