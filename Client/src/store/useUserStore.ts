@@ -121,24 +121,28 @@ export const useUserStore = create<UserState>()(
         },
 
         checkAuthentication: async () => {
+            //1. Clear the state before starting the check.
+            set({ isCheckingAuth: true });
+
             try {
-                set({ isCheckingAuth: true }); // True when the check starts
                 const response = await axios.get(`${API_END_POINT}/check-auth`);
 
+                // 2. If successful
                 if (response.data.success) {
                     set({
                         user: response.data.data,
                         isAuthenticated: true,
-                        isCheckingAuth: false // False if successful
+                        isCheckingAuth: false
                     });
                 }
             } catch (error) {
+                // 3. If you get a 401 error (or any other error)
+                console.error("Auth check failed:", error);
                 set({
                     user: null,
                     isAuthenticated: false,
-                    isCheckingAuth: false,
+                    isCheckingAuth: false // Check finished, now result is false
                 });
-                console.log("User not authenticated (Expected on first visit)");
             }
         },
 

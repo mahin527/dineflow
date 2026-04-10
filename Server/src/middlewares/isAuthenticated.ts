@@ -3,7 +3,6 @@ import jwt, { type JwtPayload } from "jsonwebtoken"
 import { User } from "../models/user.model.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiError } from "../utils/ApiError.js"
-import type { IUserDocument } from "../models/user.model.js";
 
 const isAuthenticated = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     // Deriving tokens directly from cookies
