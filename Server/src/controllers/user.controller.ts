@@ -14,13 +14,6 @@ import {
     sendResetPasswordSuccessEmail
 } from "../utils/mailtrap/emails.js"
 
-import type { Multer } from "multer";
-
-interface AuthenticatedRequest extends Request {
-    user?: IUserDocument;
-    file?: Express.Multer.File;
-}
-
 const signup = asyncHandler(async (req: Request, res: Response) => {
     // get user details from frontend
     const { username, fullname, email, password, contact } = req.body;
@@ -102,19 +95,17 @@ const signin = asyncHandler(async (req: Request, res: Response) => {
     user.lastLogin = new Date();
     await user.save({ validateBeforeSave: false });
 
-    // Cookie options
-    const options = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "none" as const, // extra security
-    };
-
     // Exclude sensitive fields before sending response
     const safeUser = await User.findById(user._id).select("-password -refreshToken");
 
     return res
         .status(200)
-        .cookie("token", token, options)
+        .cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 1 * 24 * 60 * 60 * 1000
+        })
         .json(new ApiResponse(200, { user: safeUser, token }, "User signed in successfully!"));
 });
 
@@ -158,16 +149,14 @@ const verifyEmail = asyncHandler(async (req: Request, res: Response) => {
 
 const signout = asyncHandler(async (_: Request, res: Response) => {
     // Cookie option that was used during signin (preferably the same)
-    const options = {
-        httpOnly: true,
-        // secure: process.env.NODE_ENV === "production",
-        secure: true,
-        sameSite: "none" as const // For CSRF protection
-    };
-
     return res
         .status(200)
-        .clearCookie("token", options) // Clear cookies with correct options
+        .clearCookie("token", {
+            httpOnly: true,
+            secure: true, 
+            sameSite: "none",
+            maxAge: 1 * 24 * 60 * 60 * 1000 
+        }) // Clear cookies with correct options
         .json(
             new ApiResponse(200, {}, "User logged out successfully!")
         );
