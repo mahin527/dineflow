@@ -78,7 +78,7 @@ function Navbar() {
                         </Link>
                     </li>
                     <li className='text-orange-500 hover:text-orange-600'>
-                        <Link to="/orders/status">
+                        <Link to="/orders/status" onClick={() => setMobileMenu(false)}>
                             Orders
                         </Link>
                     </li>
@@ -94,17 +94,17 @@ function Navbar() {
                                                 </MenubarTrigger>
                                                 <MenubarContent>
                                                     <Link to="/admin/restaurant">
-                                                        <MenubarItem className='text-orange-500 hover:text-orange-600'>
+                                                        <MenubarItem onClick={() => setMobileMenu(false)} className='text-orange-500 hover:text-orange-600'>
                                                             Add Restaurant
                                                         </MenubarItem>
                                                     </Link>
                                                     <Link to="/admin/menu">
-                                                        <MenubarItem className='text-orange-500 hover:text-orange-600'>
+                                                        <MenubarItem onClick={() => setMobileMenu(false)} className='text-orange-500 hover:text-orange-600'>
                                                             Add Menu
                                                         </MenubarItem>
                                                     </Link>
                                                     <Link to="/admin/orders">
-                                                        <MenubarItem className='text-orange-500 hover:text-orange-600'>
+                                                        <MenubarItem onClick={() => setMobileMenu(false)} className='text-orange-500 hover:text-orange-600'>
                                                             Orders
                                                         </MenubarItem>
                                                     </Link>
@@ -133,7 +133,7 @@ function Navbar() {
                                 </div>
                             </li>
                             <li className="flex items-center justify-center gap-3 md:gap-4 py-3 md:py-0">
-                                <Link to="/profile">
+                                <Link to="/profile" onClick={() => setMobileMenu(false)}>
                                     <Avatar size='lg'>
                                         <AvatarImage src={user?.profilePicture} alt={user?.fullname} />
                                         <AvatarFallback>
