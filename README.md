@@ -1,100 +1,64 @@
-# 🍽️ DineFlow (Restaurant Management System)
+# 🍽️ DineFlow | Full-Stack Restaurant Management System
 
-A full-stack MERN-based restaurant management system built with best practices, clean architecture, and scalable design.
+**DineFlow** is a modern, scalable, and high-performance restaurant management platform. It simplifies the ordering process for customers while providing restaurant owners with a robust dashboard to manage menus and track orders.
+
+> **Status:** Fully functional portfolio project showcasing advanced authentication, payment integration, and clean architecture.
 
 ---
 
-## 🚀 Features
+## 🚀 Key Features
 
-### 👤 User
+### 👤 Customer Features
+* **Secure Authentication:** JWT & Cookie-based secure login/signup system.
+* **Email Verification:** Account verification and password recovery via Mailtrap.
+* **Dynamic Menu:** Browse and filter dishes by categories or search terms.
+* **Smart Cart:** Built-in logic to restrict orders to one restaurant at a time (Foodpanda style).
+* **Seamless Payments:** Integrated **Stripe** payment gateway for secure transactions.
+* **Order Status:** Real-time tracking of order progress (Pending, Confirmed, Delivered).
 
-* User registration & login (JWT authentication)
-* Browse menu by categories
-* Add/remove items from cart
-* Place orders
-* View order history
-
-### 🛠️ Admin
-
-* Manage menu (CRUD operations)
-* Manage orders (update status)
-* Dashboard (orders, revenue, stats)
+### 🛠️ Admin Features
+* **Restaurant Profile:** Setup and customize restaurant details with image uploads (Cloudinary).
+* **Menu Management:** Full CRUD operations (Create, Read, Update, Delete) for menu items.
+* **Order Dashboard:** Manage incoming orders and update their status.
+* **Image Hosting:** High-performance image management using Cloudinary.
 
 ---
 
 ## 🧰 Tech Stack
 
 ### Frontend
-
-* [React](https://react.dev/learn/installation)
-* [Tailwind CSS](https://tailwindcss.com/docs/installation/using-vite)
-* [shadcn/ui](https://ui.shadcn.com/docs/installation/vite)
-* [lucide icon]()
-* [react-router-dom]()  
-* [Zod](https://zod.dev/)
-* [Zustand](https://zustand-demo.pmnd.rs/)
-* [axios]()
-
+- **Framework:** React.js (TypeScript)
+- **Styling:** Tailwind CSS + Shadcn/UI
+- **State Management:** Zustand (with Persistence)
+- **Validation:** Zod
+- **Icons:** Lucide-React
 
 ### Backend
-
-* [Node.js](https://nodejs.org/docs/latest/api/)
-* [Express.js](https://expressjs.com/en/starter/installing.html)
-* [Mongoose]()
-* [bcrypt]()
-* [JSON Web Token]()
-* [Mailtrap](https://mailtrap.io/)
-* [Stripe]()
-* [Multer]()
-* [Dotenv]()
-* [Cors]()
-* [Cookie parser]()
-* [Cloudinary]()
-* [tsx]()
-* [typescript]()
-* [nodemon]()
-* [crypto-js]()
-
-
-
-### Database
-
-* MongoDB
-
-### Authentication
-
-* JWT (JSON Web Token)
-* bcrypt
-
-### Tools
-
-* Postman (API testing)
-* Git & GitHub
+- **Runtime:** Node.js (TypeScript)
+- **Framework:** Express.js
+- **Database:** MongoDB (Mongoose)
+- **Security:** JWT, Bcrypt, Cookie-Parser
+- **Payment:** Stripe API
+- **Mailing:** Mailtrap (Nodemailer)
+- **File Upload:** Multer & Cloudinary
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Architecture
 
-### Backend
-
-```
-server/
- ┣ controllers/
- ┣ models/
- ┣ routes/
- ┣ middlewares/
- ┣ utils/
- ┗ app.js
-```
-
-### Frontend
-
-```
-client/
- ┣ components/
- ┣ pages/
- ┣ services/
- ┗ App.jsx
+```text
+DineFlow/
+├── Client/              # Frontend (Vite + React + TS)
+│   ├── src/
+│   │   ├── store/       # Zustand store (Auth, Cart, Restaurant)
+│   │   ├── schema/      # Zod validation schemas
+│   │   └── pages/       # Page components
+└── Server/              # Backend (Node.js + Express + TS)
+    ├── src/
+    │   ├── controllers/ # Business logic
+    │   ├── models/      # Database schemas
+    │   ├── routes/      # API Endpoints
+    │   └── mail/        # Email templates & service
 ```
 
 ---
@@ -102,109 +66,78 @@ client/
 ## ⚙️ Installation & Setup
 
 ### 1. Clone the repository
-
-```
-git clone https://github.com/your-username/dineflow.git
-cd dineflow
+```bash
+git clone https://github.com/mahin527/dineflow.git
+cd DineFlow
 ```
 
 ### 2. Backend setup
-
-```
-cd server
+```bash
+cd Server
 npm install
+# Create a .env file and add your credentials
 npm run dev
 ```
 
 ### 3. Frontend setup
-
-```
-cd client
+```bash
+cd Client
 npm install
 npm run dev
 ```
 
 ---
 
-## 🔐 Environment Variables
+## 🔐 Environment Variables (Server)
 
-Create a `.env` file in the server directory:
+Create a `.env` file in the **Server** directory:
+
+```env
+PORT = 8000
+
+FRONTEND_URL= ...
+
+CORS_ORIGIN = ...
+
+SECRET_TOKEN = ...
+SECRET_TOKEN_EXPIRY = 1d
+
+# DataBase info
+MONGODB_USERNAME = ...
+MONGODB_PASSWORD = ...
+MONGODB_URI = ...
+
+# Cloudinary info
+
+CLOUDINARY_CLOUD_NAME = ...
+CLOUDINARY_API_KEY = ...
+CLOUDINARY_API_SECRET = ...
+
+# mailtrap 
+MAILTRAP_API_TOKEN = ...
+
+# Stripe 
+STRIPE_PUBLISHABLE_KEY =...
+STRIPE_SECRET_KEY = ...
+#webhook
+WEBHOOK_ENDPOINT_SECRET =...
 
 ```
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-```
-
----
-
-## 📡 API Endpoints (Sample)
-
-| Method | Endpoint           | Description   |
-| ------ | ------------------ | ------------- |
-| POST   | /api/auth/signup | Register user |
-| POST   | /api/auth/signin    | Login user    |
-| GET    | /api/menu          | Get all menu  |
-| POST   | /api/orders        | Place order   |
-
----
-
-## 📦 Packages Used
-
-### Backend
-
-* express
-* mongoose
-* jsonwebtoken
-* bcrypt
-* cors
-* dotenv
-
-### Frontend
-
-* react
-* axios
-* tailwindcss
-* shadcn/ui
-
----
-
-## 📸 Screenshots
-
-*Add screenshots here*
 
 ---
 
 ## 🌍 Live Demo
-
-Frontend: *Coming Soon*
-Backend API: *Coming Soon*
-
----
-
-## 🧠 Learnings
-
-* Built a scalable backend with Express & MongoDB
-* Implemented authentication & authorization
-* Designed RESTful APIs
-* Managed state and API integration
+* **Frontend:** [https://dineflow-demo.netlify.app](https://dineflow-demo.netlify.app)
+* **API Server:** [https://dineflow-server.onrender.com](https://dineflow-server.onrender.com)
 
 ---
 
-## 📌 Future Improvements
+## 🤝 Contact
+**Mahin Hasan** *Full-Stack Web Developer | Shopify Expert*
 
-* Payment integration
-* Real-time order tracking (Socket.io)
-* Admin analytics dashboard
+[📧 Email](mailto:hasan.mahin527@gmail.com) | 
+[💬 Messenger](https://m.me/md.mahin.hassan.738742) | 
+[🎮 Discord](https://discord.com/users/mahin527) (Username: `mahin527`)
 
----
+----
 
-## 🤝 Contributing
-
-Pull requests are welcome. For major changes, please open an issue first.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
