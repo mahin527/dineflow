@@ -3,6 +3,11 @@
 **DineFlow** is a modern, scalable, and high-performance restaurant management platform. It simplifies the ordering process for customers while providing restaurant owners with a robust dashboard to manage menus and track orders.
 
 > **Status:** Fully functional portfolio project showcasing advanced authentication, payment integration, and clean architecture.
+---
+
+## 🌍 Live Demo
+* **Frontend:** [https://dineflow-demo.netlify.app](https://dineflow-demo.netlify.app)
+* **API Server:** [https://dineflow-server.onrender.com](https://dineflow-server.onrender.com)
 
 ---
 
@@ -123,14 +128,6 @@ STRIPE_SECRET_KEY = ...
 WEBHOOK_ENDPOINT_SECRET =...
 
 ```
-
----
-
-## 🌍 Live Demo
-* **Frontend:** [https://dineflow-demo.netlify.app](https://dineflow-demo.netlify.app)
-* **API Server:** [https://dineflow-server.onrender.com](https://dineflow-server.onrender.com)
-
----
 
 ## 🤝 Contact
 **Mahin Hasan** *Full-Stack Web Developer | Shopify Expert*
