@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Loader2, MenuIcon, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Logo from "@/components/Logo"
@@ -22,7 +22,7 @@ function Navbar() {
     pt-24 lg:pt-0 transition-all duration-500 gap-8 
     text-sm lg:text-base xl:text-lg font-bold 
     w-64 sm:w-72 md:w-80 lg:w-auto 
-    z-[-1] lg:z-auto shadow-xl lg:shadow-none`;
+    z-20 lg:z-auto shadow-xl lg:shadow-none`;
 
     const [mobileMenu, setMobileMenu] = useState(false)
     const toggleMenu = () => {
@@ -46,15 +46,34 @@ function Navbar() {
         }
     };
 
+    useEffect(() => {
+        if (mobileMenu) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, [mobileMenu]);
+
     const { cart } = useCartStore()
     return (
         <nav className={`${navClasses}`}>
-
+            {
+                mobileMenu && (
+                    <div
+                        className="fixed inset-0 bg-black/50 z-5 lg:hidden"
+                        onClick={toggleMenu}
+                    />
+                )
+            }
             <div className={`${navContetWrapperClasses}`}>
                 <Logo />
                 <ul className={`${menuLinkClasses} ${mobileMenu ? 'right-0' : '-right-full'}`}>
                     <li className='text-orange-500 hover:text-orange-600'>
-                        <Link to="/">
+                        <Link to="/" onClick={() => setMobileMenu(false)}>
                             Home
                         </Link>
                     </li>
