@@ -119,7 +119,7 @@ function Navbar() {
                                     <ModeToggle />
                                 </div>
                                 <div>
-                                    <Link to="/cart" className='relative cursor-pointer'>
+                                    <Link to="/cart" onClick={() => setMobileMenu(false)} className='relative cursor-pointer'>
                                         <ShoppingCart className='text-orange-500 hover:text-orange-600' />
                                         {
                                             cart?.length > 0 && (
