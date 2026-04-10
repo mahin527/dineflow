@@ -195,7 +195,7 @@ function AddMenu() {
                                 Go Home
                             </Link>
                         </Button>
-                    </div> : <div className="w-full flex flex-col md:flex-row md:items-center justify-center flex-wrap gap-5">
+                    </div> : <div className="w-full flex flex-col md:flex-row items-center justify-center flex-wrap gap-5">
                         {restaurant?.menus?.map((menu: any) => (
                             <Card key={menu._id} className="relative w-full max-w-xs min-w-100 pt-0 shadow-md rounded-xl overflow-hidden hover:shadow-lg shadow-neutral-600 dark:shadow-neutral-800 transition-shadow duration-300">
                                 <div className="absolute inset-0 aspect-video bg-black/5 dark:bg-white/5" />
