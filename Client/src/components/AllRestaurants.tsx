@@ -29,7 +29,7 @@ const AllRestaurants = () => {
                                     <img src={res.restaurantPicture} alt={res.restaurantName} className="w-full h-48 object-cover" />
                                     <CardHeader className="py-3">
                                         <div className="flex justify-between items-center">
-                                            <CardTitle className="text-xl font-bold">{res.restaurantName}</CardTitle>
+                                            <CardTitle className="text-xl font-bold">{res.restaurantName.toUpperCase()}</CardTitle>
                                             <Badge variant="outline" className="text-orange-600 border-orange-600">{res.cuisines[0]}</Badge>
                                         </div>
                                     </CardHeader>
