@@ -264,6 +264,7 @@ const checkAuth = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
+
 const updateProfile = asyncHandler(async (req: Request, res: Response) => {
     const user = req.user;
 

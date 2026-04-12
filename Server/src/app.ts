@@ -32,6 +32,11 @@ app.use(express.static('public'))
 app.use(cookieParser())
 
 // User routes declaration
+
+app.get('/ping', (_, res) => {
+    res.send('Hello, this is dineflow server!')
+})
+
 import userRouter from './routes/user.routes.js'
 
 app.use('/api/v1/user', userRouter)
