@@ -33,7 +33,7 @@ app.use(cookieParser())
 
 // User routes declaration
 
-app.get('/ping', (_, res) => {
+app.get('/api/v1/ping', (_, res) => {
     res.send('Hello, this is dineflow server!')
 })
 
