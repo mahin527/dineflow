@@ -70,7 +70,7 @@ function Navbar() {
                 )
             }
             <div className={`${navContetWrapperClasses}`}>
-                <Logo />
+                <Logo classes="w-36 lg:w-46 heigh-fit px-2" />
                 <ul className={`${menuLinkClasses} ${mobileMenu ? 'right-0' : '-right-full'}`}>
                     <li className='text-orange-500 hover:text-orange-600'>
                         <Link to="/" onClick={() => setMobileMenu(false)}>

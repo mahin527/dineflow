@@ -1,21 +1,22 @@
-
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo.png'
+import logo from '../assets/logo.png';
 
-// interface LogoProps {
-//     classes?: string;
-// }
+interface LogoProps {
+    classes?: string;
+}
 
-// function Logo({ classes }: LogoProps) {
-function Logo() {
-
+function Logo({ classes }: LogoProps) {
     return (
-
-        <Link to="/" className='cursor-pointer'>
-            <img src={logo} alt="DineFlow" width={300} height={300} className="w-36 h-auto sm:w-42 md:w-50 2xl:w-54" />
+        <Link to="/" className="cursor-pointer">
+            <img
+                src={logo}
+                alt="DineFlow"
+                width={500}
+                height={500}
+                className={classes}
+            />
         </Link>
-
     );
 }
 
-export default Logo
+export default Logo;
