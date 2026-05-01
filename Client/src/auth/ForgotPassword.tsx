@@ -47,7 +47,7 @@ function ForgotPassword() {
     return (
         <div className="@container mx-auto px-6">
             <div className="py-10 md:py-6 flex items-center justify-between">
-                <Logo />
+                <Logo classes="w-36 lg:w-46 heigh-fit px-2" />
                 <div>
                     <ModeToggle />
                 </div>
