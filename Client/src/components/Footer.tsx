@@ -55,7 +55,7 @@ function Footer() {
     ]
 
     return (
-        <div className="footer @container mx-auto px-5 bg-neutral-900 text-white">
+        <div className="footer @container mx-auto px-5 bg-neutral-900 text-white dark:bg-neutral-950">
             <div className="flex flex-col sm:flex-row sm:flex-wrap justify-between gap-6 py-10 lg:py-18">
                 <div className="space-y-3">
                     <div className="border-b border-neutral-700 flex items-center justify-center pb-5">
